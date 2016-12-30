@@ -243,7 +243,7 @@ class EntityManager
 
         if(isset($this->entityMappersCallbacks[$class])){
            $callback = $this->entityMappersCallbacks[$class];
-        } elseif ($reflection->implementsInterface(EntityMapperInterface::class)){
+        } elseif ($reflection->implementsInterface(IEntityMapper::class)){
             $callback = $class . '::mapEntity';
         } else {
             $callback = null;

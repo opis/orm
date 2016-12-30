@@ -17,7 +17,7 @@
 
 namespace Opis\ORM;
 
-interface EntityMapperInterface
+interface IEntityMapper
 {
     /**
      * @param EntityMapper $mapper
