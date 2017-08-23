@@ -17,7 +17,7 @@
 
 namespace Opis\ORM\Relations;
 
-use Opis\ORM\{Entity, EntityManager, DataMapper, EntityMapper, EntityQuery, LazyLoader, Query, Relation};
+use Opis\ORM\{Entity, EntityManager, Internal\DataMapper, Internal\EntityMapper, Internal\EntityQuery, Internal\LazyLoader, Internal\Query, Internal\Relation};
 use Opis\Database\SQL\SQLStatement;
 
 class BelongsTo extends Relation

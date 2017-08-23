@@ -20,6 +20,7 @@ namespace Opis\ORM;
 use RuntimeException;
 use Opis\Database\Connection;
 use Opis\Database\SQL\{Compiler, Insert, Update};
+use Opis\ORM\Internal\{DataMapper, EntityMapper, EntityQuery};
 
 class EntityManager
 {

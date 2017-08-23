@@ -15,7 +15,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM;
+namespace Opis\ORM\Internal;
+
+use Opis\ORM\Entity;
 
 class LazyLoader
 {

@@ -15,11 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM;
+namespace Opis\ORM\Internal;
 
 use DateTime;
 use RuntimeException;
 use Opis\Database\SQL\Select;
+use Opis\ORM\{Entity, EntityManager};
 use Opis\ORM\Relations\{BelongsTo, HasOneOrMany, HasOneOrManyThrough};
 
 class DataMapper

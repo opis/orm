@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM;
+namespace Opis\ORM\Internal;
 
 use Closure;
 use Opis\ORM\Relations\{BelongsTo, HasOneOrManyThrough, HasOneOrMany};

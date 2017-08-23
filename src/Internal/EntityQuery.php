@@ -15,10 +15,11 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM;
+namespace Opis\ORM\Internal;
 
 use Opis\Database\Connection;
 use Opis\Database\SQL\{Delete, SQLStatement, Update};
+use Opis\ORM\{Entity, EntityManager};
 use Opis\ORM\Traits\AggregateTrait;
 
 class EntityQuery extends Query

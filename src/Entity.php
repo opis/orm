@@ -17,6 +17,8 @@
 
 namespace Opis\ORM;
 
+use Opis\ORM\Internal\{DataMapper, EntityMapper};
+
 abstract class Entity
 {
     /** @var array */
