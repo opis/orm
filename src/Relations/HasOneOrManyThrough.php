@@ -17,8 +17,9 @@
 
 namespace Opis\ORM\Relations;
 
-use Opis\ORM\{Entity, EntityManager, Internal\DataMapper, Internal\EntityMapper, Internal\EntityQuery, Internal\LazyLoader, Internal\Query, Internal\Relation};
+use Opis\ORM\{Entity, EntityManager};
 use Opis\Database\SQL\{Delete, Insert, Join, SQLStatement};
+use Opis\ORM\Internal\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Query, Relation};
 
 class HasOneOrManyThrough extends Relation
 {
