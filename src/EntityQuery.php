@@ -112,11 +112,11 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param array $tables
      * @param bool $force
+     * @param array $tables
      * @return int
      */
-    public function delete(array $tables = [], bool $force = false)
+    public function delete(bool $force = false, array $tables = [])
     {
         return $this->transaction(function (Connection $connection) use($tables, $force) {
             if(!$force && $this->mapper->supportsSoftDelete()){
@@ -206,25 +206,7 @@ class EntityQuery extends Query
      */
     protected function transaction(\Closure $callback, $default = 0)
     {
-        $connection = $this->manager->getConnection();
-        $pdo = $connection->getPDO();
-
-        if($pdo->inTransaction()){
-            return $callback($connection);
-        }
-
-        try{
-            $pdo->beginTransaction();
-            $result = $callback($connection);
-            $pdo->commit();
-        }catch (\Exception $exception){
-            $pdo->rollBack();
-            if($this->manager->getOptions()['throw']){
-                throw $exception;
-            }
-            $result = $default;
-        }
-        return $result;
+        return $this->manager->getConnection()->transaction($callback, null, $default);
     }
 
     /**
