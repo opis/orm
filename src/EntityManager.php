@@ -29,9 +29,6 @@ class EntityManager
     /** @var  Compiler */
     protected $compiler;
 
-    /** @var  array */
-    protected $options;
-
     /** @var  string */
     protected $dateFormat;
 
@@ -44,19 +41,12 @@ class EntityManager
     /**
      * EntityManager constructor.
      * @param Connection $connection
-     * @param array $callbacks
-     * @param array $options
+     * @param callable[] $callbacks
      */
-    public function __construct(Connection $connection, array $callbacks = [], array $options = [])
+    public function __construct(Connection $connection, array $callbacks = [])
     {
         $this->connection = $connection;
         $this->entityMappersCallbacks = $callbacks;
-
-        $options += [
-            'throw' => false,
-        ];
-
-        $this->options = $options;
     }
 
     /**
@@ -92,14 +82,6 @@ class EntityManager
     }
 
     /**
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        return $this->options;
-    }
-
-    /**
      * @param string $entityClass
      * @return EntityQuery
      */
@@ -123,7 +105,7 @@ class EntityManager
 
         if($data->isNew()) {
 
-            $id = $this->transaction(function (Connection $connection) use($data) {
+            $id = $this->connection->transaction(function (Connection $connection) use($data) {
                 $columns = $data->getRawColumns();
 
                 foreach ($columns as &$column){
@@ -150,7 +132,7 @@ class EntityManager
                 }
 
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
-            }, false);
+            }, null, false);
 
             return $id !== false ? $this->markAsSaved($data, $id) : false;
         }
@@ -158,7 +140,7 @@ class EntityManager
         $modified = $data->getModifiedColumns(false);
 
         if(!empty($modified)){
-            return $this->transaction(function (Connection $connection) use($data, $modified) {
+            return $this->connection->transaction(function (Connection $connection) use($data, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
 
                 foreach ($columns as &$column){
@@ -182,7 +164,7 @@ class EntityManager
                 return (bool) (new Update($connection, $mapper->getTable()))
                     ->where($pk)->is($pkv)
                     ->set($columns);
-            }, false);
+            }, null, false);
         }
 
         return true;
@@ -204,7 +186,7 @@ class EntityManager
      */
     public function delete(Entity $entity): bool
     {
-        return $this->transaction(function() use($entity) {
+        return $this->connection->transaction(function() use($entity) {
             $data = $this->getDataMapper($entity);
 
             if($data->isDeleted()){
@@ -222,7 +204,7 @@ class EntityManager
             $this->markAsDeleted($data);
 
             return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
-        }, false);
+        }, null,false);
     }
 
     /**
@@ -267,35 +249,6 @@ class EntityManager
     {
         $this->entityMappersCallbacks[$class] = $callback;
         return $this;
-    }
-
-    /**
-     * @param \Closure $callback
-     * @param bool $default
-     * @return bool
-     * @throws \Exception
-     */
-    protected function transaction(\Closure $callback, $default = false)
-    {
-        $pdo = $this->connection->getPDO();
-
-        if($pdo->inTransaction()){
-            return $callback($this->connection);
-        }
-
-        try{
-            $pdo->beginTransaction();
-            $result = $callback($this->connection);
-            $pdo->commit();
-        }catch (\Exception $exception){
-            $pdo->rollBack();
-            if($this->options['throw']){
-                throw $exception;
-            }
-            $result = $default;
-        }
-
-        return $result;
     }
 
     /**
@@ -344,6 +297,9 @@ class EntityManager
                 $this->dehidrated = true;
                 $this->isNew = false;
                 $this->modified = [];
+                if(!empty($this->pendingLinks)){
+                    $this->executePendingLinkage();
+                }
                 return true;
             };
         }
