@@ -17,9 +17,9 @@
 
 namespace Opis\ORM\Relations;
 
-use Opis\ORM\{Entity, EntityManager};
+use Opis\ORM\EntityManager;
 use Opis\Database\SQL\{Delete, Insert, Join, SQLStatement};
-use Opis\ORM\Internal\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Query, Relation};
+use Opis\ORM\Core\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Query, Relation, EntityProxy};
 
 class HasOneOrManyThrough extends Relation
 {
@@ -85,12 +85,10 @@ class HasOneOrManyThrough extends Relation
         $key = $related->getPrimaryKey();
         $connection = $manager->getConnection();
 
-        $extractor = function () use($key){
-            return $this->orm()->getColumn($key);
-        };
-
         foreach ($items as $item){
-            $val2 = is_a($item, $this->entityClass, false) ? $extractor->call($item) : $item;
+            $val2 = is_a($item, $this->entityClass, false)
+                ? EntityProxy::getDataMapper($item)->getColumn($key)
+                : $item;
             try{
 
                 (new Insert($connection))->insert([
@@ -140,12 +138,10 @@ class HasOneOrManyThrough extends Relation
         $key = $related->getPrimaryKey();
         $connection = $manager->getConnection();
 
-        $extractor = function () use($key){
-            return $this->orm()->getColumn($key);
-        };
-
         foreach ($items as $item){
-            $val2[] = is_a($item, $this->entityClass, false) ? $extractor->call($item) : $item;
+            $val2[] = is_a($item, $this->entityClass, false)
+                ? EntityProxy::getDataMapper($item)->getColumn($key)
+                : $item;
         }
 
         try{

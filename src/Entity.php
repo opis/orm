@@ -17,7 +17,7 @@
 
 namespace Opis\ORM;
 
-use Opis\ORM\Internal\{DataMapper, EntityMapper};
+use Opis\ORM\Core\{DataMapper, EntityMapper};
 
 abstract class Entity
 {

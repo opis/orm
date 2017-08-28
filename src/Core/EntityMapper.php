@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM\Internal;
+namespace Opis\ORM\Core;
 
 class EntityMapper
 {

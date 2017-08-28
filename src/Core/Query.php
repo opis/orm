@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM\Internal;
+namespace Opis\ORM\Core;
 
 use Opis\Database\SQL\{BaseStatement, HavingStatement, SQLStatement};
 use Opis\ORM\Traits\{LoaderTrait, SelectTrait, SoftDeletesTrait};

@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM\Internal;
+namespace Opis\ORM\Core;
 
 use Opis\ORM\Entity;
 
@@ -94,17 +94,7 @@ class LazyLoader
     {
         if($this->results === null){
             $this->results = $this->query->all();
-            $list = [];
-            $key = $this->foreignKey;
-            $setup = function () use(&$list, $key){
-                $list[] = $this->dataMapperArgs[2][$key];
-            };
-
-            foreach ($this->results as $result){
-                $setup->call($result);
-            }
-
-            $this->keys = $list;
+            $this->keys = EntityProxy::getForeignKeys($this->results, $this->foreignKey);
         }
 
         return $this->results;

@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM\Internal;
+namespace Opis\ORM\Core;
 
 use DateTime;
 use RuntimeException;
@@ -267,7 +267,7 @@ class DataMapper
             return $this->relations[$name] = $this->loaders[$name]->getResult($this);
         }
 
-        return $this->relations[$name] = $this->getRelationResult($relations[$name], $callback);
+        return $this->relations[$name] = RelationProxy::getRelationResult($relations[$name], $this, $callback);
     }
 
     /**
@@ -365,6 +365,47 @@ class DataMapper
         foreach ($columns as $name => $value){
             $this->setColumn($name, $value);
         }
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param $id
+     * @return bool
+     */
+    public static function markAsSaved(DataMapper $data, $id): bool
+    {
+        $data->rawColumns[$data->mapper->getPrimaryKey()] = $id;
+        $data->dehydrated = true;
+        $data->isNew = false;
+        $data->modified = [];
+        if(!empty($data->pendingLinks)){
+            $data->executePendingLinkage();
+        }
+        return true;
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param string|null $updatedAt
+     * @return bool
+     */
+    public static function markAsUpdated(DataMapper $data, string $updatedAt = null): bool
+    {
+        if($updatedAt !== null){
+            unset($data->columns['updated_at']);
+            $data->rawColumns['updated_at'] = $updatedAt;
+        }
+        $data->modified = [];
+        return true;
+    }
+
+    /**
+     * @param DataMapper $data
+     * @return bool
+     */
+    public static function markAsDeleted(DataMapper $data): bool
+    {
+        return $data->deleted = true;
     }
 
     /**
@@ -468,19 +509,6 @@ class DataMapper
         $this->relations = [];
         $this->loaders = [];
         $this->dehydrated = false;
-    }
-
-    protected function getRelationResult(Relation $relation, callable $callback = null)
-    {
-        static $closure;
-
-        if($closure === null){
-            $closure = function ($data, $callback){
-                return $this->getResult($data, $callback);
-            };
-        };
-
-        return $closure->call($relation, $this, $callback);
     }
 
     protected function executePendingLinkage()

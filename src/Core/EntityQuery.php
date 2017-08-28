@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\ORM\Internal;
+namespace Opis\ORM\Core;
 
 use Opis\Database\Connection;
 use Opis\Database\SQL\{Delete, SQLStatement, Update};
@@ -289,15 +289,12 @@ class EntityQuery extends Query
         $attr = $this->getWithAttributes();
         $relations = $this->mapper->getRelations();
 
-        $lazyLoader = function (EntityManager $manager, EntityMapper $owner, array $options){
-            return $this->getLazyLoader($manager, $owner, $options);
-        };
-
         foreach ($attr['with'] as $with => $callback) {
             if(!isset($relations[$with])){
                 continue;
             }
-            $loader = $lazyLoader->call($relations[$with], $this->manager, $this->mapper,[
+
+            $loader = RelationProxy::getRelationLazyLoader($relations[$with], $this->manager, $this->mapper,[
                 'results' => $results,
                 'callback' => $callback,
                 'with' => $attr[$with]['extra'] ?? [],

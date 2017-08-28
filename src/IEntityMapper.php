@@ -17,7 +17,7 @@
 
 namespace Opis\ORM;
 
-use Opis\ORM\Internal\EntityMapper;
+use Opis\ORM\Core\EntityMapper;
 
 interface IEntityMapper
 {

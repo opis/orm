@@ -20,7 +20,9 @@ namespace Opis\ORM;
 use RuntimeException;
 use Opis\Database\Connection;
 use Opis\Database\SQL\{Compiler, Insert, Update};
-use Opis\ORM\Internal\{DataMapper, EntityMapper, EntityQuery};
+use Opis\ORM\Core\{
+    DataMapper, EntityMapper, EntityProxy, EntityQuery
+};
 
 class EntityManager
 {
@@ -98,7 +100,7 @@ class EntityManager
     public function save(Entity $entity): bool
     {
         /** @var DataMapper $data */
-        $data = $this->getDataMapper($entity);
+        $data = EntityProxy::getDataMapper($entity);
 
         if($data->isDeleted()){
             throw new RuntimeException("The record is deleted");
@@ -111,7 +113,7 @@ class EntityManager
 
                 foreach ($columns as &$column){
                     if($column instanceof Entity){
-                        $column = $this->getPKValue($column);
+                        $column = EntityProxy::getPKValue($column);
                     }
                 }
 
@@ -135,7 +137,7 @@ class EntityManager
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
             }, null, false);
 
-            return $id !== false ? $this->markAsSaved($data, $id) : false;
+            return $id !== false ? DataMapper::markAsSaved($data, $id) : false;
         }
 
         $modified = $data->getModifiedColumns(false);
@@ -146,7 +148,7 @@ class EntityManager
 
                 foreach ($columns as &$column){
                     if($column instanceof Entity){
-                        $column = $this->getPKValue($column);
+                        $column = EntityProxy::getPKValue($column);
                     }
                 }
 
@@ -160,7 +162,7 @@ class EntityManager
                     $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
                 }
 
-                $this->markAsUpdated($data, $updatedAt);
+                DataMapper::markAsUpdated($data, $updatedAt);
 
                 return (bool) (new Update($connection, $mapper->getTable()))
                     ->where($pk)->is($pkv)
@@ -188,7 +190,8 @@ class EntityManager
     public function delete(Entity $entity): bool
     {
         return $this->connection->transaction(function() use($entity) {
-            $data = $this->getDataMapper($entity);
+            /** @var DataMapper $data */
+            $data = EntityProxy::getDataMapper($entity);
 
             if($data->isDeleted()){
                 throw new RuntimeException("The record was already deleted");
@@ -202,7 +205,7 @@ class EntityManager
             $pk = $mapper->getPrimaryKey();
             $pkv = $data->getColumn($pk);
 
-            $this->markAsDeleted($data);
+            DataMapper::markAsDeleted($data);
 
             return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
         }, null,false);
@@ -250,95 +253,5 @@ class EntityManager
     {
         $this->entityMappersCallbacks[$class] = $callback;
         return $this;
-    }
-
-    /**
-     * @param Entity $entity
-     * @return DataMapper
-     */
-    protected function getDataMapper(Entity $entity): DataMapper
-    {
-        static $closure;
-        if($closure === null){
-            $closure = function (){
-                return $this->orm();
-            };
-        }
-        return $closure->call($entity);
-    }
-
-    /**
-     * @param Entity $entity
-     * @return mixed
-     */
-    protected function getPKValue(Entity $entity)
-    {
-        static $closure;
-        if($closure === null){
-            $closure = function (){
-                /** @var DataMapper $data */
-                $data = $this->orm();
-                return $data->getColumn($data->getEntityMapper()->getPrimaryKey());
-            };
-        }
-        return $closure->call($entity);
-    }
-
-    /**
-     * @param DataMapper $data
-     * @param $id
-     * @return bool
-     */
-    protected function markAsSaved(DataMapper $data, $id): bool
-    {
-        static $closure;
-        if($closure === null){
-            $closure = function ($id){
-                $this->rawColumns[$this->mapper->getPrimaryKey()] = $id;
-                $this->dehidrated = true;
-                $this->isNew = false;
-                $this->modified = [];
-                if(!empty($this->pendingLinks)){
-                    $this->executePendingLinkage();
-                }
-                return true;
-            };
-        }
-        return $closure->call($data, $id);
-    }
-
-    /**
-     * @param DataMapper $data
-     * @return mixed
-     */
-    protected function markAsDeleted(DataMapper $data)
-    {
-        static $closure;
-        if($closure === null){
-            $closure = function (){
-                $this->deleted = true;
-            };
-        }
-        return $closure->call($data);
-    }
-
-    /**
-     * @param DataMapper $data
-     * @param string|null $updatedAt
-     * @return mixed
-     */
-    protected function markAsUpdated(DataMapper $data, string $updatedAt = null)
-    {
-        static $closure;
-        if($closure === null){
-            $closure = function (string $updatedAt = null){
-                if($updatedAt !== null){
-                    unset($this->columns['updated_at']);
-                    $this->rawColumns['updated_at'] = $updatedAt;
-                }
-                $this->modified = [];
-            };
-        }
-        return $closure->call($data, $updatedAt);
     }
 }

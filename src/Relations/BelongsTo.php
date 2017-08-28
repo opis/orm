@@ -19,7 +19,7 @@ namespace Opis\ORM\Relations;
 
 use Opis\Database\SQL\SQLStatement;
 use Opis\ORM\{Entity, EntityManager};
-use Opis\ORM\Internal\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Relation, Query};
+use Opis\ORM\Core\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Relation, Query, EntityProxy};
 
 class BelongsTo extends Relation
 {
@@ -34,9 +34,7 @@ class BelongsTo extends Relation
             $mapper = $owner->getEntityManager()->resolveEntityMapper($this->entityClass);
         } else {
             /** @var DataMapper $related */
-            $related = (function(){
-                return $this->orm();
-            })->call($entity);
+            $related = EntityProxy::getDataMapper($entity);
             $mapper = $related->getEntityMapper();
             $value = $related->getColumn($mapper->getPrimaryKey());
         }

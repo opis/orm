@@ -19,7 +19,7 @@ namespace Opis\ORM\Relations;
 
 use Opis\Database\SQL\SQLStatement;
 use Opis\ORM\{Entity, EntityManager};
-use Opis\ORM\Internal\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Relation, Query};
+use Opis\ORM\Core\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Relation, Query, EntityProxy};
 
 class HasOneOrMany extends Relation
 {
@@ -50,9 +50,7 @@ class HasOneOrMany extends Relation
             $this->foreignKey = $mapper->getForeignKey();
         }
         /** @var DataMapper $related */
-        $related = (function(){
-            return $this->orm();
-        })->call($entity);
+        $related = EntityProxy::getDataMapper($entity);
 
         $related->setColumn($this->foreignKey, $owner->getColumn($mapper->getPrimaryKey()));
     }
