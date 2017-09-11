@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "opis/database": "4.0.*@dev"
+        "opis/database": "4.0.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "5.4.*"
