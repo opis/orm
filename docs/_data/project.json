@@ -1,14 +1,16 @@
 {
     "title": "Opis ORM",
+    "name": "ORM",
     "github": "https://github.com/opis/orm",
     "version": "1.0.x-dev",
     "url": "/orm",
+    "chapters": false,
     "copyright": {
         "owner": "The Opis Project",
         "start": "2017",
         "end": "2018"
     },
     "versions": [
-        {"title": "1.x", "url": "/orm/1.x"}
+        {"title": "Version 1.x", "url": "/orm/1.x"}
     ]
 }

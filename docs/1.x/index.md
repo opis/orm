@@ -2,9 +2,12 @@
 layout: project
 version: 1.x
 title: About
-version: master
 ---
 # ORM
+
+**Opis ORM** is a library that provides a powerful and easy to use
+ object relational mapper implementation.
+
 
 
 [apache_license]: http://www.apache.org/licenses/LICENSE-2.0 "Project license" 
@@ -19,4 +22,4 @@ version: master
 {:data-toggle="tooltip"}
 [Opis Closure]: /closure  "Opis Closure ^2.0.0" 
 {:data-toggle="tooltip"}
-[Opis Storages]: https://github.com/opis/storages "Opis Storages
+[Opis Storages]: https://github.com/opis/storages "Opis Storages"

@@ -3,7 +3,7 @@
         {
             "title": "Getting started",
             "pages": [
-                {"title": "About", "url": "/orm/1.x/index.html"}
+                {"title": "About", "url": "/orm/1.x/", "description": "Learn about Opis ORM"}
             ]
         }
     ]

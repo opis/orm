@@ -47,12 +47,12 @@ custom:
             <ul class="nav navbar-nav">
                 <li>
                     <a href="/" title="The Opis Project Main page">
-                        <span class="fa fa-home"></span> Main page
+                        <span class="fa fa-home"></span> Home
                     </a>
                 </li>
                 {% include documentation.html menu=menu url=page.url %}
                 {% include versions.html versions=project.versions %}
-                {% if !layout.forkme %}
+                {% if layout.forkme == false %}
                 <li>
                     <a href="{{project.github}}" title="Github page">
                         <span class="fa fa-github fa-lg"></span> GitHub
@@ -68,7 +68,7 @@ custom:
     <div class="container">
         <div class="row">
             <div class="col-md-4 hidden-xs hidden-sm">
-                {% include menu.html menu=menu url=page.url %}
+                {% include menu.html menu=menu prefix=project.url url=page.url chapters=project.chapters %}
             </div>
             <div class="col-md-8 col-sm-12">
                 {{ content }}
