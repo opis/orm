@@ -1,0 +1,12 @@
+{% if include.theme %}
+<link rel="stylesheet" href="{{ include.theme }}">
+{% endif %}
+<link href="/assets/css/font-awesome.css" rel="stylesheet">
+{% if include.highlight %}
+<link href="{{ include.highlight }}" rel="stylesheet">
+{% endif %}
+{% if include.custom %}
+{% for style in include.custom %}
+<link href="/assets/css/{{ style }}" rel="stylesheet">
+{% endfor %}
+{% endif %}

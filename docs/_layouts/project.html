@@ -1,0 +1,94 @@
+---
+layout: default
+highlight: /assets/css/syntax.css
+theme: /assets/css/flatly-theme.min.css
+ga: false
+forkme: true
+custom:
+    js: ['prism.js']
+    css: ['prism-github.css', 'project.css']
+---
+{% assign menu = site.data.menu[page.version] %}
+{% assign project = site.data.project %}
+<head>
+    {% include meta.html page = page %}
+    {% if site.favicon  %}
+    <link href="{{site.favicon}}" rel="shortcut icon">
+    {% endif %}
+    {% if page.canonical %}
+    <link rel="canonical" href="{{ page.url }}">
+    {% endif %}
+    {% include css.html theme = layout.theme highlight = layout.highlight custom = layout.custom.css %}
+    {% if layout.forkme %}
+    <link rel="stylesheet" href="/assets/css/gh-fork-ribbon.min.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/assets/css/gh-fork-ribbon.ie.min.css" />
+    <![endif]-->
+    {% endif %}
+    {% include js.html ga = layout.ga custom = layout.custom.js %}
+</head>
+
+<header id="header" class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <img src="/assets/img/opis-gs-100.png" class="img-responsive opis-inline-logo">
+            <a href="{{project.url}}" class="navbar-brand">
+                <strong>
+                    {{ project.name }}
+                </strong>
+            </a>
+            <button data-target="#navbar-main" data-toggle="collapse" type="button" class="navbar-toggle">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <nav id="navbar-main" class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="/" title="The Opis Project Main page">
+                        <span class="fa fa-home"></span> Main page
+                    </a>
+                </li>
+                {% include documentation.html menu=menu url=page.url %}
+                {% include versions.html versions=project.versions %}
+                {% if !layout.forkme %}
+                <li>
+                    <a href="{{project.github}}" title="Github page">
+                        <span class="fa fa-github fa-lg"></span> GitHub
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 hidden-xs hidden-sm">
+                {% include menu.html menu=menu url=page.url %}
+            </div>
+            <div class="col-md-8 col-sm-12">
+                {{ content }}
+                {% include pager.html menu=menu url=page.url %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include scroll_to_top.html %}
+
+{% if layout.forkme %}
+<div class="github-fork-ribbon-wrapper right hidden-sm hidden-xs">
+    <div class="github-fork-ribbon" style="background-color: #f80">
+        <a href="{{project.github}}">Fork me on GitHub</a>
+    </div>
+</div>
+{% endif %}
+
+<footer class="text-center text-muted">
+    Copyright &copy; {{project.copyright.start}}-{{project.copyright.end}} {{project.copyright.owner}}. All rights reserved.
+</footer>
+

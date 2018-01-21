@@ -1,0 +1,20 @@
+<li class="active visible-lg visible-md">
+    <a href="/docs">
+        <span class="fa fa-book"></span> Documentation
+    </a>
+</li>
+<li class="dropdown hidden-md hidden-lg">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <span class="fa fa-book"></span> Documentation <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        {% for chapter in include.menu %}
+        <li class="dropdown-header">{{chapter.title}}</li>
+            {%for page in chapter.pages%}
+            <li{% if include.url == page.url %} class="active"{% endif %}>
+                <a href="{{page.url}}" title="{{page.title}}">{{page.title}}</a>
+            </li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</li>

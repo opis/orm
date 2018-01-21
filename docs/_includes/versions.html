@@ -1,0 +1,12 @@
+{% if include.versions and include.versions.size > 1 %}
+<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <span class="fa fa-tags"></span> Versions <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        {% for version in include.versions %}
+        <li><a href="{{version.url}}">{{ version.title }}</a></li>
+        {% endfor %}
+    </ul>
+</li>
+{% endif %}

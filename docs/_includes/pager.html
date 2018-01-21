@@ -1,0 +1,29 @@
+{% assign prev = false %}
+{% assign next = false %}
+{% assign take = false %}
+{% assign done = false %}
+
+{% for chapter in include.menu %}
+    {% for page in chapter.pages %}
+        {% unless done != false %}
+            {% if include.url == page.url %}
+                {% assign take = true %}
+            {% else %}
+                {% if take %}
+                    {% assign next = page %}
+                    {% assign done = true %}
+                {% else %}
+                    {% assign prev = page %}
+                {% endif %}
+            {% endif %}
+        {% endunless%}
+    {% endfor %}
+{% endfor %}
+<ul class="pager">
+    {% if prev %}
+    <li class="previous"><a href="{{prev.url}}" title="{{prev.title}}">&larr; Back</a></li>
+    {% endif %}
+    {% if next %}
+    <li class="next"><a href="{{next.url}}" title="{{next.title}}">Next &rarr;</a></li>
+    {% endif %}
+</ul>

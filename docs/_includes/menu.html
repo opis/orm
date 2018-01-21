@@ -1,0 +1,12 @@
+<ul class="navigation">
+{% for chapter in include.menu %}
+    <li class="chapter">{{chapter.title}}</li>
+    <ul>
+        {% for page in chapter.pages %}
+        <li{% if include.url == page.url %} class="active"{% endif %}>
+            <a href="{{page.url}}">{{page.title}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+</ul>
