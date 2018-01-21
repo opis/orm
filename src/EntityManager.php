@@ -53,6 +53,15 @@ class EntityManager
     }
 
     /**
+     * @param string $entityClass
+     * @return EntityQuery
+     */
+    public function __invoke(string $entityClass)
+    {
+        return $this->query($entityClass);
+    }
+
+    /**
      * @return Connection
      */
     public function getConnection(): Connection
