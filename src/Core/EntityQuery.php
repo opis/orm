@@ -49,7 +49,7 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param string|string[] $names
+     * @param string|string[]|mixed[] $names
      * @return EntityQuery
      */
     public function filter($names): self
@@ -61,9 +61,13 @@ class EntityQuery extends Query
         $query = new Query($this->sql);
         $filters = $this->mapper->getFilters();
 
-        foreach ($names as $name){
+        foreach ($names as $name => $data){
+            if (is_int($name)) {
+                $name = $data;
+                $data = null;
+            }
             if(isset($filters[$name])){
-                $filters[$name]($query);
+                $filters[$name]($query, $data);
             }
         }
 
