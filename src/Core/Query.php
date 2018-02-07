@@ -48,4 +48,13 @@ class Query extends BaseStatement
     {
         return $this->have;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->have = new HavingStatement($this->sql);
+    }
 }

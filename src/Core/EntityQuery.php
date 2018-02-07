@@ -49,7 +49,7 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param string|string[] $names
+     * @param string|string[]|mixed[] $names
      * @return EntityQuery
      */
     public function filter($names): self
@@ -61,9 +61,13 @@ class EntityQuery extends Query
         $query = new Query($this->sql);
         $filters = $this->mapper->getFilters();
 
-        foreach ($names as $name){
+        foreach ($names as $name => $data){
+            if (is_int($name)) {
+                $name = $data;
+                $data = null;
+            }
             if(isset($filters[$name])){
-                $filters[$name]($query);
+                $filters[$name]($query, $data);
             }
         }
 
@@ -116,6 +120,7 @@ class EntityQuery extends Query
      * @param bool $force
      * @param array $tables
      * @return int
+     * @throws \Exception
      */
     public function delete(bool $force = false, array $tables = [])
     {
@@ -132,6 +137,7 @@ class EntityQuery extends Query
     /**
      * @param array $columns
      * @return int
+     * @throws \Exception
      */
     public function update(array $columns = [])
     {
@@ -147,6 +153,7 @@ class EntityQuery extends Query
      * @param string[]|string $column
      * @param int $value
      * @return int
+     * @throws \Exception
      */
     public function increment($column, $value = 1)
     {
@@ -164,6 +171,7 @@ class EntityQuery extends Query
      * @param string[]|string $column
      * @param int $value
      * @return int
+     * @throws \Exception
      */
     public function decrement($column, $value = 1)
     {
