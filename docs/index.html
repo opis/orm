@@ -1,4 +1,73 @@
 ---
-layout: meta-redirect
-location: /orm/1.x/index.html
+layout: default
 ---
+{% assign version = site.data.project.versions[site.data.project.current_version] %}
+<head>
+    <title>Front page</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Arimo:400,400i,700,700i|Montserrat:700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cristiansarca.github.io/bs4themes/reteal/css/bootstrap.css">
+    <link rel="stylesheet" href="http://www.opis.io/assets/css/prism-github.css">
+    <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <style>
+        #head {
+            height: 100vh;
+            background: #258DF5;
+            background: radial-gradient(ellipse at center, #cfe7fa 0%,#424658 100%);
+        }
+    </style>
+</head>
+<body>
+<section id="head">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary mb-3">
+        <a class="navbar-brand" href="#">
+            The
+            <img src="/orm/assets/opis.png" height="24">
+            Project
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarLight" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarLight">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-tags"></i>
+                        Versions
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% for version in site.data.project.versions %}
+                        <a class="dropdown-item" href="{{version.url}}">{{version.title}}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div>
+        <div class="text-center">
+            <h1 class="text-white display-3">Opis ORM</h1>
+            <p class="text-white h4">Simple, productive, and easy to learn</p>
+            <img src="/orm/assets/orm.gif" class="img-fluid mt-4 d-none d-md-inline">
+            <div class="text-center mt-5">
+                <a class="btn btn-outline-secondary btn-lg mr-1" href="{{version.url}}" title="{{version.title}}" role="button">
+                    <i class="fas fa-file-alt"></i> Documentation
+                </a>
+                <a class="btn btn-outline-secondary btn-lg" href="{{site.data.project.github}}" role="button">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+<script src="http://www.opis.io/assets/js/prism.js"></script>
+</body>

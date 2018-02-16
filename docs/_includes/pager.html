@@ -19,11 +19,20 @@
         {% endunless%}
     {% endfor %}
 {% endfor %}
-<ul class="pager">
+<div class="d-flex mt-3 mb-3">
     {% if prev %}
-    <li class="previous"><a href="{{prev.url}}" title="{{prev.title}}">&larr; Back</a></li>
+    <a href="{{include.prefix}}{{prev.url}}"
+       title="{{prev.title}}"
+       class="btn btn-primary">
+        &larr; Back
+    </a>
     {% endif %}
+    <span style="flex: 1"></span>
     {% if next %}
-    <li class="next"><a href="{{next.url}}" title="{{next.title}}">Next &rarr;</a></li>
+    <a href="{{include.prefix}}{{next.url}}"
+       title="{{next.title}}"
+       class="btn btn-primary">
+        Next &rarr;
+    </a>
     {% endif %}
-</ul>
+</div>

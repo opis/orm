@@ -1,70 +1,79 @@
 ---
 layout: default
-highlight: /assets/css/syntax.css
-theme: /assets/css/flatly-theme.min.css
-ga: false
-forkme: true
-custom:
-    js: ['prism.js']
-    css: ['prism-github.css', 'project.css']
 ---
 {% assign menu = site.data.menu[page.version] %}
 {% assign project = site.data.project %}
 <head>
-    {% include meta.html page = page %}
-    {% if site.favicon  %}
-    <link href="{{site.favicon}}" rel="shortcut icon">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if page.robots %}
+    <meta name="robots" content="{{page.robots}}">
+    {% endif %}
+    {% if page.description %}
+    <meta name="description" content="{{page.description}}">
+    {% endif %}
+    {% if page.keywords %}
+    <meta name="keywords" content="{{page.keywords}}">
+    {% endif %}
+    <title>{{page.title}}{{project.title_suffix}}</title>
+    {% if project.favicon %}
+    <link rel="icon" href="{{project.favicon}}">
     {% endif %}
     {% if page.canonical %}
-    <link rel="canonical" href="{{ page.url }}">
+    <link rel="canonical" href="{{page.canonical}}">
     {% endif %}
-    {% include css.html theme = layout.theme highlight = layout.highlight custom = layout.custom.css %}
-    {% if layout.forkme %}
-    <link rel="stylesheet" href="/assets/css/gh-fork-ribbon.min.css" />
-    <!--[if lt IE 9]>
-    <link rel="stylesheet" href="/assets/css/gh-fork-ribbon.ie.min.css" />
-    <![endif]-->
-    {% endif %}
-    {% include js.html ga = layout.ga custom = layout.custom.js %}
+    {% for style in project.styles %}
+    <link href="{{style}}" rel="stylesheet">
+    {% endfor %}
 </head>
+<body>
+{% if project.ga %}
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-50415801-1', 'opis.io');
+    ga('send', 'pageview');
+</script>
+{% endif %}
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary mb-3">
+        <a class="navbar-brand" href="#">
+            The
+            <img src="/orm/assets/opis.png" height="24">
+            Project
+        </a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse"
+                data-target="#navbarLight"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<header id="header" class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <img src="/assets/img/opis-gs-100.png" class="img-responsive opis-inline-logo">
-            <a href="{{project.url}}" class="navbar-brand">
-                <strong>
-                    {{ project.name }}
-                </strong>
-            </a>
-            <button data-target="#navbar-main" data-toggle="collapse" type="button" class="navbar-toggle">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <nav id="navbar-main" class="collapse navbar-collapse navbar-right">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="/" title="The Opis Project Main page">
-                        <span class="fa fa-home"></span> Home
+        <div class="collapse navbar-collapse" id="navbarLight">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{project.url}}" title="Home page">
+                        <i class="fas fa-home"></i> Home
                     </a>
                 </li>
-                {% include documentation.html menu=menu url=page.url %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{project.github}}" title="GitHub page">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </li>
+                {% include documentation.html menu=menu prefix=project.url url=page.url chapters=project.chapters %}
                 {% include versions.html versions=project.versions %}
-                {% if layout.forkme == false %}
-                <li>
-                    <a href="{{project.github}}" title="Github page">
-                        <span class="fa fa-github fa-lg"></span> GitHub
-                    </a>
-                </li>
-                {% endif %}
             </ul>
-        </nav>
-    </div>
+        </div>
+    </nav>
 </header>
 
-<section>
+<main>
     <div class="container">
         <div class="row">
             <div class="col-md-4 hidden-xs hidden-sm">
@@ -72,23 +81,19 @@ custom:
             </div>
             <div class="col-md-8 col-sm-12">
                 {{ content }}
-                {% include pager.html menu=menu url=page.url %}
+                {% include pager.html menu=menu prefix=project.url url=page.url %}
+                {% include scroll_to_top.html %}
             </div>
         </div>
     </div>
-</section>
+</main>
 
-{% include scroll_to_top.html %}
-
-{% if layout.forkme %}
-<div class="github-fork-ribbon-wrapper right hidden-sm hidden-xs">
-    <div class="github-fork-ribbon" style="background-color: #f80">
-        <a href="{{project.github}}">Fork me on GitHub</a>
-    </div>
-</div>
-{% endif %}
-
-<footer class="text-center text-muted">
+<footer class="text-center text-muted pt-3 pb-3">
     Copyright &copy; {{project.copyright.start}}-{{project.copyright.end}} {{project.copyright.owner}}. All rights reserved.
 </footer>
 
+{% for script in project.scripts %}
+<script src="{{script}}"></script>
+{% endfor %}
+
+</body>
