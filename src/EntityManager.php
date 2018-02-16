@@ -230,7 +230,11 @@ class EntityManager
             return $this->entityMappers[$class];
         }
 
-        $reflection = new \ReflectionClass($class);
+        try {
+            $reflection = new \ReflectionClass($class);
+        } catch (\ReflectionException $e) {
+            throw new RuntimeException("Reflection error for '$class'", 0, $e);
+        }
 
         if(!$reflection->isSubclassOf(Entity::class)){
             throw new RuntimeException("The '$class' must extend " . Entity::class);
