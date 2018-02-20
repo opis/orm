@@ -11,6 +11,7 @@
         "end": "2018"
     },
     "ga": false,
+    "favicon": "/orm/assets/icon.png",
     "styles": [
         "https://fonts.googleapis.com/css?family=Arimo:400,400i,700,700i|Montserrat:700",
         "https://cristiansarca.github.io/bs4themes/reteal/css/bootstrap.css",

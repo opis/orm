@@ -6,6 +6,7 @@ layout: default
     <title>Front page</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/orm/assets/icon.png">
     <link href="https://fonts.googleapis.com/css?family=Arimo:400,400i,700,700i|Montserrat:700" rel="stylesheet">
     <link rel="stylesheet" href="https://cristiansarca.github.io/bs4themes/reteal/css/bootstrap.css">
     <link rel="stylesheet" href="http://www.opis.io/assets/css/prism-github.css">
@@ -13,19 +14,20 @@ layout: default
     <style>
         #head {
             height: 100vh;
-            background: #258DF5;
-            background: radial-gradient(ellipse at center, #cfe7fa 0%,#424658 100%);
+            background-color: #282D31;
+            background-image: url("/orm/assets/bg.svg");
+            background-size: cover;
+            background-attachment: fixed;
         }
     </style>
 </head>
 <body>
 <section id="head">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary mb-3">
-        <a class="navbar-brand" href="#">
-            The
-            <img src="/orm/assets/opis.png" height="24">
-            Project
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <a class="navbar-brand mr-auto ml-auto" href="#">
+            <img src="/orm/assets/opis.svg" height="24">
         </a>
+<!--
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarLight" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -45,17 +47,17 @@ layout: default
                 </li>
             </ul>
         </div>
+-->
     </nav>
-    <div>
+    <div class="d-flex align-items-center justify-content-center" style="height: calc(100% - 120px)">
         <div class="text-center">
             <h1 class="text-white display-3">Opis ORM</h1>
             <p class="text-white h4">Simple, productive, and easy to learn</p>
-            <img src="/orm/assets/orm.gif" class="img-fluid mt-4 d-none d-md-inline">
             <div class="text-center mt-5">
-                <a class="btn btn-outline-secondary btn-lg mr-1" href="{{version.url}}" title="{{version.title}}" role="button">
+                <a class="btn btn-outline-light btn-lg mr-1" href="{{version.url}}" title="{{version.title}}" role="button">
                     <i class="fas fa-file-alt"></i> Documentation
                 </a>
-                <a class="btn btn-outline-secondary btn-lg" href="{{site.data.project.github}}" role="button">
+                <a class="btn btn-outline-light btn-lg" href="{{site.data.project.github}}" role="button">
                     <i class="fab fa-github"></i> View on GitHub
                 </a>
             </div>
