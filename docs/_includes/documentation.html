@@ -15,7 +15,7 @@
         {% endif %}
             {%for page in chapter.pages%}
             <a class="dropdown-item{% if include.url == page.url %} active{% endif %}"
-               href="{{include.prefix}}}{{page.url}}"
+               href="{{include.prefix}}{{page.url}}"
                title="{{page.title}}">{{page.title}}</a>
             {% endfor %}
         {% endfor %}
