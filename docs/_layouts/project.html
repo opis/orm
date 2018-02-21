@@ -59,13 +59,13 @@ layout: default
                         <i class="fas fa-home"></i> Home
                     </a>
                 </li>
+                {% include versions.html versions=project.versions %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{project.github}}" title="GitHub page">
                         <i class="fab fa-github"></i> GitHub
                     </a>
                 </li>
                 {% include documentation.html menu=menu prefix=project.url url=page.url chapters=project.chapters %}
-                {% include versions.html versions=project.versions %}
             </ul>
         </div>
     </nav>
