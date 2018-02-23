@@ -10,6 +10,7 @@
         "start": "2017",
         "end": "2018"
     },
+    "title_suffix": " | Opis ORM",
     "ga": false,
     "favicon": "/orm/assets/icon.png",
     "styles": [
