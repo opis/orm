@@ -7,8 +7,8 @@ title: Mapping entities
 
 1. [Table name](#table-name)
 2. [Primary key](#primary-key)
-3. [Sequence object's name](#sequence-objects-name)
-4. [Primary key generator](#primary-key-generator)
+3. [Primary key generator](#primary-key-generator)
+4. [Sequence object's name](#sequence-objects-name)
 
 ## Table name
 
@@ -44,6 +44,24 @@ class User extends Entity implements IEntityMapper
 }
 ```
 
+## Primary key generator
+
+You can use a generator to automatically assign a value for your primary key.
+Registering a generator is done by passing a callback to the `primaryKeyGenerator` method.
+
+```php
+class User extends Entity implements IEntityMapper
+{
+    public static function mapEntity(EntityMapper $mapper)
+    {
+        $mapper->primaryKeyGenerator(function(){
+            // Generate PK
+            return generate_some_pk();
+        });
+    }
+}
+```
+
 ## Sequence object's name
 
 **Opis ORM** allows you to create entities without explicitly adding a value for
@@ -63,24 +81,6 @@ class User extends Entity implements IEntityMapper
     public static function mapEntity(EntityMapper $mapper)
     {
         $mapper->sequence('table_users_seq');
-    }
-}
-```
-
-## Primary key generator
-
-You can use a generator to automatically assign a value for your primary key.
-Registering a generator is done by passing a callback to the `primaryKeyGenerator` method.
-
-```php
-class User extends Entity implements IEntityMapper
-{
-    public static function mapEntity(EntityMapper $mapper)
-    {
-        $mapper->primaryKeyGenerator(function(){
-            // Generate PK
-            return generate_some_pk();
-        });
     }
 }
 ```

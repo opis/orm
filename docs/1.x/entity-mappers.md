@@ -6,19 +6,21 @@ title: Entity mappers
 # Entity mappers
 
 1. [Introduction](#introduction)
-2. [Auto-register][0]
+2. [Auto-register](#auto-register)
 3. [Contruct-time registration](#construct-time-registration)
 4. [Manual registration](#manual-registration)
 
 ## Introduction
-
-Before we can use our entities, we must associate them with an entity mapper. 
-The purpose of associating entities with entity mappers, is to provide a simple way 
-of describing the relationship between an entity class and its corresponding table.
+ 
+The purpose of entity mappers is to provide a simple and effective way 
+of describing the relationship between an entity class and its corresponding table, 
+or between a group of related entities.
+Before we can use entity mappers, we must register them first and associated them
+with entities.
 
 ## Auto-register
 
-This is not only the most simple method of registering an entity mapper, but is also the
+This is not only the most simple way of registering an entity mapper, but is also the
 recommended way of doing it. The only thing you are required to do, is to implement the
 `Opis\ORM\IEntityMapper` interface on your entity class.
 
@@ -36,7 +38,7 @@ class User extends Entity implements IEntityMapper
 
 ## Construct-time registration
 
-Another way of registering an entity mapper is at the construct-time of the 
+Another way of registering an entity mapper is by registering it at the construct-time of the 
 entity manager instance.
 
 ```php
@@ -61,9 +63,9 @@ $entityMappers = [
 $orm = new EntityMapper($connection, $entityMappers);
 ```
 
-## Manual registration
+## Explicit registration
 
-The manual registration is done by using the `registerEntityMapper` method on the
+The explicit registration of an entity mapper is done by using the `registerEntityMapper` method on the
 entity manager instance.
 
 ```php
@@ -84,5 +86,3 @@ $orm->registerEntityMapper(Article::class, function(EntityMapper $mapper){
     // Map entity here
 });
 ```
-
-[0]: #auto-register
