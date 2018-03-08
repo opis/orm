@@ -245,7 +245,7 @@ class DataMapper
      * @param callable|null $callback
      * @return mixed
      */
-    public function getRelation(string $name, callable $callback = null)
+    public function getRelated(string $name, callable $callback = null)
     {
         if(array_key_exists($name, $this->relations)){
             return $this->relations[$name];
@@ -274,7 +274,7 @@ class DataMapper
      * @param string $relation
      * @param Entity|null $entity
      */
-    public function addRelatedEntity(string $relation, Entity $entity = null)
+    public function setRelated(string $relation, Entity $entity = null)
     {
         $relations = $this->mapper->getRelations();
 
