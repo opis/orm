@@ -39,7 +39,7 @@ $orm = new EntityManager($connection);
 
 Entities are an object-oriented representation of your database tables.
 They are represented with the help of classes and each instance of such 
-a class it's a direct mapping to a table's record. Entity classes inherit
+a class is a direct mapping to a table's record. Entity classes inherit
 from `Opis\ORM\Entity` base class, which provides a single method, named
 `orm`, that returns a data mapper object. 
 The data mapper object has various methods that allows you to interact 
@@ -143,13 +143,13 @@ In our example, the *Article* entity doesn't make sense without a *User* entity.
 That's because an article is something that a user creates. 
 So, in other words: every *Article* belongs to a *User*, and a *User* can have multiple *Article*s.
 
-In order to express this relationship, between the *Article* and the *User* entity, 
+In order to express the relationship between the *Article* and the *User* entity, 
 we must first associate our entity with an entity mapper.
 The most simple way of doing that, it's by implementing the
 `Opis\ORM\IEntityMapper` interface on our entity class.
 
 Then, we can simply tell the entity mapper that the *Article*
-belongs to a *User*, by defining a `belongs to` relation, and name it `author`.
+belongs to a *User*, by defining a `belongs to` relation and name it `author`.
 
 ```php
 namespace My\Blog;

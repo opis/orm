@@ -8,7 +8,7 @@ title: Entity mappers
 1. [Introduction](#introduction)
 2. [Auto-register](#auto-register)
 3. [Contruct-time registration](#construct-time-registration)
-4. [Manual registration](#manual-registration)
+4. [Explicit registration](#explicit-registration)
 
 ## Introduction
  
