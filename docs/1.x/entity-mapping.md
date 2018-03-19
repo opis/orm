@@ -3,7 +3,7 @@ layout: project
 version: 1.x
 title: Mapping entities
 ---
-# Basic mapping
+# Entity mapping
 
 1. [Table name](#table-name)
 2. [Primary key](#primary-key)

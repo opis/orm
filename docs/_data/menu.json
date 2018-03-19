@@ -16,17 +16,37 @@
             ]
         },
         {
-            "title": "Entity mapping",
+            "title": "Key concepts",
             "pages": [
+                {
+                    "title": "Entities",
+                    "url": "/1.x/entities.html",
+                    "description": "Learn about entities"
+                },
+                {
+                    "title": "The entity manager",
+                    "url": "/1.x/the-entity-manager.html",
+                    "description": "The entity manager"
+                },
                 {
                     "title": "Entity mappers",
                     "url": "/1.x/entity-mappers.html",
                     "description": "Registering entity mappers"
                 },
                 {
-                    "title": "Basic mapping",
-                    "url": "/1.x/basic-mapping.html",
+                    "title": "Data mappers",
+                    "url": "/1.x/data-mappers.html",
+                    "description": "Learn how to use data mappers"
+                },
+                {
+                    "title": "Entity mapping",
+                    "url": "/1.x/entity-mapping.html",
                     "description": "Learn how to map an entity"
+                },
+                {
+                    "title": "Column mapping",
+                    "url": "/1.x/column-mapping.html",
+                    "description": "Learn how to map columns"
                 }
             ]
         }
