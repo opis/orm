@@ -14,8 +14,7 @@
     "ga": false,
     "favicon": "/orm/assets/icon.png",
     "styles": [
-        "https://fonts.googleapis.com/css?family=Arimo:400,400i,700,700i|Montserrat:700",
-        "https://cristiansarca.github.io/bs4themes/reteal/css/bootstrap.css",
+        "https://cristiansarca.github.io/bs4themes/themes/comptheme/light/blue/css/bootstrap.css",
         "/orm/assets/prism.css",
         "https://use.fontawesome.com/releases/v5.0.4/css/all.css",
         "/orm/assets/style.css"
@@ -23,7 +22,7 @@
     "scripts": [
         "https://code.jquery.com/jquery-3.2.1.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js",
-        "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js",
+        "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
         "http://www.opis.io/assets/js/prism.js",
         "/orm/assets/script.js"
     ],
