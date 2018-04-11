@@ -12,7 +12,7 @@ title: Quick start
 This is a quick overview of the library and of its features. 
 Don't worry if you don't understand every single line of code; 
 everything will be explained later in detail.
-{:.alert.alert-light.text-dark}
+{:.alert.alert-primary}
 
 ## The entity manager
 

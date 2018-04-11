@@ -12,6 +12,11 @@
                     "title": "Quick start",
                     "url": "/1.x/quick-start.html",
                     "description": "Crash course to Opis ORM"
+                },
+                {
+                    "title": "Key-concepts",
+                    "url": "/1.x/key-concepts.html",
+                    "description": "Crash course to Opis ORM"
                 }
             ]
         },

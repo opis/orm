@@ -45,12 +45,7 @@ entity manager instance.
 use Opis\Database\Connection;
 use Opis\ORM\{EntityManager, Core\EntityMapper};
 
-// Define a database connection
-$connection = new Connection("dsn:mysql;dbname=test", "root", "secret");
-
-// Create an entity manager
-$orm = new EntityManager($connection);
-
+// Define entity mappers
 $entityMappers = [
     User::class => function(EntityMapper $mapper){
         // Map entity here
@@ -60,6 +55,10 @@ $entityMappers = [
     },
 ];
 
+// Define a database connection
+$connection = new Connection("dsn:mysql;dbname=test", "root", "secret");
+
+// Create an entity manager
 $orm = new EntityMapper($connection, $entityMappers);
 ```
 

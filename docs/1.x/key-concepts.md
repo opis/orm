@@ -5,53 +5,89 @@ title: Key concepts
 ---
 # Key concepts
 
-1. [Database connection](#database-connection)
-2. [Entities](#entities)
-3. [The entity manager](#the-entity-manager)
-4. [Entity mappers](#entity-mappers)
-
-## Database connection
-
-The very first thing you must do in order to be able to use the ORM is to
-define a connection to your database. The connection is defined with the help
-of the `Opis\Database\Connection` class, on whom you can find out more [here][0]. 
-
-```php
-use Opis\Database\Connection;
-
-$connection = new Connection("dsn:mysql;dbname=test", "root", "secret");
-```
+1. [Entities](#entities)
+2. [The entity manager](#the-entity-manager)
+3. [Entity mappers](#entity-mappers)
 
 ## Entities
 
-Entities are an object-oriented representation of your database tables.
-Each defined entity must be a descendant of the `Opis\ORM\Entity` class.
+An entity is an object-oriented representation of an SQL table.
+Entity classes are derived from the `Opis\ORM\Entity` base class, 
+and each instance of such a class is a direct mapping to a row of its
+corresponding table.
 
 ```php
 use Opis\ORM\Entity;
 
 class User extends Entity
 {
-    // An entity class for the 'users' table
+    // User entity
+}
+```
+
+The base class provides a single method, named `orm`, which returns a
+[data mapper][0] object, that can be used to manipulate the row's records.
+
+```php
+use Opis\ORM\Entity;
+
+class User extends Entity
+{
+    public function name(): string
+    {
+        return $this->orm()->getColumn('name');
+    }
+}
+```
+
+The constructor of the base entity class is marked as `final`, therefor
+you can not provide a custom `__construct` method.
+
+```php
+use Opis\ORM\Entity;
+
+class User extends Entity
+{
+    public function __construct()
+    {
+        // This will throw an exception
+    }
 }
 ```
 
 ## The entity manager
 
-The main function of the entity manager is to provide methods for creating, fetching,
-updating, and deleting an entity. It is represented by an instance of the 
-`Opis\ORM\EntityManager` class. 
+The entity manager is represented by the `Opis\ORM\EntityManager` class,
+and its main function is to provide methods for creating, fetching,
+updating, and deleting entities. 
+
+The constructor of the entity manager takes as an argument an instance of
+the `Opis\Database\Connection` class, that will be further used to 
+establish a connection to the database.
 
 ```php
-use Opis\Database\Connection;
 use Opis\ORM\EntityManager;
+use Opis\Database\Connection;
 
-// Define a database connection
-$connection = new Connection("dsn:mysql;dbname=test", "root", "secret");
-
-// Create an entity manager
+$connection = new Connection("mysql:dbname=test", "root", "secret");
 $orm = new EntityManager($connection);
 ```
+### Create a new entity
+
+The entity manager can be used to instantiate a new entity. This is done
+with the help of the `create` method. The method takes as an argument
+the class name of the entity.
+
+```php
+use My\Blog\User;
+
+/**
+ * Create a new entity
+ * @var $user \My\Blog\User
+ */
+$user = $orm->create(User::class);
+```
+
 
 ## Entity mappers
 
