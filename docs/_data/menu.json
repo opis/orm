@@ -12,11 +12,6 @@
                     "title": "Quick start",
                     "url": "/1.x/quick-start.html",
                     "description": "Crash course to Opis ORM"
-                },
-                {
-                    "title": "Key-concepts",
-                    "url": "/1.x/key-concepts.html",
-                    "description": "Crash course to Opis ORM"
                 }
             ]
         },
@@ -29,9 +24,14 @@
                     "description": "Learn about entities"
                 },
                 {
-                    "title": "The entity manager",
-                    "url": "/1.x/the-entity-manager.html",
+                    "title": "Entity manager",
+                    "url": "/1.x/entity-manager.html",
                     "description": "The entity manager"
+                },
+                {
+                    "title": "Query builder",
+                    "url": "/1.x/query-builder.html",
+                    "description": "Query builder"
                 },
                 {
                     "title": "Entity mappers",
@@ -39,8 +39,8 @@
                     "description": "Registering entity mappers"
                 },
                 {
-                    "title": "Data mappers",
-                    "url": "/1.x/data-mappers.html",
+                    "title": "Data mapper",
+                    "url": "/1.x/data-mapper.html",
                     "description": "Learn how to use data mappers"
                 },
                 {
@@ -57,3 +57,4 @@
         }
     ]
 }
+
