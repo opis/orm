@@ -374,7 +374,16 @@ class DataMapper
      */
     public static function markAsSaved(DataMapper $data, $id): bool
     {
-        $data->rawColumns[$data->mapper->getPrimaryKey()] = $id;
+        $pk = $data->mapper->getPrimaryKey();
+
+        if (!is_array($pk)) {
+            $data->rawColumns[$pk] = $id;
+        } else {
+            foreach ($pk as $index => $column) {
+                $data->rawColumns[$column] = $id[$index];
+            }
+        }
+
         $data->dehydrated = true;
         $data->isNew = false;
         $data->modified = [];
@@ -490,14 +499,19 @@ class DataMapper
             return;
         }
 
-        $pk = $this->mapper->getPrimaryKey();
-
         $select = new Select($this->manager->getConnection(), $this->mapper->getTable());
 
-        $columns = $select->where($pk)->is($this->rawColumns[$pk])
-                            ->select()
-                            ->fetchAssoc()
-                            ->first();
+        $pk = $this->mapper->getPrimaryKey();
+
+        if (!is_array($pk)) {
+            $pk = [$pk];
+        }
+
+        foreach ($pk as $column) {
+            $select->where($column)->is($this->rawColumns[$column]);
+        }
+
+        $columns = $select->select()->fetchAssoc()->first();
 
         if($columns === false){
             $this->deleted = true;

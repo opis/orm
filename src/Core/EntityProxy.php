@@ -37,7 +37,19 @@ class EntityProxy extends Entity
     public static function getPKValue(Entity $entity)
     {
         $data = $entity->orm();
-        return $data->getColumn($data->getEntityMapper()->getPrimaryKey());
+        $pk = $data->getEntityMapper()->getPrimaryKey();
+
+        if (is_string($pk)) {
+            return $data->getColumn($pk);
+        }
+
+        $result = [];
+
+        foreach ($pk as $column) {
+            $result[$column] = $data->getColumn($column);
+        }
+
+        return $result;
     }
 
     /**

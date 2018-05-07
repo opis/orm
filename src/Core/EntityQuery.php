@@ -35,6 +35,9 @@ class EntityQuery extends Query
     /** @var bool */
     protected $locked = false;
 
+    /** @var null|string[] */
+    protected $includedColumns;
+
     /**
      * EntityQuery constructor.
      * @param EntityManager $entityManager
@@ -46,6 +49,16 @@ class EntityQuery extends Query
         parent::__construct($statement);
         $this->mapper = $entityMapper;
         $this->manager = $entityManager;
+    }
+
+    /**
+     * @param string ...$columns
+     * @return EntityQuery
+     */
+    public function includeColumns(string ...$columns): self
+    {
+        $this->includedColumns = $columns;
+        return $this;
     }
 
     /**
@@ -75,12 +88,11 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param array $columns
      * @return null|Entity
      */
-    public function get(array $columns = [])
+    public function get()
     {
-        $result = $this->query($columns)
+        $result = $this->query($this->includedColumns ?? [])
                        ->fetchAssoc()
                        ->first();
 
@@ -94,12 +106,11 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param array $columns
      * @return Entity[]
      */
-    public function all(array $columns = []): array
+    public function all(): array
     {
-        $results = $this->query($columns)
+        $results = $this->query($this->includedColumns ?? [])
                          ->fetchAssoc()
                          ->all();
         
@@ -187,13 +198,19 @@ class EntityQuery extends Query
 
     /**
      * @param $id
-     * @param array $columns
      * @return mixed|null
      */
-    public function find($id, array $columns = [])
+    public function find($id)
     {
-        return $this->where($this->mapper->getPrimaryKey())->is($id)
-                    ->get($columns);
+        if (is_array($id)) {
+            foreach ($id as $pk_column => $pk_value) {
+                $this->where($pk_column)->is($pk_value);
+            }
+        } else {
+            $this->where($this->mapper->getPrimaryKey())->is($id);
+        }
+
+        return $this->get();
     }
 
     /**
@@ -234,7 +251,9 @@ class EntityQuery extends Query
     protected function query(array $columns)
     {
         if (!$this->buildQuery()->locked && !empty($columns)) {
-            $columns[] = $this->mapper->getPrimaryKey();
+            foreach ((array) $this->mapper->getPrimaryKey() as $pk_column) {
+                $columns[] = $pk_column;
+            }
         }
 
         if($this->mapper->supportsSoftDelete()){

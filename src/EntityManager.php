@@ -120,6 +120,7 @@ class EntityManager
             $id = $this->connection->transaction(function (Connection $connection) use($data) {
                 $columns = $data->getRawColumns();
 
+                // TODO: Review this and remove it if necessary
                 foreach ($columns as &$column){
                     if($column instanceof Entity){
                         $column = EntityProxy::getPKValue($column);
@@ -129,7 +130,14 @@ class EntityManager
                 $mapper = $data->getEntityMapper();
 
                 if(null !== $pkgen = $mapper->getPrimaryKeyGenerator()){
-                    $columns[$mapper->getPrimaryKey()] = $pk = $pkgen($data);
+                    $pk_data = $pkgen($data);
+                    if (is_array($pk_data)) {
+                        foreach ($pk_data as $pk_column => $pk_value){
+                            $columns[$pk_column] = $pk_value;
+                        }
+                    } else {
+                        $columns[$mapper->getPrimaryKey()] = $pk_data;
+                    }
                 }
 
                 if($mapper->supportsTimestamp()){
@@ -139,8 +147,8 @@ class EntityManager
 
                 (new Insert($connection))->insert($columns)->into($mapper->getTable());
 
-                if($pkgen !== null){
-                    return $pk ?? false;
+                if ($pkgen !== null && !is_array($pk_data)) {
+                    return $pk_data ?? false;
                 }
 
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
@@ -155,6 +163,7 @@ class EntityManager
             return $this->connection->transaction(function (Connection $connection) use($data, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
 
+                // TODO: Review this and remove it if necessary
                 foreach ($columns as &$column){
                     if($column instanceof Entity){
                         $column = EntityProxy::getPKValue($column);
@@ -162,8 +171,6 @@ class EntityManager
                 }
 
                 $mapper = $data->getEntityMapper();
-                $pk = $mapper->getPrimaryKey();
-                $pkv = $data->getColumn($pk);
 
                 $updatedAt = null;
 
@@ -173,9 +180,18 @@ class EntityManager
 
                 DataMapper::markAsUpdated($data, $updatedAt);
 
-                return (bool) (new Update($connection, $mapper->getTable()))
-                    ->where($pk)->is($pkv)
-                    ->set($columns);
+                $pk = $mapper->getPrimaryKey();
+                $update = new Update($connection, $mapper->getTable());
+
+                if (is_string($pk)) {
+                    $update->where($pk)->is($data->getColumn($pk));
+                } else {
+                    foreach ($pk as $pk_column) {
+                        $update->where($pk_column)->is($data->getColumn($pk_column));
+                    }
+                }
+
+                return (bool) $update->set($columns);
             }, null, false);
         }
 
@@ -210,13 +226,22 @@ class EntityManager
                 throw new RuntimeException("Can't delete an unsaved entity");
             }
 
-            $mapper = $data->getEntityMapper();
-            $pk = $mapper->getPrimaryKey();
-            $pkv = $data->getColumn($pk);
-
             DataMapper::markAsDeleted($data);
 
-            return (bool)(new EntityQuery($this, $mapper))->where($pk)->is($pkv)->delete();
+            $mapper = $data->getEntityMapper();
+            $pk = $mapper->getPrimaryKey();
+
+            $delete = new EntityQuery($this, $mapper);
+
+            if (is_string($pk)) {
+                $delete->where($pk)->is($data->getColumn($pk));
+            } else {
+                foreach ($pk as $pk_column) {
+                    $delete->where($pk_column)->is($data->getColumn($pk_column));
+                }
+            }
+
+            return (bool) $delete->delete();
         }, null,false);
     }
 

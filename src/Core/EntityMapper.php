@@ -30,7 +30,7 @@ class EntityMapper
     /** @var string|null */
     protected $table;
 
-    /** @var string  */
+    /** @var string|string[]  */
     protected $primaryKey = 'id';
 
     /** @var  callable|null */
@@ -96,12 +96,12 @@ class EntityMapper
     }
 
     /**
-     * @param string $primaryKey
+     * @param string ...$primaryKey
      * @return EntityMapper
      */
-    public function primaryKey(string $primaryKey): self
+    public function primaryKey(string ...$primaryKey): self
     {
-        $this->primaryKey = $primaryKey;
+        $this->primaryKey = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
         return $this;
     }
 
@@ -242,9 +242,9 @@ class EntityMapper
     }
 
     /**
-     * @return string
+     * @return string|string[]
      */
-    public function getPrimaryKey(): string 
+    public function getPrimaryKey()
     {
         return $this->primaryKey;
     }
@@ -260,12 +260,22 @@ class EntityMapper
     /**
      * Get the name of the foreign key of the entity's table
      *
-     * @return  string
+     * @return string|string[]
      */
-    public function getForeignKey(): string
+    public function getForeignKey()
     {
-        return str_replace('-', '_', strtolower($this->getTable()))
-            . '_' . $this->primaryKey;
+        $prefix = str_replace('-', '_', strtolower($this->getTable()));
+        if (is_string($this->primaryKey)) {
+            return $prefix . '_' . $this->primaryKey;
+        }
+
+        $result = [];
+
+        foreach ($this->primaryKey as $pk) {
+            $result[$pk] = $prefix . '_' . $pk;
+        }
+
+        return $result;
     }
 
     /**
