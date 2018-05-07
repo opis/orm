@@ -35,9 +35,6 @@ class EntityQuery extends Query
     /** @var bool */
     protected $locked = false;
 
-    /** @var null|string[] */
-    protected $includedColumns;
-
     /**
      * EntityQuery constructor.
      * @param EntityManager $entityManager
@@ -49,16 +46,6 @@ class EntityQuery extends Query
         parent::__construct($statement);
         $this->mapper = $entityMapper;
         $this->manager = $entityManager;
-    }
-
-    /**
-     * @param string ...$columns
-     * @return EntityQuery
-     */
-    public function includeColumns(string ...$columns): self
-    {
-        $this->includedColumns = $columns;
-        return $this;
     }
 
     /**
@@ -88,11 +75,12 @@ class EntityQuery extends Query
     }
 
     /**
-     * @return null|Entity
+     * @param array $columns
+     * @return null
      */
-    public function get()
+    public function get(array $columns = [])
     {
-        $result = $this->query($this->includedColumns ?? [])
+        $result = $this->query($columns)
                        ->fetchAssoc()
                        ->first();
 
@@ -106,11 +94,12 @@ class EntityQuery extends Query
     }
 
     /**
-     * @return Entity[]
+     * @param array $columns
+     * @return array
      */
-    public function all(): array
+    public function all(array $columns = []): array
     {
-        $results = $this->query($this->includedColumns ?? [])
+        $results = $this->query($columns)
                          ->fetchAssoc()
                          ->all();
         
@@ -214,14 +203,27 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param array $ids
-     * @param array $columns
+     * @param array|string ...$ids
      * @return array
      */
-    public function findAll(array $ids, array $columns = []): array
+    public function findAll(...$ids): array
     {
-        return $this->where($this->mapper->getPrimaryKey())->in($ids)
-                    ->all($columns);
+        if (is_array($ids[0])) {
+            $keys = array_keys($ids[0]);
+            $values = [];
+            foreach ($ids as $pk_value) {
+                foreach ($keys as $pk_column) {
+                    $values[$pk_column][] = $pk_value;
+                }
+            }
+            foreach ($values as $pk_column => $pk_values) {
+                $this->where($pk_column)->in($pk_values);
+            }
+        } else {
+            $this->where($this->mapper->getPrimaryKey())->in($ids);
+        }
+
+        return $this->all();
     }
 
     /**
@@ -236,21 +238,14 @@ class EntityQuery extends Query
     }
 
     /**
-     * @return EntityQuery
-     */
-    protected function buildQuery()
-    {
-        $this->sql->addTables([$this->mapper->getTable()]);
-        return $this;
-    }
-
-    /**
      * @param array $columns
      * @return \Opis\Database\ResultSet;
      */
-    protected function query(array $columns)
+    protected function query(array $columns = [])
     {
-        if (!$this->buildQuery()->locked && !empty($columns)) {
+        $this->sql->addTables([$this->mapper->getTable()]);
+
+        if (!$this->locked && !empty($columns)) {
             foreach ((array) $this->mapper->getPrimaryKey() as $pk_column) {
                 $columns[] = $pk_column;
             }
