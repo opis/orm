@@ -196,7 +196,7 @@ class EntityQuery extends Query
                 $this->where($pk_column)->is($pk_value);
             }
         } else {
-            $this->where($this->mapper->getPrimaryKey())->is($id);
+            $this->where($this->mapper->getPrimaryKey()->columns()[0])->is($id);
         }
 
         return $this->get();
@@ -220,7 +220,7 @@ class EntityQuery extends Query
                 $this->where($pk_column)->in($pk_values);
             }
         } else {
-            $this->where($this->mapper->getPrimaryKey())->in($ids);
+            $this->where($this->mapper->getPrimaryKey()->columns()[0])->in($ids);
         }
 
         return $this->all();
@@ -238,15 +238,22 @@ class EntityQuery extends Query
     }
 
     /**
+     * @return EntityQuery
+     */
+    protected function buildQuery(): self
+    {
+        $this->sql->addTables([$this->mapper->getTable()]);
+        return $this;
+    }
+
+    /**
      * @param array $columns
      * @return \Opis\Database\ResultSet;
      */
     protected function query(array $columns = [])
     {
-        $this->sql->addTables([$this->mapper->getTable()]);
-
-        if (!$this->locked && !empty($columns)) {
-            foreach ((array) $this->mapper->getPrimaryKey() as $pk_column) {
+        if (!$this->buildQuery()->locked && !empty($columns)) {
+            foreach ((array) $this->mapper->getPrimaryKey()->columns() as $pk_column) {
                 $columns[] = $pk_column;
             }
         }

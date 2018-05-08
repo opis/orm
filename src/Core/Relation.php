@@ -28,9 +28,9 @@ abstract class Relation
     /**
      * EntityRelation constructor.
      * @param string $entityClass
-     * @param string|null $foreignKey
+     * @param ForeignKey|null $foreignKey
      */
-    public function __construct(string $entityClass, string $foreignKey = null)
+    public function __construct(string $entityClass, ForeignKey $foreignKey = null)
     {
         $this->entityClass = $entityClass;
         $this->foreignKey = $foreignKey;

@@ -19,7 +19,9 @@ namespace Opis\ORM\Relations;
 
 use Opis\Database\SQL\SQLStatement;
 use Opis\ORM\{Entity, EntityManager};
-use Opis\ORM\Core\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Relation, Query, EntityProxy};
+use Opis\ORM\Core\{
+    DataMapper, EntityMapper, EntityQuery, ForeignKey, LazyLoader, Proxy, Relation, Query, EntityProxy
+};
 
 class HasOneOrMany extends Relation
 {
@@ -29,10 +31,10 @@ class HasOneOrMany extends Relation
     /**
      * EntityHasOneOrMany constructor.
      * @param string $entityClass
-     * @param string|null $foreignKey
+     * @param ForeignKey|null $foreignKey
      * @param bool $hasMany
      */
-    public function __construct(string $entityClass, string $foreignKey = null, bool $hasMany = false)
+    public function __construct(string $entityClass, ForeignKey $foreignKey = null, bool $hasMany = false)
     {
         parent::__construct($entityClass, $foreignKey);
         $this->hasMany = $hasMany;
@@ -49,10 +51,12 @@ class HasOneOrMany extends Relation
         if($this->foreignKey === null){
             $this->foreignKey = $mapper->getForeignKey();
         }
-        /** @var DataMapper $related */
-        $related = EntityProxy::getDataMapper($entity);
 
-        $related->setColumn($this->foreignKey, $owner->getColumn($mapper->getPrimaryKey()));
+        $related = Proxy::instance()->getDataMapper($entity);
+
+        foreach ($this->foreignKey->getValue($owner->getColumns(), true) as $fk_column => $fk_value) {
+            $related->setColumn($fk_column, $fk_value);
+        }
     }
 
     /**
@@ -107,7 +111,9 @@ class HasOneOrMany extends Relation
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        $select->where($this->foreignKey)->is($data->getColumn($owner->getPrimaryKey()));
+        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $fk_value) {
+            $select->where($fk_column)->is($fk_value);
+        }
 
         if($this->queryCallback !== null || $callback !== null){
             $query = $select;//new Query($statement);

@@ -24,10 +24,10 @@ class LazyLoader
     /** @var EntityQuery */
     protected $query;
 
-    /** @var string  */
+    /** @var PrimaryKey  */
     protected $primaryKey;
 
-    /** @var string */
+    /** @var ForeignKey */
     protected $foreignKey;
 
     /** @var bool */
@@ -42,12 +42,12 @@ class LazyLoader
     /**
      * LazyLoader constructor.
      * @param EntityQuery $query
-     * @param string $primaryKey
-     * @param string $foreignKey
+     * @param PrimaryKey $primaryKey
+     * @param ForeignKey $foreignKey
      * @param bool $hasMany
      * @param bool $immediate
      */
-    public function __construct(EntityQuery $query, string $primaryKey, string $foreignKey, bool $hasMany, bool $immediate)
+    public function __construct(EntityQuery $query, PrimaryKey $primaryKey, ForeignKey $foreignKey, bool $hasMany, bool $immediate)
     {
         $this->query = $query;
         $this->primaryKey = $primaryKey;

@@ -368,6 +368,31 @@ class DataMapper
     }
 
     /**
+     * @param $id
+     * @return bool
+     */
+    protected function markAsSaved1($id): bool
+    {
+        $pk = $this->mapper->getPrimaryKey();
+
+        if ($pk->isComposite()) {
+            $this->rawColumns[$pk->columns()[0]] = $id;
+        } else {
+            foreach ($pk->columns() as $pk_index => $pk_column) {
+                $this->rawColumns[$pk_column] = $id[$pk_index];
+            }
+        }
+
+        $this->dehydrated = true;
+        $this->isNew = false;
+        $this->modified = [];
+        if(!empty($this->pendingLinks)){
+            $this->executePendingLinkage();
+        }
+        return true;
+    }
+
+    /**
      * @param DataMapper $data
      * @param $id
      * @return bool
@@ -493,6 +518,9 @@ class DataMapper
         throw new RuntimeException("Invalid cast type '$originalCast'");
     }
 
+    /**
+     * Hydrate
+     */
     protected function hydrate()
     {
         if(!$this->dehydrated){
@@ -501,14 +529,8 @@ class DataMapper
 
         $select = new Select($this->manager->getConnection(), $this->mapper->getTable());
 
-        $pk = $this->mapper->getPrimaryKey();
-
-        if (!is_array($pk)) {
-            $pk = [$pk];
-        }
-
-        foreach ($pk as $column) {
-            $select->where($column)->is($this->rawColumns[$column]);
+        foreach ($this->mapper->getPrimaryKey()->getValue($this->rawColumns, true) as $pk_column => $pk_value) {
+            $select->where($pk_column)->is($pk_value);
         }
 
         $columns = $select->select()->fetchAssoc()->first();
@@ -525,6 +547,9 @@ class DataMapper
         $this->dehydrated = false;
     }
 
+    /**
+     * Execute pending linkage
+     */
     protected function executePendingLinkage()
     {
         foreach ($this->pendingLinks as $item){

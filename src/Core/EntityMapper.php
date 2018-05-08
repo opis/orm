@@ -30,8 +30,11 @@ class EntityMapper
     /** @var string|null */
     protected $table;
 
-    /** @var string|string[]  */
-    protected $primaryKey = 'id';
+    /** @var null|PrimaryKey  */
+    protected $primaryKey;
+
+    /** @var null|ForeignKey */
+    protected $foreignKey;
 
     /** @var  callable|null */
     protected $primaryKeyGenerator;
@@ -101,7 +104,7 @@ class EntityMapper
      */
     public function primaryKey(string ...$primaryKey): self
     {
-        $this->primaryKey = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
+        $this->primaryKey = new PrimaryKey(...$primaryKey);
         return $this;
     }
 
@@ -242,10 +245,13 @@ class EntityMapper
     }
 
     /**
-     * @return string|string[]
+     * @return PrimaryKey
      */
-    public function getPrimaryKey()
+    public function getPrimaryKey(): PrimaryKey
     {
+        if ($this->primaryKey === null) {
+            $this->primaryKey = new PrimaryKey('id');
+        }
         return $this->primaryKey;
     }
 
@@ -258,24 +264,33 @@ class EntityMapper
     }
 
     /**
-     * Get the name of the foreign key of the entity's table
+     * Get the default foreign key
      *
-     * @return string|string[]
+     * @return ForeignKey
      */
-    public function getForeignKey()
+    public function getForeignKey(): ForeignKey
     {
-        $prefix = str_replace('-', '_', strtolower($this->getTable()));
-        if (is_string($this->primaryKey)) {
-            return $prefix . '_' . $this->primaryKey;
+        if ($this->foreignKey === null) {
+            $self = $this;
+            $this->foreignKey = new class($self->getPrimaryKey(), $self->getTable()) extends ForeignKey {
+                /**
+                 *  constructor.
+                 * @param PrimaryKey $primaryKey
+                 * @param string $table
+                 */
+                public function __construct(PrimaryKey $primaryKey, string $table)
+                {
+                    $columns = [];
+                    $prefix = str_replace('-', '_', strtolower($table));
+                    foreach ($primaryKey->columns() as $column) {
+                        $columns[$column] = $prefix . '_' . $column;
+                    }
+                    parent::__construct($columns);
+                }
+            };
         }
 
-        $result = [];
-
-        foreach ($this->primaryKey as $pk) {
-            $result[$pk] = $prefix . '_' . $pk;
-        }
-
-        return $result;
+        return $this->foreignKey;
     }
 
     /**
@@ -316,7 +331,7 @@ class EntityMapper
     public function getSequence(): string
     {
         if($this->sequence === null){
-            $this->sequence = $this->getTable() . '_' . $this->getPrimaryKey() . '_seq';
+            $this->sequence = $this->getTable() . '_' . $this->getPrimaryKey()->columns()[0] . '_seq';
         }
         return $this->sequence;
     }

@@ -19,7 +19,9 @@ namespace Opis\ORM\Relations;
 
 use Opis\Database\SQL\SQLStatement;
 use Opis\ORM\{Entity, EntityManager};
-use Opis\ORM\Core\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Relation, Query, EntityProxy};
+use Opis\ORM\Core\{
+    DataMapper, EntityMapper, EntityQuery, LazyLoader, Proxy, Relation, Query, EntityProxy
+};
 
 class BelongsTo extends Relation
 {
@@ -30,20 +32,21 @@ class BelongsTo extends Relation
     public function addRelatedEntity(DataMapper $owner, Entity $entity = null)
     {
         if($entity === null){
-            $value = null;
+            $columns = [];
             $mapper = $owner->getEntityManager()->resolveEntityMapper($this->entityClass);
         } else {
-            /** @var DataMapper $related */
-            $related = EntityProxy::getDataMapper($entity);
+            $related = Proxy::instance()->getDataMapper($entity);
             $mapper = $related->getEntityMapper();
-            $value = $related->getColumn($mapper->getPrimaryKey());
+            $columns = $related->getColumns();
         }
 
         if($this->foreignKey === null){
             $this->foreignKey = $mapper->getForeignKey();
         }
 
-        $owner->setColumn($this->foreignKey, $value);
+        foreach ($this->foreignKey->getValue($columns, true) as $fk_column => $fk_value) {
+            $owner->setColumn($fk_column, $fk_value);
+        }
     }
 
     /**
@@ -96,7 +99,9 @@ class BelongsTo extends Relation
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        $select->where($related->getPrimaryKey())->is($data->getColumn($this->foreignKey));
+        foreach ($this->foreignKey->getInverseValue($data->getColumns(), true) as $pk_column => $pk_value) {
+            $select->where($pk_column)->is($pk_value);
+        }
 
         if($this->queryCallback !== null || $callback !== null){
             $query = $select;//new Query($statement);

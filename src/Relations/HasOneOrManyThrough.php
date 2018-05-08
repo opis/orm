@@ -17,37 +17,29 @@
 
 namespace Opis\ORM\Relations;
 
+use Opis\ORM\Entity;
 use Opis\ORM\EntityManager;
 use Opis\Database\SQL\{Delete, Insert, Join, SQLStatement};
-use Opis\ORM\Core\{DataMapper, EntityMapper, EntityQuery, LazyLoader, Query, Relation, EntityProxy};
+use Opis\ORM\Core\{
+    DataMapper, EntityMapper, EntityQuery, ForeignKey, Junction, LazyLoader, Proxy, Query, Relation, EntityProxy
+};
 
 class HasOneOrManyThrough extends Relation
 {
-    /** @var  string|null */
-    protected $junctionKey;
-
-    /** @var  string|null */
-    protected $junctionTable;
-
-    /** @var  string|null */
-    protected $joinTable;
-
-    /** @var  string|null */
-    protected $joinColumn;
+    /** @var null|Junction */
+    protected $junction;
 
     /** @var  bool */
     protected $hasMany;
 
     public function __construct(string $entityClass,
-                                string $foreignKey = null,
-                                string $junctionTable = null,
-                                string $junctionKey = null,
+                                ForeignKey $foreignKey = null,
+                                Junction $junction = null,
                                 bool $hasMany = false)
     {
         parent::__construct($entityClass, $foreignKey);
         $this->hasMany = $hasMany;
-        $this->junctionKey = $junctionKey;
-        $this->junctionTable = $junctionTable;
+        $this->junction = $junction;
     }
 
     /**
@@ -63,6 +55,10 @@ class HasOneOrManyThrough extends Relation
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();
         $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
+        }
 
         if($this->junctionTable === null){
             $table = [$owner->getTable(), $related->getTable()];
@@ -100,6 +96,71 @@ class HasOneOrManyThrough extends Relation
                 // Ignore
             }
         }
+    }
+
+    public function linkEntity(DataMapper $data, Entity $entity): bool
+    {
+        $manager = $data->getEntityManager();
+        $owner = $data->getEntityMapper();
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        $values = [];
+
+        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $fk_value) {
+            $values[$fk_column] = $fk_value;
+        }
+
+        $columns = Proxy::instance()->getDataMapper($entity)->getColumns();
+        foreach ($this->junction->columns() as $pk_column => $fk_column) {
+            $values[$fk_column] = $columns[$pk_column];
+        }
+
+        $cmd = new Insert($manager->getConnection());
+        $cmd->insert($values);
+
+        return (bool) $cmd->into($this->junction->table());
+    }
+
+    public function unlinkEntity(DataMapper $data, Entity $entity): bool
+    {
+        $manager = $data->getEntityManager();
+        $owner = $data->getEntityMapper();
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        $values = [];
+
+        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $fk_value) {
+            $values[$fk_column] = $fk_value;
+        }
+
+        $columns = Proxy::instance()->getDataMapper($entity)->getColumns();
+        foreach ($this->junction->columns() as $pk_column => $fk_column) {
+            $values[$fk_column] = $columns[$pk_column];
+        }
+
+        $cmd = new Delete($manager->getConnection(), $this->junction->table());
+
+        foreach ($values as $column => $value) {
+            $cmd->where($column)->is($value);
+        }
+
+        return (bool) $cmd->delete();
     }
 
     /**
@@ -206,7 +267,7 @@ class HasOneOrManyThrough extends Relation
                 $this->junctionTable = $table;
             }
 
-            protected function buildQuery()
+            protected function buildQuery(): EntityQuery
             {
                 $this->locked = true;
                 $this->sql->addTables([$this->junctionTable]);
@@ -249,31 +310,20 @@ class HasOneOrManyThrough extends Relation
         $owner = $data->getEntityMapper();
         $related = $manager->resolveEntityMapper($this->entityClass);
 
-        if($this->junctionTable === null){
-            $table = [$owner->getTable(), $related->getTable()];
-            sort($table);
-            $this->junctionTable = implode('_', $table);
-        }
-
-        if($this->junctionKey === null){
-            $this->junctionKey = $related->getForeignKey();
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
         }
 
         if($this->foreignKey === null){
             $this->foreignKey = $owner->getForeignKey();
         }
 
-        if($this->joinTable === null){
-            $this->joinTable = $related->getTable();
-        }
-
-        if($this->joinColumn === null){
-            $this->joinColumn = $related->getPrimaryKey();
-        }
+        $junctionTable = $this->junction->table();
+        $joinTable = $related->getTable();
 
         $statement = new SQLStatement();
 
-        $select = new class($manager, $related, $statement, $this->junctionTable) extends EntityQuery{
+        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery{
 
             protected $junctionTable;
 
@@ -283,7 +333,7 @@ class HasOneOrManyThrough extends Relation
                 $this->junctionTable = $table;
             }
 
-            protected function buildQuery()
+            protected function buildQuery(): EntityQuery
             {
                 $this->locked = true;
                 $this->sql->addTables([$this->junctionTable]);
@@ -296,12 +346,17 @@ class HasOneOrManyThrough extends Relation
             }
         };
 
-        $select->join($this->joinTable, function (Join $join){
-            $join->on($this->junctionTable . '.' . $this->junctionKey, $this->joinTable . '.' . $this->joinColumn);
-        })
-        ->where($this->junctionTable . '.' . $this->foreignKey)->is($data->getColumn($owner->getPrimaryKey()));
+        $select->join($joinTable, function (Join $join) use($junctionTable, $joinTable){
+            foreach ($this->junction->columns() as $pk_column => $fk_column) {
+                $join->on($junctionTable . '.' . $fk_column, $joinTable . '.' . $pk_column);
+            }
+        });
 
-        $statement->addColumn($this->joinTable . '.*');
+        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $value) {
+            $select->where($junctionTable . '.' . $fk_column)->is($value);
+        }
+
+        $statement->addColumn($joinTable . '.*');
 
         if($this->queryCallback !== null || $callback !== null){
             $query = $select;//new Query($statement);
@@ -316,4 +371,20 @@ class HasOneOrManyThrough extends Relation
         return $this->hasMany ? $select->all() : $select->get();
     }
 
+    /**
+     * @param EntityMapper $owner
+     * @param EntityMapper $related
+     * @return Junction
+     */
+    protected function buildJunction(EntityMapper $owner,EntityMapper $related): Junction
+    {
+        return new class extends Junction {
+            public function __construct(EntityMapper $owner, EntityMapper $related)
+            {
+                $table = [$owner->getTable(), $related->getTable()];
+                sort($table);
+                parent::__construct(implode('_', $table), $related->getForeignKey()->columns());
+            }
+        };
+    }
 }

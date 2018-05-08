@@ -41,10 +41,10 @@ class RelationFactory
 
     /**
      * @param string $entityClass
-     * @param string|null $foreignKey
+     * @param ForeignKey|null $foreignKey
      * @return Relation
      */
-    public function hasOne(string $entityClass, string $foreignKey = null): Relation
+    public function hasOne(string $entityClass, ForeignKey $foreignKey = null): Relation
     {
         $relation = new HasOneOrMany($entityClass, $foreignKey);
         $callback = $this->callback;
@@ -53,10 +53,10 @@ class RelationFactory
 
     /**
      * @param string $entityClass
-     * @param string|null $foreignKey
+     * @param ForeignKey|null $foreignKey
      * @return Relation
      */
-    public function hasMany(string $entityClass, string $foreignKey = null): Relation
+    public function hasMany(string $entityClass, ForeignKey $foreignKey = null): Relation
     {
         $relation = new HasOneOrMany($entityClass, $foreignKey, true);
         $callback = $this->callback;
@@ -65,10 +65,10 @@ class RelationFactory
 
     /**
      * @param string $entityClass
-     * @param string|null $foreignKey
+     * @param ForeignKey|null $foreignKey
      * @return Relation
      */
-    public function belongsTo(string $entityClass, string  $foreignKey = null): Relation
+    public function belongsTo(string $entityClass, ForeignKey $foreignKey = null): Relation
     {
         $relation = new BelongsTo($entityClass, $foreignKey);
         $callback = $this->callback;
