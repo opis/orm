@@ -36,6 +36,18 @@ class Proxy
     /** @var \ReflectionMethod */
     private $relationGetLazyLoader;
 
+    /** @var \ReflectionMethod */
+    private $markAsSaved;
+
+    /** @var \ReflectionMethod */
+    private $markAsUpdated;
+
+    /** @var \ReflectionMethod */
+    private $markAsDeleted;
+
+    /** @var \ReflectionMethod */
+    private $executePendingLinkage;
+
     /**
      * Proxy constructor.
      * @throws \ReflectionException
@@ -44,15 +56,24 @@ class Proxy
     {
         $entityReflection = new ReflectionClass(Entity::class);
         $relationReflection = new ReflectionClass(Relation::class);
+        $dataMapperReflection = new ReflectionClass(DataMapper::class);
 
         $this->dataMapperArgs = $entityReflection->getProperty('dataMapperArgs');
         $this->ormMethod = $entityReflection->getMethod('orm');
         $this->relationGetResult = $relationReflection->getMethod('getResult');
         $this->relationGetLazyLoader = $relationReflection->getMethod('getLazyLoader');
+        $this->markAsSaved = $dataMapperReflection->getMethod('markAsSaved');
+        $this->markAsUpdated = $dataMapperReflection->getMethod('markAsUpdated');
+        $this->markAsDeleted = $dataMapperReflection->getMethod('markAsDeleted');
+        $this->executePendingLinkage = $dataMapperReflection->getMethod('executePendingLinkage');
         $this->dataMapperArgs->setAccessible(true);
         $this->ormMethod->setAccessible(true);
         $this->relationGetResult->setAccessible(true);
         $this->relationGetLazyLoader->setAccessible(true);
+        $this->markAsSaved->setAccessible(true);
+        $this->markAsUpdated->setAccessible(true);
+        $this->markAsDeleted->setAccessible(true);
+        $this->executePendingLinkage->setAccessible(true);
     }
 
     /**
@@ -98,6 +119,43 @@ class Proxy
     public function getRelationLazyLoader(Relation $relation, EntityManager $manager, EntityMapper $owner, array $options)
     {
         return $this->relationGetLazyLoader->invoke($relation, $manager, $owner, $options);
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param $id
+     * @return bool
+     */
+    public function markAsSaved(DataMapper $data, $id): bool
+    {
+        return $this->markAsSaved->invoke($data, $id);
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param string|null $updatedAt
+     * @return bool
+     */
+    public function markAsUpdated(DataMapper $data, string $updatedAt = null): bool
+    {
+        return $this->markAsUpdated->invoke($data, $updatedAt);
+    }
+
+    /**
+     * @param DataMapper $data
+     * @return bool
+     */
+    public function markAsDeleted(DataMapper $data): bool
+    {
+        return $this->markAsDeleted->invoke($data);
+    }
+
+    /**
+     * @param DataMapper $data
+     */
+    public function executePendingLinkage(DataMapper $data)
+    {
+        $this->executePendingLinkage->invoke($data);
     }
 
     /**

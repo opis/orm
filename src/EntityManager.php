@@ -21,7 +21,7 @@ use RuntimeException;
 use Opis\Database\Connection;
 use Opis\Database\SQL\{Compiler, Insert, Update};
 use Opis\ORM\Core\{
-    DataMapper, EntityMapper, EntityProxy, EntityQuery
+    DataMapper, EntityMapper, EntityProxy, EntityQuery, Proxy
 };
 
 class EntityManager
@@ -119,14 +119,6 @@ class EntityManager
 
             $id = $this->connection->transaction(function (Connection $connection) use($data) {
                 $columns = $data->getRawColumns();
-
-                // TODO: Review this and remove it if necessary
-                foreach ($columns as &$column){
-                    if($column instanceof Entity){
-                        $column = EntityProxy::getPKValue($column);
-                    }
-                }
-
                 $mapper = $data->getEntityMapper();
 
                 if(null !== $pkgen = $mapper->getPrimaryKeyGenerator()){
@@ -136,7 +128,7 @@ class EntityManager
                             $columns[$pk_column] = $pk_value;
                         }
                     } else {
-                        $columns[$mapper->getPrimaryKey()] = $pk_data;
+                        $columns[$mapper->getPrimaryKey()->columns()[0]] = $pk_data;
                     }
                 }
 
@@ -154,7 +146,7 @@ class EntityManager
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
             }, null, false);
 
-            return $id !== false ? DataMapper::markAsSaved($data, $id) : false;
+            return $id !== false ? Proxy::instance()->markAsSaved($data, $id) : false;
         }
 
         $modified = $data->getModifiedColumns(false);
@@ -162,14 +154,6 @@ class EntityManager
         if(!empty($modified)){
             return $this->connection->transaction(function (Connection $connection) use($data, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
-
-                // TODO: Review this and remove it if necessary
-                foreach ($columns as &$column){
-                    if($column instanceof Entity){
-                        $column = EntityProxy::getPKValue($column);
-                    }
-                }
-
                 $mapper = $data->getEntityMapper();
 
                 $updatedAt = null;
@@ -178,17 +162,12 @@ class EntityManager
                     $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
                 }
 
-                DataMapper::markAsUpdated($data, $updatedAt);
+                Proxy::instance()->markAsUpdated($data, $updatedAt);
 
-                $pk = $mapper->getPrimaryKey();
                 $update = new Update($connection, $mapper->getTable());
 
-                if (is_string($pk)) {
-                    $update->where($pk)->is($data->getColumn($pk));
-                } else {
-                    foreach ($pk as $pk_column) {
-                        $update->where($pk_column)->is($data->getColumn($pk_column));
-                    }
+                foreach ($mapper->getPrimaryKey()->getValue($data->getColumns(), true) as $pk_col => $pk_val) {
+                    $update->where($pk_col)->is($pk_val);
                 }
 
                 return (bool) $update->set($columns);
@@ -226,19 +205,14 @@ class EntityManager
                 throw new RuntimeException("Can't delete an unsaved entity");
             }
 
-            DataMapper::markAsDeleted($data);
+            Proxy::instance()->markAsDeleted($data);
 
             $mapper = $data->getEntityMapper();
-            $pk = $mapper->getPrimaryKey();
 
             $delete = new EntityQuery($this, $mapper);
 
-            if (is_string($pk)) {
-                $delete->where($pk)->is($data->getColumn($pk));
-            } else {
-                foreach ($pk as $pk_column) {
-                    $delete->where($pk_column)->is($data->getColumn($pk_column));
-                }
+            foreach ($mapper->getPrimaryKey()->getValue($data->getColumns(), true) as $pk_col => $pk_val) {
+                $delete->where($pk_col)->is($pk_val);
             }
 
             return (bool) $delete->delete();

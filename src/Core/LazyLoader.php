@@ -94,7 +94,10 @@ class LazyLoader
     {
         if($this->results === null){
             $this->results = $this->query->all();
-            $this->keys = EntityProxy::getForeignKeys($this->results, $this->foreignKey);
+            $this->keys = [];
+            foreach ($this->results as $result) {
+                $this->keys[] = $this->foreignKey->getValue(Proxy::instance()->getEntityColumns($result), true);
+            }
         }
 
         return $this->results;

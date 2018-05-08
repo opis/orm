@@ -267,7 +267,7 @@ class DataMapper
             return $this->relations[$name] = $this->loaders[$name]->getResult($this);
         }
 
-        return $this->relations[$name] = RelationProxy::getRelationResult($relations[$name], $this, $callback);
+        return $this->relations[$name] = Proxy::instance()->getRelationResult($relations[$name], $this, $callback);
     }
 
     /**
@@ -371,7 +371,7 @@ class DataMapper
      * @param $id
      * @return bool
      */
-    protected function markAsSaved1($id): bool
+    protected function markAsSaved($id): bool
     {
         $pk = $this->mapper->getPrimaryKey();
 
@@ -393,53 +393,25 @@ class DataMapper
     }
 
     /**
-     * @param DataMapper $data
-     * @param $id
-     * @return bool
-     */
-    public static function markAsSaved(DataMapper $data, $id): bool
-    {
-        $pk = $data->mapper->getPrimaryKey();
-
-        if (!is_array($pk)) {
-            $data->rawColumns[$pk] = $id;
-        } else {
-            foreach ($pk as $index => $column) {
-                $data->rawColumns[$column] = $id[$index];
-            }
-        }
-
-        $data->dehydrated = true;
-        $data->isNew = false;
-        $data->modified = [];
-        if(!empty($data->pendingLinks)){
-            $data->executePendingLinkage();
-        }
-        return true;
-    }
-
-    /**
-     * @param DataMapper $data
      * @param string|null $updatedAt
      * @return bool
      */
-    public static function markAsUpdated(DataMapper $data, string $updatedAt = null): bool
+    protected function markAsUpdated(string $updatedAt =  null): bool
     {
         if($updatedAt !== null){
-            unset($data->columns['updated_at']);
-            $data->rawColumns['updated_at'] = $updatedAt;
+            unset($this->columns['updated_at']);
+            $this->rawColumns['updated_at'] = $updatedAt;
         }
-        $data->modified = [];
+        $this->modified = [];
         return true;
     }
 
     /**
-     * @param DataMapper $data
      * @return bool
      */
-    public static function markAsDeleted(DataMapper $data): bool
+    protected function markAsDeleted(): bool
     {
-        return $data->deleted = true;
+        return $this->deleted = true;
     }
 
     /**
