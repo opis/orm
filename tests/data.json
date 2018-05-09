@@ -1,0 +1,10 @@
+[
+  {"name": "Emma", "age": 30, "gender": "f"},
+  {"name": "Logan", "age": 45, "gender": "m"},
+  {"name": "Ava", "age": 16, "gender": "f"},
+  {"name": "Noah", "age": 16, "gender": "m"},
+  {"name": "Oliver", "age": 25, "gender": "m"},
+  {"name": "Liam", "age": 28, "gender": "m"},
+  {"name": "Isabella", "age": 21, "gender": "f"},
+  {"name": "Olivia", "age": 32, "gender": "f"}
+]

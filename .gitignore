@@ -1,6 +1,6 @@
 /vendor/
 .idea/
-tests/
 docs/_site/
 docs/Gemfile.lock
+tests/db.sql
 composer.lock
