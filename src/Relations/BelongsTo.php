@@ -37,7 +37,7 @@ class BelongsTo extends Relation
         } else {
             $related = Proxy::instance()->getDataMapper($entity);
             $mapper = $related->getEntityMapper();
-            $columns = $related->getColumns();
+            $columns = $related->getRawColumns();
         }
 
         if($this->foreignKey === null){

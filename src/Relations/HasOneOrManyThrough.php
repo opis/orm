@@ -114,11 +114,11 @@ class HasOneOrManyThrough extends Relation
 
         $values = [];
 
-        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $fk_value) {
+        foreach ($this->foreignKey->getValue($data->getRawColumns(), true) as $fk_column => $fk_value) {
             $values[$fk_column] = $fk_value;
         }
 
-        $columns = Proxy::instance()->getDataMapper($entity)->getColumns();
+        $columns = Proxy::instance()->getDataMapper($entity)->getRawColumns();
         foreach ($this->junction->columns() as $pk_column => $fk_column) {
             $values[$fk_column] = $columns[$pk_column];
         }
@@ -145,11 +145,11 @@ class HasOneOrManyThrough extends Relation
 
         $values = [];
 
-        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $fk_value) {
+        foreach ($this->foreignKey->getValue($data->getRawColumns(), true) as $fk_column => $fk_value) {
             $values[$fk_column] = $fk_value;
         }
 
-        $columns = Proxy::instance()->getDataMapper($entity)->getColumns();
+        $columns = Proxy::instance()->getDataMapper($entity)->getRawColumns();
         foreach ($this->junction->columns() as $pk_column => $fk_column) {
             $values[$fk_column] = $columns[$pk_column];
         }
@@ -352,7 +352,7 @@ class HasOneOrManyThrough extends Relation
             }
         });
 
-        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $value) {
+        foreach ($this->foreignKey->getValue($data->getRawColumns(), true) as $fk_column => $value) {
             $select->where($junctionTable . '.' . $fk_column)->is($value);
         }
 

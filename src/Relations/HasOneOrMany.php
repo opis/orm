@@ -54,7 +54,7 @@ class HasOneOrMany extends Relation
 
         $related = Proxy::instance()->getDataMapper($entity);
 
-        foreach ($this->foreignKey->getValue($owner->getColumns(), true) as $fk_column => $fk_value) {
+        foreach ($this->foreignKey->getValue($owner->getRawColumns(), true) as $fk_column => $fk_value) {
             $related->setColumn($fk_column, $fk_value);
         }
     }

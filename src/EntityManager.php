@@ -166,7 +166,7 @@ class EntityManager
 
                 $update = new Update($connection, $mapper->getTable());
 
-                foreach ($mapper->getPrimaryKey()->getValue($data->getColumns(), true) as $pk_col => $pk_val) {
+                foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pk_col => $pk_val) {
                     $update->where($pk_col)->is($pk_val);
                 }
 
@@ -211,7 +211,7 @@ class EntityManager
 
             $delete = new EntityQuery($this, $mapper);
 
-            foreach ($mapper->getPrimaryKey()->getValue($data->getColumns(), true) as $pk_col => $pk_val) {
+            foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pk_col => $pk_val) {
                 $delete->where($pk_col)->is($pk_val);
             }
 
