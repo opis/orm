@@ -64,6 +64,24 @@ $schema->create('articles', function(CreateTable $table){
         ->onUpdate('cascade');
 });
 
+$schema->create('tags', function(CreateTable $table){
+    $table->string('id', 32)->primary();
+});
+
+$schema->create('articles_tags', function(CreateTable $table){
+    $table->string('article_id', 32);
+    $table->string('tag_id', 32);
+    $table->primary(['article_id', 'tag_id']);
+    $table->foreign('article_id')
+        ->references('articles', 'id')
+        ->onDelete('cascade')
+        ->onUpdate('cascade');
+    $table->foreign('tag_id')
+        ->references('tags', 'id')
+        ->onDelete('cascade')
+        ->onUpdate('cascade');
+});
+
 $data = json_decode(file_get_contents(__DIR__ . '/data.json'), true);
 
 foreach ($data as $table => $records) {

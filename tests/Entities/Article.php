@@ -45,6 +45,14 @@ class Article extends Entity implements IEntityMapper
         return $this->orm()->getRelated('author');
     }
 
+    /**
+     * @return Tag[]
+     */
+    public function tags(): array
+    {
+        return $this->orm()->getRelated('tags');
+    }
+
     public function setTitle(string $title): self
     {
         $this->orm()->setColumn('title', $title);
@@ -73,6 +81,7 @@ class Article extends Entity implements IEntityMapper
         });
 
         $mapper->relation('author')->belongsTo(User::class);
+        $mapper->relation('tags')->shareMany(Tag::class);
     }
 
 }

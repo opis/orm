@@ -18,7 +18,9 @@
 namespace Opis\ORM\Core;
 
 use Closure;
-use Opis\ORM\Relations\{BelongsTo, HasOneOrManyThrough, HasOneOrMany};
+use Opis\ORM\Relations\{
+    BelongsTo, HasOneOrManyThrough, HasOneOrMany, ShareOneOrMany
+};
 
 class RelationFactory
 {
@@ -77,34 +79,26 @@ class RelationFactory
 
     /**
      * @param string $entityClass
-     * @param string|null $foreignKey
-     * @param string|null $junctionTable
-     * @param string|null $junctionKey
+     * @param ForeignKey|null $foreignKey
+     * @param Junction|null $junction
      * @return Relation
      */
-    public function hasOneThrough(string $entityClass,
-                                  string  $foreignKey = null,
-                                  string $junctionTable = null,
-                                  string $junctionKey = null): Relation
+    public function shareOne(string $entityClass, ForeignKey $foreignKey = null, Junction $junction = null): Relation
     {
-        $relation = new HasOneOrManyThrough($entityClass, $foreignKey, $junctionTable, $junctionKey, false);
+        $relation = new ShareOneOrMany($entityClass, $foreignKey, $junction);
         $callback = $this->callback;
         return $callback($this->name, $relation);
     }
 
     /**
      * @param string $entityClass
-     * @param string|null $foreignKey
-     * @param string|null $junctionTable
-     * @param string|null $junctionKey
+     * @param ForeignKey|null $foreignKey
+     * @param Junction|null $junction
      * @return Relation
      */
-    public function hasManyThrough(string $entityClass,
-                                   string  $foreignKey = null,
-                                   string $junctionTable = null,
-                                   string $junctionKey = null): Relation
+    public function shareMany(string $entityClass, ForeignKey $foreignKey = null, Junction $junction = null): Relation
     {
-        $relation = new HasOneOrManyThrough($entityClass, $foreignKey, $junctionTable, $junctionKey, true);
+        $relation = new ShareOneOrMany($entityClass, $foreignKey, $junction, true);
         $callback = $this->callback;
         return $callback($this->name, $relation);
     }

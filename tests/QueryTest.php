@@ -144,13 +144,22 @@ class QueryTest extends TestCase
         $this->assertEquals("Emma", $article->author()->name());
     }
 
+    public function testShareOne()
+    {
+
+    }
+
+    public function testShareMany()
+    {
+
+    }
+
     public function testLazyLoad()
     {
-        $user = entity(User::class)->find(1);
-        foreach ($user->articles() as $article) {
-            echo $article->author()->name();
-        }
-        print_r(em()->getConnection()->getLog());
+        /** @var Article $article */
+        $article = entity(Article::class)->find("00000000000000000000000000000001");
+        echo $article->tags()->name();
+        //print_r(em()->getConnection()->getLog());
         die;
     }
 }
