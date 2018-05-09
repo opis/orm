@@ -1,0 +1,7 @@
+<phpunit bootstrap="./tests/bootstrap.php">
+    <testsuites>
+        <testsuite name="ORM">
+            <file>tests/QueryTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
