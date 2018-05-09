@@ -323,7 +323,7 @@ class EntityQuery extends Query
                 continue;
             }
 
-            $loader = Proxy::instance()->getRelationLazyLoader($relations[$with], $this->manager, $this->mapper,[
+            $loader = $relations[$with]->getLazyLoader($this->manager, $this->mapper,[
                 'results' => $results,
                 'callback' => $callback,
                 'with' => $attr[$with]['extra'] ?? [],

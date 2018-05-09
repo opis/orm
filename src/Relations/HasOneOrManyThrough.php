@@ -223,7 +223,7 @@ class HasOneOrManyThrough extends Relation
      * @param array $options
      * @return LazyLoader
      */
-    protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
@@ -304,7 +304,7 @@ class HasOneOrManyThrough extends Relation
      * @param callable|null $callback
      * @return mixed
      */
-    protected function getResult(DataMapper $data, callable $callback = null)
+    public function getResult(DataMapper $data, callable $callback = null)
     {
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();

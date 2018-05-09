@@ -65,7 +65,7 @@ class HasOneOrMany extends Relation
      * @param array $options
      * @return LazyLoader
      */
-    protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
@@ -98,7 +98,7 @@ class HasOneOrMany extends Relation
      * @param callable|null $callback
      * @return mixed
      */
-    protected function getResult(DataMapper $data, callable $callback = null)
+    public function getResult(DataMapper $data, callable $callback = null)
     {
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();
@@ -111,7 +111,7 @@ class HasOneOrMany extends Relation
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        foreach ($this->foreignKey->getValue($data->getColumns(), true) as $fk_column => $fk_value) {
+        foreach ($this->foreignKey->getValue($data->getRawColumns(), true) as $fk_column => $fk_value) {
             $select->where($fk_column)->is($fk_value);
         }
 

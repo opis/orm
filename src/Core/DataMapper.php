@@ -267,7 +267,7 @@ class DataMapper
             return $this->relations[$name] = $this->loaders[$name]->getResult($this);
         }
 
-        return $this->relations[$name] = Proxy::instance()->getRelationResult($relations[$name], $this, $callback);
+        return $this->relations[$name] = $relations[$name]->getResult($this, $callback);
     }
 
     /**

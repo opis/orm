@@ -52,13 +52,13 @@ abstract class Relation
      * @param array $options
      * @return mixed
      */
-    abstract protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options);
+    abstract public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options);
 
     /**
      * @param DataMapper $data
      * @param callable|null $callback
      * @return mixed
      */
-    abstract protected function getResult(DataMapper $data, callable $callback = null);
+    abstract public function getResult(DataMapper $data, callable $callback = null);
 
 }

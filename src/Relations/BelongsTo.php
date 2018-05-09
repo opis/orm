@@ -55,7 +55,7 @@ class BelongsTo extends Relation
      * @param array $options
      * @return LazyLoader
      */
-    protected function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
@@ -87,7 +87,7 @@ class BelongsTo extends Relation
      * @param callable|null $callback
      * @return mixed
      */
-    protected function getResult(DataMapper $data, callable $callback = null)
+    public function getResult(DataMapper $data, callable $callback = null)
     {
         $manager = $data->getEntityManager();
         $related = $manager->resolveEntityMapper($this->entityClass);
@@ -99,7 +99,7 @@ class BelongsTo extends Relation
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        foreach ($this->foreignKey->getInverseValue($data->getColumns(), true) as $pk_column => $pk_value) {
+        foreach ($this->foreignKey->getInverseValue($data->getRawColumns(), true) as $pk_column => $pk_value) {
             $select->where($pk_column)->is($pk_value);
         }
 

@@ -99,29 +99,6 @@ class Proxy
     }
 
     /**
-     * @param Relation $relation
-     * @param DataMapper $data
-     * @param callable|null $callback
-     * @return mixed
-     */
-    public function getRelationResult(Relation $relation, DataMapper $data, callable $callback = null)
-    {
-        return $this->relationGetResult->invoke($relation, $data, $callback);
-    }
-
-    /**
-     * @param Relation $relation
-     * @param EntityManager $manager
-     * @param EntityMapper $owner
-     * @param array $options
-     * @return mixed
-     */
-    public function getRelationLazyLoader(Relation $relation, EntityManager $manager, EntityMapper $owner, array $options)
-    {
-        return $this->relationGetLazyLoader->invoke($relation, $manager, $owner, $options);
-    }
-
-    /**
      * @param DataMapper $data
      * @param $id
      * @return bool
