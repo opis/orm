@@ -43,6 +43,81 @@ class ShareOneOrMany extends Relation
     }
 
     /**
+     * @param DataMapper $data
+     * @param Entity $entity
+     * @return bool
+     */
+    public function link(DataMapper $data, Entity $entity): bool
+    {
+        $manager = $data->getEntityManager();
+        $owner = $data->getEntityMapper();
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        $values = [];
+
+        foreach ($this->foreignKey->getValue($data->getRawColumns(), true) as $fk_column => $fk_value) {
+            $values[$fk_column] = $fk_value;
+        }
+
+        $columns = Proxy::instance()->getDataMapper($entity)->getRawColumns();
+        foreach ($this->junction->columns() as $pk_column => $fk_column) {
+            $values[$fk_column] = $columns[$pk_column];
+        }
+
+        $cmd = new Insert($manager->getConnection());
+        $cmd->insert($values);
+
+        return (bool) $cmd->into($this->junction->table());
+    }
+
+    /**
+     * @param DataMapper $data
+     * @param Entity $entity
+     * @return bool
+     */
+    public function unlink(DataMapper $data, Entity $entity): bool
+    {
+        $manager = $data->getEntityManager();
+        $owner = $data->getEntityMapper();
+        $related = $manager->resolveEntityMapper($this->entityClass);
+
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
+        $values = [];
+
+        foreach ($this->foreignKey->getValue($data->getRawColumns(), true) as $fk_column => $fk_value) {
+            $values[$fk_column] = $fk_value;
+        }
+
+        $columns = Proxy::instance()->getDataMapper($entity)->getRawColumns();
+        foreach ($this->junction->columns() as $pk_column => $fk_column) {
+            $values[$fk_column] = $columns[$pk_column];
+        }
+
+        $cmd = new Delete($manager->getConnection(), $this->junction->table());
+
+        foreach ($values as $column => $value) {
+            $cmd->where($column)->is($value);
+        }
+
+        return (bool) $cmd->delete();
+    }
+
+    /**
      * @param EntityManager $manager
      * @param EntityMapper $owner
      * @param array $options
@@ -60,27 +135,8 @@ class ShareOneOrMany extends Relation
             $this->foreignKey = $owner->getForeignKey();
         }
 
-        if($this->junctionTable === null){
-            $table = [$owner->getTable(), $related->getTable()];
-            sort($table);
-            $this->junctionTable = implode('_', $table);
-        }
-
-        if($this->junctionKey === null){
-            $this->junctionKey = $related->getForeignKey();
-        }
-
-        if($this->foreignKey === null){
-            $this->foreignKey = $owner->getForeignKey();
-        }
-
-        if($this->joinTable === null){
-            $this->joinTable = $related->getTable();
-        }
-
-        if($this->joinColumn === null){
-            $this->joinColumn = $related->getPrimaryKey();
-        }
+        $junctionTable = $this->junction->table();
+        $joinTable = $related->getTable();
 
         $ids = [];
         foreach ($options['results'] as $result) {
@@ -91,7 +147,7 @@ class ShareOneOrMany extends Relation
 
         $statement = new SQLStatement();
 
-        $select = new class($manager, $related, $statement, $this->junctionTable) extends EntityQuery{
+        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery{
 
             protected $junctionTable;
 
@@ -114,15 +170,26 @@ class ShareOneOrMany extends Relation
             }
         };
 
-        $linkKey = 'hidden_' . $this->junctionTable . '_' . $this->foreignKey;
+        $linkKey = new ForeignKey(array_map(function($value) use($junctionTable) {
+            return 'hidden_' . $junctionTable . '_' . $value;
+        }, $this->foreignKey->columns()));
 
-        $select->join($this->joinTable, function (Join $join){
-            $join->on($this->junctionTable . '.' . $this->junctionKey, $this->joinTable . '.' . $this->joinColumn);
-        })
-            ->where($this->junctionTable . '.' . $this->foreignKey)->in($ids);
+        $select->join($joinTable, function (Join $join) use($junctionTable, $joinTable) {
+            foreach ($this->junction->columns() as $pk_column => $fk_column) {
+                $join->on($junctionTable . '.' . $fk_column, $joinTable . '.' . $pk_column);
+            }
+        });
 
-        $statement->addColumn($this->joinTable . '.*');
-        $statement->addColumn($this->junctionTable . '.' . $this->foreignKey, $linkKey);
+        foreach ($this->foreignKey->getValue($ids, true) as $fk_col => $fk_val) {
+            $select->where($junctionTable . '.' . $fk_col)->in($fk_val);
+        }
+
+        $statement->addColumn($joinTable . '.*');
+
+        $linkKeyCols = $linkKey->columns();
+        foreach ($this->foreignKey->columns() as $pk_col => $fk_col) {
+            $statement->addColumn($junctionTable . '.' . $fk_col, $linkKeyCols[$pk_col]);
+        }
 
         if($options['callback'] !== null){
             $options['callback'](new Query($statement));
@@ -130,7 +197,7 @@ class ShareOneOrMany extends Relation
 
         $select->with($options['with'], $options['immediate']);
 
-        return new LazyLoader($select, $pk, $linkKey, $this->hasMany, $options['immediate']);
+        return new LazyLoader($select, $linkKey, false, $this->hasMany, $options['immediate']);
     }
 
     public function getResult(DataMapper $data, callable $callback = null)
