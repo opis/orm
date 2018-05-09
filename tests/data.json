@@ -13,6 +13,9 @@
     {"id": "00000000000000000000000000000001", "user_id": 1, "title": "Hello, World!", "content": "My first article"},
     {"id": "00000000000000000000000000000002", "user_id": 1, "title": "Second article", "content": "My second article"}
   ],
+  "profiles": [
+    {"id": "00000000000000000000000000000001", "user_id": 1, "city": "New York"}
+  ],
   "tags": [
     {"id": "tag1"},
     {"id": "tag2"}

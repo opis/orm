@@ -18,6 +18,7 @@
 namespace Opis\ORM\Test;
 
 use Opis\ORM\Test\Entities\Article;
+use Opis\ORM\Test\Entities\Tag;
 use Opis\ORM\Test\Entities\User;
 use function Opis\ORM\Test\{
     entityManager as em,
@@ -130,14 +131,21 @@ class QueryTest extends TestCase
         $this->assertEquals(26, $value);
     }
 
-    public function testRelatedHasMany()
+    public function testHasOne()
+    {
+        /** @var User $user */
+        $user = entity(User::class)->find(1);
+        $this->assertEquals("New York", $user->profile()->city());
+    }
+
+    public function testHasMany()
     {
         /** @var User $user */
         $user = entity(User::class)->find(1);
         $this->assertEquals("Hello, World!", $user->articles()[0]->title());
     }
 
-    public function testRelatedBelongsTo()
+    public function testBelongsTo()
     {
         /** @var Article $article */
         $article = entity(Article::class)->find("00000000000000000000000000000001");
@@ -146,20 +154,18 @@ class QueryTest extends TestCase
 
     public function testShareOne()
     {
-
+        /** @var Article $article */
+        $article = entity(Article::class)->find("00000000000000000000000000000001");
+        $this->assertEquals("tag1", $article->firstTag()->name());
     }
 
     public function testShareMany()
     {
-
-    }
-
-    public function testLazyLoad()
-    {
         /** @var Article $article */
         $article = entity(Article::class)->find("00000000000000000000000000000001");
-        echo $article->tags()->name();
-        //print_r(em()->getConnection()->getLog());
-        die;
+        $tags = array_map(function (Tag $tag){
+            return $tag->name();
+        }, $article->tags());
+        $this->assertEquals(["tag1", "tag2"], $tags);
     }
 }

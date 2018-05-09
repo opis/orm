@@ -53,6 +53,11 @@ class Article extends Entity implements IEntityMapper
         return $this->orm()->getRelated('tags');
     }
 
+    public function firstTag(): Tag
+    {
+        return $this->orm()->getRelated('first_tag');
+    }
+
     public function setTitle(string $title): self
     {
         $this->orm()->setColumn('title', $title);
@@ -82,6 +87,7 @@ class Article extends Entity implements IEntityMapper
 
         $mapper->relation('author')->belongsTo(User::class);
         $mapper->relation('tags')->shareMany(Tag::class);
+        $mapper->relation('first_tag')->shareOne(Tag::class);
     }
 
 }

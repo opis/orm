@@ -17,29 +17,27 @@
 
 namespace Opis\ORM\Test\Entities;
 
-use Opis\ORM\Core\DataMapper;
 use Opis\ORM\Core\EntityMapper;
 use Opis\ORM\Entity;
 use Opis\ORM\IEntityMapper;
+use function Opis\ORM\Test\unique_id;
 
-class Tag extends Entity implements IEntityMapper
+class Profile extends Entity implements IEntityMapper
 {
-    public function name(): string
+    public function id(): string
     {
         return $this->orm()->getColumn('id');
     }
 
-    public function setName(string $name)
+    public function city(): string
     {
-        $this->orm()->setColumn('id', $name);
+        return $this->orm()->getColumn('city');
     }
 
-    /**
-     * @return Article[]
-     */
-    public function articles(): array
+    public function setCity(string $city): self
     {
-        return $this->orm()->getRelated('articles');
+        $this->orm()->setColumn('city', $city);
+        return $this;
     }
 
     /**
@@ -47,11 +45,10 @@ class Tag extends Entity implements IEntityMapper
      */
     public static function mapEntity(EntityMapper $mapper)
     {
-        $mapper->primaryKeyGenerator(function(DataMapper $data){
-            return $data->getColumn('id');
+        $mapper->primaryKeyGenerator(function(){
+            return unique_id();
         });
 
-        $mapper->relation('articles')->shareMany(Article::class);
+        //$mapper->relation('user')->belongsTo(User::class);
     }
-
 }

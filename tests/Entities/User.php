@@ -66,6 +66,11 @@ class User extends Entity implements IEntityMapper
         return $this->orm()->getRelated('articles');
     }
 
+    public function profile(): Profile
+    {
+        return $this->orm()->getRelated('profile');
+    }
+
     /**
      * @inheritDoc
      */
@@ -76,6 +81,7 @@ class User extends Entity implements IEntityMapper
         });
 
         $mapper->relation('articles')->hasMany(Article::class);
+        $mapper->relation('profile')->hasOne(Profile::class);
     }
 
 }

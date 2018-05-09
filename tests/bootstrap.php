@@ -64,6 +64,17 @@ $schema->create('articles', function(CreateTable $table){
         ->onUpdate('cascade');
 });
 
+$schema->create('profiles', function(CreateTable $table){
+    $table->string('id', 32)->primary();
+    $table->integer('user_id')->notNull()->index();
+    $table->string('city')->notNull();
+
+    $table->foreign('user_id')
+        ->references('users', 'id')
+        ->onUpdate('cascade')
+        ->onUpdate('cascade');
+});
+
 $schema->create('tags', function(CreateTable $table){
     $table->string('id', 32)->primary();
 });
