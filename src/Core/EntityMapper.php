@@ -271,17 +271,19 @@ class EntityMapper
     public function getForeignKey(): ForeignKey
     {
         if ($this->foreignKey === null) {
-            $self = $this;
-            $this->foreignKey = new class($self->getPrimaryKey(), $self->getTable()) extends ForeignKey {
+            $pk = $this->getPrimaryKey();
+            $prefix = $this->getClassShortName();
+            $this->foreignKey = new class($pk, $prefix) extends ForeignKey {
                 /**
                  *  constructor.
                  * @param PrimaryKey $primaryKey
-                 * @param string $table
+                 * @param string $prefix
                  */
-                public function __construct(PrimaryKey $primaryKey, string $table)
+                public function __construct(PrimaryKey $primaryKey, string $prefix)
                 {
                     $columns = [];
-                    $prefix = str_replace('-', '_', strtolower($table));
+                    $prefix = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $prefix));
+                    $prefix = str_replace('-', '_', strtolower($prefix));
                     foreach ($primaryKey->columns() as $column) {
                         $columns[$column] = $prefix . '_' . $column;
                     }
