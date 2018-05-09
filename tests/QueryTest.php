@@ -17,6 +17,7 @@
 
 namespace Opis\ORM\Test;
 
+use Opis\ORM\Test\Entities\Article;
 use Opis\ORM\Test\Entities\User;
 use function Opis\ORM\Test\{
     entityManager as em,
@@ -127,5 +128,29 @@ class QueryTest extends TestCase
             ->where('name')->in(['Oliver', 'Isabella', 'Olivia'])
             ->avg('age');
         $this->assertEquals(26, $value);
+    }
+
+    public function testRelatedHasMany()
+    {
+        /** @var User $user */
+        $user = entity(User::class)->find(1);
+        $this->assertEquals("Hello, World!", $user->articles()[0]->title());
+    }
+
+    public function testRelatedBelongsTo()
+    {
+        /** @var Article $article */
+        $article = entity(Article::class)->find("00000000000000000000000000000001");
+        $this->assertEquals("Emma", $article->author()->name());
+    }
+
+    public function testLazyLoad()
+    {
+        $user = entity(User::class)->find(1);
+        foreach ($user->articles() as $article) {
+            echo $article->author()->name();
+        }
+        print_r(em()->getConnection()->getLog());
+        die;
     }
 }

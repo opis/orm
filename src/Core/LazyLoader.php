@@ -24,8 +24,8 @@ class LazyLoader
     /** @var EntityQuery */
     protected $query;
 
-    /** @var PrimaryKey  */
-    protected $primaryKey;
+    /** @var bool  */
+    protected $inverse;
 
     /** @var ForeignKey */
     protected $foreignKey;
@@ -42,16 +42,16 @@ class LazyLoader
     /**
      * LazyLoader constructor.
      * @param EntityQuery $query
-     * @param PrimaryKey $primaryKey
      * @param ForeignKey $foreignKey
+     * @param bool $inverse
      * @param bool $hasMany
      * @param bool $immediate
      */
-    public function __construct(EntityQuery $query, PrimaryKey $primaryKey, ForeignKey $foreignKey, bool $hasMany, bool $immediate)
+    public function __construct(EntityQuery $query, ForeignKey $foreignKey, bool $inverse, bool $hasMany, bool $immediate)
     {
         $this->query = $query;
-        $this->primaryKey = $primaryKey;
         $this->foreignKey = $foreignKey;
+        $this->inverse = $inverse;
         $this->hasMany = $hasMany;
 
         if($immediate){
@@ -66,21 +66,26 @@ class LazyLoader
     public function getResult(DataMapper $data)
     {
         $results = $this->loadResults();
-        $pk = $data->getColumn($this->primaryKey);
-        
-        if($this->hasMany){
+
+        if ($this->inverse) {
+            $check = $this->foreignKey->extractValue($data->getRawColumns(), true);
+        } else {
+            $check = $this->foreignKey->getValue($data->getRawColumns(), true);
+        }
+
+        if ($this->hasMany) {
             $all = [];
-            foreach ($this->keys as $key => $id){
-                if($id === $pk){
-                    $all[] = $results[$key];
+            foreach ($this->keys as $index => $item) {
+                if ($item === $check) {
+                    $all[] = $results[$index];
                 }
             }
             return $all;
         }
 
-        foreach ($this->keys as $key => $id){
-            if($id === $pk){
-                return $results[$key];
+        foreach ($this->keys as $index => $item) {
+            if ($item === $check) {
+                return $results[$index];
             }
         }
 
@@ -95,8 +100,13 @@ class LazyLoader
         if($this->results === null){
             $this->results = $this->query->all();
             $this->keys = [];
+            $proxy = Proxy::instance();
             foreach ($this->results as $result) {
-                $this->keys[] = $this->foreignKey->getValue(Proxy::instance()->getEntityColumns($result), true);
+                if ($this->inverse) {
+                    $this->keys[] = $this->foreignKey->getValue($proxy->getEntityColumns($result), true);
+                } else {
+                    $this->keys[] = $this->foreignKey->extractValue($proxy->getEntityColumns($result), true);
+                }
             }
         }
 

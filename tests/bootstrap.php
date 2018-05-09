@@ -28,6 +28,11 @@ function query(string $class): EntityQuery
     return \Opis\ORM\Test\entityManager()->query($class);
 }
 
+function unique_id(): string
+{
+    return bin2hex(random_bytes(16));
+}
+
 $file = __DIR__ . '/db.sql';
 
 if (file_exists($file)) {
@@ -36,21 +41,35 @@ if (file_exists($file)) {
 
 $connection = new Connection('sqlite:' . $file);
 $connection->initCommand('PRAGMA foreign_keys = ON');
-
+$connection->logQueries();
 $db = new Database($connection);
 $schema = $db->schema();
 
 $schema->create('users', function(CreateTable $table) {
-    $table->integer('id')->primary()->autoincrement();
+    $table->integer('id')->primary();
     $table->string('name')->notNull();
     $table->integer('age')->size('small')->notNull();
     $table->string('gender', 1)->notNull();
 });
 
+$schema->create('articles', function(CreateTable $table){
+    $table->string('id', 32)->primary();
+    $table->integer('user_id')->notNull()->index();
+    $table->string('title')->notNull();
+    $table->string('content')->notNull();
+
+    $table->foreign('user_id')
+        ->references('users', 'id')
+        ->onUpdate('cascade')
+        ->onUpdate('cascade');
+});
+
 $data = json_decode(file_get_contents(__DIR__ . '/data.json'), true);
 
-foreach ($data as $item) {
-    $db->insert($item)->into('users');
+foreach ($data as $table => $records) {
+    foreach ($records as $record) {
+        $db->insert($record)->into($table);
+    }
 }
 
 unset($data);

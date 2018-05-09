@@ -17,53 +17,50 @@
 
 namespace Opis\ORM\Test\Entities;
 
-use Opis\ORM\Core\DataMapper;
 use Opis\ORM\Core\EntityMapper;
 use Opis\ORM\Core\Query;
 use Opis\ORM\Entity;
 use Opis\ORM\IEntityMapper;
+use function Opis\ORM\Test\unique_id;
 
-class User extends Entity implements IEntityMapper
+class Article extends Entity implements IEntityMapper
 {
-    public function id(): int
+    public function id(): string
     {
         return $this->orm()->getColumn('id');
     }
 
-    public function name(): string
+    public function title(): string
     {
-        return $this->orm()->getColumn('name');
+        return $this->orm()->getColumn('title');
     }
 
-    public function age(): int
+    public function content(): string
     {
-        return $this->orm()->getColumn('age');
+        return $this->orm()->getColumn('content');
     }
 
-    public function setId(int $id): self
+    public function author(): User
     {
-        $this->orm()->setColumn('id', $id);
+        return $this->orm()->getRelated('author');
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->orm()->setColumn('title', $title);
         return $this;
     }
 
-    public function setName(string $name): self
+    public function setContent(string $content): self
     {
-        $this->orm()->setColumn('name', $name);
+        $this->orm()->setColumn('content', $content);
         return $this;
     }
 
-    public function setAge(int $age): self
+    public function setAuthor(User $user): self
     {
-        $this->orm()->setColumn('age', $age);
+        $this->orm()->setRelated('author', $user);
         return $this;
-    }
-
-    /**
-     * @return Article[]
-     */
-    public function articles(): array
-    {
-        return $this->orm()->getRelated('articles');
     }
 
     /**
@@ -71,11 +68,11 @@ class User extends Entity implements IEntityMapper
      */
     public static function mapEntity(EntityMapper $mapper)
     {
-        $mapper->primaryKeyGenerator(function(DataMapper $data){
-            return $data->getColumn('id');
+        $mapper->primaryKeyGenerator(function(){
+            return unique_id();
         });
 
-        $mapper->relation('articles')->hasMany(Article::class);
+        $mapper->relation('author')->belongsTo(User::class);
     }
 
 }

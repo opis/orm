@@ -90,4 +90,24 @@ class ForeignKey
 
         return $value;
     }
+
+    /**
+     * @param array $columns
+     * @param bool $map
+     * @return array|mixed|null
+     */
+    public function extractValue(array $columns, bool $map = false)
+    {
+        if (!$map && !$this->composite) {
+            return $columns[array_values($this->columns)[0]] ?? null;
+        }
+
+        $value = [];
+
+        foreach ($this->columns as $column) {
+            $value[$column] = $columns[$column];
+        }
+
+        return $value;
+    }
 }

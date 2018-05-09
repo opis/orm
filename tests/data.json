@@ -1,10 +1,16 @@
-[
-  {"name": "Emma", "age": 30, "gender": "f"},
-  {"name": "Logan", "age": 45, "gender": "m"},
-  {"name": "Ava", "age": 16, "gender": "f"},
-  {"name": "Noah", "age": 16, "gender": "m"},
-  {"name": "Oliver", "age": 25, "gender": "m"},
-  {"name": "Liam", "age": 28, "gender": "m"},
-  {"name": "Isabella", "age": 21, "gender": "f"},
-  {"name": "Olivia", "age": 32, "gender": "f"}
-]
+{
+  "users": [
+    {"id": 1, "name": "Emma", "age": 30, "gender": "f"},
+    {"id": 2, "name": "Logan", "age": 45, "gender": "m"},
+    {"id": 3, "name": "Ava", "age": 16, "gender": "f"},
+    {"id": 4, "name": "Noah", "age": 16, "gender": "m"},
+    {"id": 5, "name": "Oliver", "age": 25, "gender": "m"},
+    {"id": 6, "name": "Liam", "age": 28, "gender": "m"},
+    {"id": 7, "name": "Isabella", "age": 21, "gender": "f"},
+    {"id": 8, "name": "Olivia", "age": 32, "gender": "f"}
+  ],
+  "articles": [
+    {"id": "00000000000000000000000000000001", "user_id": 1, "title": "Hello, World!", "content": "My first article"},
+    {"id": "00000000000000000000000000000002", "user_id": 1, "title": "Second article", "content": "My second article"}
+  ]
+}

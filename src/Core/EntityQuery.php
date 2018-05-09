@@ -102,7 +102,7 @@ class EntityQuery extends Query
         $results = $this->query($columns)
                          ->fetchAssoc()
                          ->all();
-        
+
         $entities = [];
 
         $class = $this->mapper->getClass();

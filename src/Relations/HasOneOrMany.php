@@ -75,14 +75,20 @@ class HasOneOrMany extends Relation
 
         $ids = [];
         $pk = $owner->getPrimaryKey();
-        foreach ($options['results'] as $result){
-            $ids[] = $result[$pk];
+
+        foreach ($options['results'] as $result) {
+            foreach ($pk->getValue($result, true) as $pk_col => $pk_val) {
+                $ids[$pk_col][] = $pk_val;
+            }
         }
 
         $statement = new SQLStatement();
         $select = new EntityQuery($manager, $related, $statement);
 
-        $select->where($this->foreignKey)->in($ids);
+        foreach ($this->foreignKey->getValue($ids, true) as $fk_col => $fk_val) {
+            $select->where($fk_col)->in($fk_val);
+        }
+        
 
         if($options['callback'] !== null){
             $options['callback'](new Query($statement));
@@ -90,7 +96,7 @@ class HasOneOrMany extends Relation
 
         $select->with($options['with'], $options['immediate']);
         
-        return new LazyLoader($select, $pk, $this->foreignKey, $this->hasMany, $options['immediate']);
+        return new LazyLoader($select, $this->foreignKey, false, $this->hasMany, $options['immediate']);
     }
 
     /**

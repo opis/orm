@@ -227,6 +227,14 @@ class HasOneOrManyThrough extends Relation
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
+        if ($this->junction === null) {
+            $this->junction = $this->buildJunction($owner, $related);
+        }
+
+        if($this->foreignKey === null){
+            $this->foreignKey = $owner->getForeignKey();
+        }
+
         if($this->junctionTable === null){
             $table = [$owner->getTable(), $related->getTable()];
             sort($table);
@@ -250,9 +258,10 @@ class HasOneOrManyThrough extends Relation
         }
 
         $ids = [];
-        $pk = $owner->getPrimaryKey();
-        foreach ($options['results'] as $result){
-            $ids[] = $result[$pk];
+        foreach ($options['results'] as $result) {
+            foreach ($owner->getPrimaryKey()->getValue($result, true) as $pk_col => $pk_val) {
+                $ids[$pk_col][] = $pk_val;
+            }
         }
 
         $statement = new SQLStatement();
