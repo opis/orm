@@ -2,6 +2,7 @@
     <testsuites>
         <testsuite name="ORM">
             <file>tests/QueryTest.php</file>
+            <file>tests/RelationsTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
