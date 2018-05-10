@@ -7,6 +7,7 @@
             <file>tests/CreateTest.php</file>
             <file>tests/UpdateTest.php</file>
             <file>tests/DeleteTest.php</file>
+            <file>tests/LinkTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

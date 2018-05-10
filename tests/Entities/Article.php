@@ -61,6 +61,18 @@ class Article extends Entity implements IEntityMapper
         return $this->orm()->getRelated('first_tag');
     }
 
+    public function addTag(Tag $tag): self
+    {
+        $this->orm()->link('tags', $tag);
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        $this->orm()->unlink('tags', $tag);
+        return $this;
+    }
+
     public function setTitle(string $title): self
     {
         $this->orm()->setColumn('title', $title);
