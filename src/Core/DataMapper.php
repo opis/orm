@@ -24,7 +24,7 @@ use Opis\ORM\{
     Entity, EntityManager
 };
 use Opis\ORM\Relations\{
-    BelongsTo, HasOneOrMany, HasOneOrManyThrough
+    BelongsTo, HasOneOrMany, HasOneOrManyThrough, ShareOneOrMany
 };
 
 class DataMapper
@@ -144,14 +144,6 @@ class DataMapper
     public function getRawColumns(): array
     {
         return $this->rawColumns;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColumns(): array
-    {
-        return $this->columns;
     }
 
     /**
@@ -308,58 +300,22 @@ class DataMapper
 
     /**
      * @param string $relation
-     * @param $items
+     * @param Entity $entity
+     * @param bool $immediate
      */
-    public function link(string $relation, $items)
+    public function link(string $relation, Entity $entity, bool $immediate = false)
     {
-        $relations = $this->mapper->getRelations();
-        if (!isset($relations[$relation])) {
-            throw new RuntimeException("Unknown relation '$relation'");
-        }
-
-        /** @var $rel HasOneOrManyThrough */
-        if (!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)) {
-            throw new RuntimeException("Unsupported relation type");
-        }
-
-        if ($this->isNew) {
-            $this->pendingLinks[] = [
-                'relation' => $rel,
-                'items' => $items,
-                'link' => true,
-            ];
-            return;
-        }
-
-        $rel->link($this, $items);
+        $this->linkOrUnlink($relation, $entity, $immediate, true);
     }
 
     /**
      * @param string $relation
-     * @param $items
+     * @param Entity $entity
+     * @param bool $immediate
      */
-    public function unlink(string $relation, $items)
+    public function unlink(string $relation, Entity $entity, bool $immediate = false)
     {
-        $relations = $this->mapper->getRelations();
-        if (!isset($relations[$relation])) {
-            throw new RuntimeException("Unknown relation '$relation'");
-        }
-
-        /** @var $rel HasOneOrManyThrough */
-        if (!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)) {
-            throw new RuntimeException("Unsupported relation type");
-        }
-
-        if ($this->isNew) {
-            $this->pendingLinks[] = [
-                'relation' => $rel,
-                'items' => $items,
-                'link' => false,
-            ];
-            return;
-        }
-
-        $rel->unlink($this, $items);
+        $this->linkOrUnlink($relation, $entity, $immediate, false);
     }
 
     /**
@@ -535,15 +491,48 @@ class DataMapper
     protected function executePendingLinkage()
     {
         foreach ($this->pendingLinks as $item) {
-            /** @var HasOneOrManyThrough $rel */
+            /** @var ShareOneOrMany $rel */
             $rel = $item['relation'];
             if ($item['link']) {
-                $rel->link($this, $item['items']);
+                $rel->link($this, $item['entity']);
             } else {
-                $rel->unlink($this, $item['items']);
+                $rel->unlink($this, $item['entity']);
             }
         }
 
         $this->pendingLinks = [];
+    }
+
+    /**
+     * @param string $relation
+     * @param Entity $entity
+     * @param bool $immediate
+     * @param bool $link
+     */
+    private function linkOrUnlink(string $relation, Entity $entity, bool $immediate, bool $link)
+    {
+        $relations = $this->mapper->getRelations();
+
+        if (!isset($relations[$relation])) {
+            throw new RuntimeException("Unknown relation '$relation'");
+        }
+
+        /** @var $rel ShareOneOrMany */
+        if (!(($rel = $relations[$relation]) instanceof ShareOneOrMany)) {
+            throw new RuntimeException("Unsupported relation type");
+        }
+
+        if ($this->isNew || !$immediate) {
+            $this->pendingLinks[] = [
+                'relation' => $rel,
+                'entity' => $entity,
+                'link' => $link,
+            ];
+            return;
+        } elseif ($link) {
+            $rel->link($this, $entity);
+        } else {
+            $rel->unlink($this, $entity);
+        }
     }
 }
