@@ -24,7 +24,7 @@ use Opis\ORM\{
     Entity, EntityManager
 };
 use Opis\ORM\Relations\{
-    BelongsTo, HasOneOrMany, HasOneOrManyThrough, ShareOneOrMany
+    BelongsTo, HasOneOrMany, ShareOneOrMany
 };
 
 class DataMapper
@@ -307,6 +307,18 @@ class DataMapper
     }
 
     /**
+     * @param string $name
+     * @param bool $loaders
+     */
+    public function clearRelated(string $name, bool $loaders = false)
+    {
+        unset($this->relations[$name]);
+        if ($loaders) {
+            unset($this->loaders[$name]);
+        }
+    }
+
+    /**
      * @param string $relation
      * @param Entity $entity
      * @param bool $immediate
@@ -339,6 +351,14 @@ class DataMapper
         foreach ($columns as $name => $value) {
             $this->setColumn($name, $value);
         }
+    }
+
+    /**
+     * Force hydration
+     */
+    public function dehydrate()
+    {
+        $this->dehydrated = true;
     }
 
     /**
