@@ -233,6 +233,14 @@ class DataMapper
 
     /**
      * @param string $name
+     */
+    public function clearColumn(string $name)
+    {
+        unset($this->columns[$name]);
+    }
+
+    /**
+     * @param string $name
      * @param $value
      */
     public function setRawColumn(string $name, $value)
