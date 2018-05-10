@@ -66,7 +66,10 @@ class User extends Entity implements IEntityMapper
         return $this->orm()->getRelated('articles');
     }
 
-    public function profile(): Profile
+    /**
+     * @return Profile|null
+     */
+    public function profile()
     {
         return $this->orm()->getRelated('profile');
     }

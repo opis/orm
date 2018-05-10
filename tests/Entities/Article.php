@@ -53,7 +53,10 @@ class Article extends Entity implements IEntityMapper
         return $this->orm()->getRelated('tags');
     }
 
-    public function firstTag(): Tag
+    /**
+     * @return Tag|null
+     */
+    public function firstTag()
     {
         return $this->orm()->getRelated('first_tag');
     }

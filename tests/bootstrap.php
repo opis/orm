@@ -41,7 +41,6 @@ if (file_exists($file)) {
 
 $connection = new Connection('sqlite:' . $file);
 $connection->initCommand('PRAGMA foreign_keys = ON');
-$connection->logQueries();
 $db = new Database($connection);
 $schema = $db->schema();
 
