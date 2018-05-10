@@ -22,7 +22,7 @@ use Opis\ORM\Core\{DataMapper, EntityMapper};
 abstract class Entity
 {
     /** @var array */
-    protected $dataMapperArgs;
+    private $dataMapperArgs;
 
     /** @var  DataMapper|null */
     private $dataMapper;
