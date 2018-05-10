@@ -21,7 +21,7 @@ use RuntimeException;
 use Opis\Database\Connection;
 use Opis\Database\SQL\{Compiler, Insert, Update};
 use Opis\ORM\Core\{
-    DataMapper, EntityMapper, EntityProxy, EntityQuery, Proxy
+    EntityMapper, EntityQuery, Proxy
 };
 
 class EntityManager
@@ -108,8 +108,8 @@ class EntityManager
      */
     public function save(Entity $entity): bool
     {
-        /** @var DataMapper $data */
-        $data = EntityProxy::getDataMapper($entity);
+        $proxy = Proxy::instance();
+        $data = $proxy->getDataMapper($entity);
 
         if($data->isDeleted()){
             throw new RuntimeException("The record is deleted");
@@ -146,13 +146,13 @@ class EntityManager
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
             }, null, false);
 
-            return $id !== false ? Proxy::instance()->markAsSaved($data, $id) : false;
+            return $id !== false ? $proxy->markAsSaved($data, $id) : false;
         }
 
         $modified = $data->getModifiedColumns(false);
 
         if(!empty($modified)){
-            return $this->connection->transaction(function (Connection $connection) use($data, $modified) {
+            return $this->connection->transaction(function (Connection $connection) use($data, $proxy, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
                 $mapper = $data->getEntityMapper();
 
@@ -162,7 +162,7 @@ class EntityManager
                     $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
                 }
 
-                Proxy::instance()->markAsUpdated($data, $updatedAt);
+                $proxy->markAsUpdated($data, $updatedAt);
 
                 $update = new Update($connection, $mapper->getTable());
 
@@ -194,8 +194,9 @@ class EntityManager
     public function delete(Entity $entity): bool
     {
         return $this->connection->transaction(function() use($entity) {
-            /** @var DataMapper $data */
-            $data = EntityProxy::getDataMapper($entity);
+
+            $proxy = Proxy::instance();
+            $data = $proxy->getDataMapper($entity);
 
             if($data->isDeleted()){
                 throw new RuntimeException("The record was already deleted");
@@ -205,7 +206,7 @@ class EntityManager
                 throw new RuntimeException("Can't delete an unsaved entity");
             }
 
-            Proxy::instance()->markAsDeleted($data);
+            $proxy->markAsDeleted($data);
 
             $mapper = $data->getEntityMapper();
 
