@@ -24,6 +24,7 @@ use Opis\ORM\IEntityMapper;
 
 class Tag extends Entity implements IEntityMapper
 {
+
     public function name(): string
     {
         return $this->orm()->getColumn('id');
@@ -31,7 +32,9 @@ class Tag extends Entity implements IEntityMapper
 
     public function setName(string $name)
     {
-        $this->orm()->setColumn('id', $name);
+        if ($this->orm()->isNew()) {
+            $this->orm()->setColumn('id', $name);
+        }
     }
 
     /**
