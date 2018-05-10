@@ -60,7 +60,7 @@ class DataMapper
     protected $relations = [];
 
     /** @var bool */
-    protected $dehydrated = false;
+    protected $stale = false;
 
     /** @var bool */
     protected $deleted = false;
@@ -161,7 +161,7 @@ class DataMapper
      */
     public function getColumn(string $name)
     {
-        if ($this->dehydrated) {
+        if ($this->stale) {
             $this->hydrate();
         }
 
@@ -211,7 +211,7 @@ class DataMapper
             throw new RuntimeException("The record was deleted");
         }
 
-        if ($this->dehydrated) {
+        if ($this->stale) {
             $this->hydrate();
         }
 
@@ -356,9 +356,9 @@ class DataMapper
     /**
      * Force hydration
      */
-    public function dehydrate()
+    public function stale()
     {
-        $this->dehydrated = true;
+        $this->stale = true;
     }
 
     /**
@@ -377,7 +377,7 @@ class DataMapper
             }
         }
 
-        $this->dehydrated = true;
+        $this->stale = true;
         $this->isNew = false;
         $this->modified = [];
         if (!empty($this->pendingLinks)) {
@@ -489,7 +489,7 @@ class DataMapper
      */
     protected function hydrate()
     {
-        if (!$this->dehydrated) {
+        if (!$this->stale) {
             return;
         }
 
@@ -510,7 +510,7 @@ class DataMapper
         $this->columns = [];
         $this->relations = [];
         $this->loaders = [];
-        $this->dehydrated = false;
+        $this->stale = false;
     }
 
     /**
