@@ -151,6 +151,10 @@ class EntityManager
             return $id !== false ? $proxy->markAsSaved($data, $id) : false;
         }
 
+        if (!$data->wasModified()) {
+            return true;
+        }
+
         $modified = $data->getModifiedColumns(false);
 
         if (!empty($modified)) {
@@ -176,7 +180,10 @@ class EntityManager
             }, null, false);
         }
 
-        return true;
+        return $this->connection->transaction(function(Connection $connection) use($data, $proxy) {
+            $proxy->executePendingLinkage($data);
+            return true;
+        }, null, false);
     }
 
     /**

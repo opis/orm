@@ -139,6 +139,14 @@ class DataMapper
     }
 
     /**
+     * @return bool
+     */
+    public function wasModified(): bool
+    {
+        return !empty($this->modified) || !empty($this->pendingLinks);
+    }
+
+    /**
      * @return array
      */
     public function getRawColumns(): array
@@ -321,21 +329,19 @@ class DataMapper
     /**
      * @param string $relation
      * @param Entity $entity
-     * @param bool $immediate
      */
-    public function link(string $relation, Entity $entity, bool $immediate = false)
+    public function link(string $relation, Entity $entity)
     {
-        $this->linkOrUnlink($relation, $entity, $immediate, true);
+        $this->linkOrUnlink($relation, $entity, true);
     }
 
     /**
      * @param string $relation
      * @param Entity $entity
-     * @param bool $immediate
      */
-    public function unlink(string $relation, Entity $entity, bool $immediate = false)
+    public function unlink(string $relation, Entity $entity)
     {
-        $this->linkOrUnlink($relation, $entity, $immediate, false);
+        $this->linkOrUnlink($relation, $entity, false);
     }
 
     /**
@@ -397,6 +403,9 @@ class DataMapper
             $this->rawColumns['updated_at'] = $updatedAt;
         }
         $this->modified = [];
+        if (!empty($this->pendingLinks)) {
+            $this->executePendingLinkage();
+        }
         return true;
     }
 
@@ -534,10 +543,9 @@ class DataMapper
     /**
      * @param string $relation
      * @param Entity $entity
-     * @param bool $immediate
      * @param bool $link
      */
-    private function linkOrUnlink(string $relation, Entity $entity, bool $immediate, bool $link)
+    private function linkOrUnlink(string $relation, Entity $entity, bool $link)
     {
         $relations = $this->mapper->getRelations();
 
@@ -550,17 +558,10 @@ class DataMapper
             throw new RuntimeException("Unsupported relation type");
         }
 
-        if ($this->isNew || !$immediate) {
-            $this->pendingLinks[] = [
-                'relation' => $rel,
-                'entity' => $entity,
-                'link' => $link,
-            ];
-            return;
-        } elseif ($link) {
-            $rel->link($this, $entity);
-        } else {
-            $rel->unlink($this, $entity);
-        }
+        $this->pendingLinks[] = [
+            'relation' => $rel,
+            'entity' => $entity,
+            'link' => $link,
+        ];
     }
 }
