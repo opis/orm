@@ -18,7 +18,9 @@
 namespace Opis\ORM\Relations;
 
 use Opis\Database\SQL\SQLStatement;
-use Opis\ORM\{Entity, EntityManager};
+use Opis\ORM\{
+    Entity, EntityManager
+};
 use Opis\ORM\Core\{
     DataMapper, EntityMapper, EntityQuery, LazyLoader, Proxy, Relation, Query, EntityProxy
 };
@@ -31,7 +33,7 @@ class BelongsTo extends Relation
      */
     public function addRelatedEntity(DataMapper $owner, Entity $entity = null)
     {
-        if($entity === null){
+        if ($entity === null) {
             $columns = [];
             $mapper = $owner->getEntityManager()->resolveEntityMapper($this->entityClass);
         } else {
@@ -40,7 +42,7 @@ class BelongsTo extends Relation
             $columns = $related->getRawColumns();
         }
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $mapper->getForeignKey();
         }
 
@@ -59,12 +61,12 @@ class BelongsTo extends Relation
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $related->getForeignKey();
         }
 
         $ids = [];
-        foreach ($options['results'] as $result){
+        foreach ($options['results'] as $result) {
             foreach ($this->foreignKey->getInverseValue($result, true) as $pk_col => $pk_val) {
                 $ids[$pk_col][] = $pk_val;
             }
@@ -81,8 +83,8 @@ class BelongsTo extends Relation
                 $select->where($col)->is(reset($val));
             }
         }
-        
-        if($options['callback'] !== null){
+
+        if ($options['callback'] !== null) {
             $options['callback'](new Query($statement));
         }
 
@@ -90,7 +92,7 @@ class BelongsTo extends Relation
 
         return new LazyLoader($select, $this->foreignKey, true, false, $options['immediate']);
     }
-    
+
     /**
      * @param DataMapper $data
      * @param callable|null $callback
@@ -101,7 +103,7 @@ class BelongsTo extends Relation
         $manager = $data->getEntityManager();
         $related = $manager->resolveEntityMapper($this->entityClass);
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $related->getForeignKey();
         }
 
@@ -112,12 +114,12 @@ class BelongsTo extends Relation
             $select->where($pk_column)->is($pk_value);
         }
 
-        if($this->queryCallback !== null || $callback !== null){
+        if ($this->queryCallback !== null || $callback !== null) {
             $query = $select;//new Query($statement);
-            if($this->queryCallback !== null){
+            if ($this->queryCallback !== null) {
                 ($this->queryCallback)($query);
             }
-            if($callback !== null){
+            if ($callback !== null) {
                 $callback($query);
             }
         }

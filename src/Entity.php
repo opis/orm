@@ -17,7 +17,9 @@
 
 namespace Opis\ORM;
 
-use Opis\ORM\Core\{DataMapper, EntityMapper};
+use Opis\ORM\Core\{
+    DataMapper, EntityMapper
+};
 
 abstract class Entity
 {
@@ -36,13 +38,14 @@ abstract class Entity
      * @param bool $isReadOnly
      * @param bool $isNew
      */
-    final public function __construct(EntityManager $entityManager,
-                                      EntityMapper $entityMapper,
-                                      array $columns = [],
-                                      array $loaders = [],
-                                      bool $isReadOnly = false,
-                                      bool $isNew = false)
-    {
+    final public function __construct(
+        EntityManager $entityManager,
+        EntityMapper $entityMapper,
+        array $columns = [],
+        array $loaders = [],
+        bool $isReadOnly = false,
+        bool $isNew = false
+    ) {
         $this->dataMapperArgs = [$entityManager, $entityMapper, $columns, $loaders, $isReadOnly, $isNew];
     }
 
@@ -51,7 +54,7 @@ abstract class Entity
      */
     final protected function orm(): DataMapper
     {
-        if($this->dataMapper === null){
+        if ($this->dataMapper === null) {
             $this->dataMapper = new DataMapper(...$this->dataMapperArgs);
             unset($this->dataMapperArgs);
         }

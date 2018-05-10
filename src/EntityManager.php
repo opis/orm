@@ -19,14 +19,16 @@ namespace Opis\ORM;
 
 use RuntimeException;
 use Opis\Database\Connection;
-use Opis\Database\SQL\{Compiler, Insert, Update};
+use Opis\Database\SQL\{
+    Compiler, Insert, Update
+};
 use Opis\ORM\Core\{
     EntityMapper, EntityQuery, Proxy
 };
 
 class EntityManager
 {
-    /** @var Connection  */
+    /** @var Connection */
     protected $connection;
 
     /** @var  Compiler */
@@ -74,7 +76,7 @@ class EntityManager
      */
     public function getCompiler(): Compiler
     {
-        if($this->compiler === null){
+        if ($this->compiler === null) {
             $this->compiler = $this->connection->getCompiler();
         }
 
@@ -86,7 +88,7 @@ class EntityManager
      */
     public function getDateFormat(): string
     {
-        if($this->dateFormat === null){
+        if ($this->dateFormat === null) {
             $this->dateFormat = $this->getCompiler()->getDateFormat();
         }
 
@@ -111,20 +113,20 @@ class EntityManager
         $proxy = Proxy::instance();
         $data = $proxy->getDataMapper($entity);
 
-        if($data->isDeleted()){
+        if ($data->isDeleted()) {
             throw new RuntimeException("The record is deleted");
         }
 
-        if($data->isNew()) {
+        if ($data->isNew()) {
 
-            $id = $this->connection->transaction(function (Connection $connection) use($data) {
+            $id = $this->connection->transaction(function (Connection $connection) use ($data) {
                 $columns = $data->getRawColumns();
                 $mapper = $data->getEntityMapper();
 
-                if(null !== $pkgen = $mapper->getPrimaryKeyGenerator()){
+                if (null !== $pkgen = $mapper->getPrimaryKeyGenerator()) {
                     $pk_data = $pkgen($data);
                     if (is_array($pk_data)) {
-                        foreach ($pk_data as $pk_column => $pk_value){
+                        foreach ($pk_data as $pk_column => $pk_value) {
                             $columns[$pk_column] = $pk_value;
                         }
                     } else {
@@ -132,7 +134,7 @@ class EntityManager
                     }
                 }
 
-                if($mapper->supportsTimestamp()){
+                if ($mapper->supportsTimestamp()) {
                     $columns['created_at'] = date($this->getDateFormat());
                     $columns['updated_at'] = null;
                 }
@@ -151,14 +153,14 @@ class EntityManager
 
         $modified = $data->getModifiedColumns(false);
 
-        if(!empty($modified)){
-            return $this->connection->transaction(function (Connection $connection) use($data, $proxy, $modified) {
+        if (!empty($modified)) {
+            return $this->connection->transaction(function (Connection $connection) use ($data, $proxy, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
                 $mapper = $data->getEntityMapper();
 
                 $updatedAt = null;
 
-                if($mapper->supportsTimestamp()){
+                if ($mapper->supportsTimestamp()) {
                     $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
                 }
 
@@ -170,7 +172,7 @@ class EntityManager
                     $update->where($pk_col)->is($pk_val);
                 }
 
-                return (bool) $update->set($columns);
+                return (bool)$update->set($columns);
             }, null, false);
         }
 
@@ -193,16 +195,16 @@ class EntityManager
      */
     public function delete(Entity $entity): bool
     {
-        return $this->connection->transaction(function() use($entity) {
+        return $this->connection->transaction(function () use ($entity) {
 
             $proxy = Proxy::instance();
             $data = $proxy->getDataMapper($entity);
 
-            if($data->isDeleted()){
+            if ($data->isDeleted()) {
                 throw new RuntimeException("The record was already deleted");
             }
 
-            if($data->isNew()){
+            if ($data->isNew()) {
                 throw new RuntimeException("Can't delete an unsaved entity");
             }
 
@@ -216,8 +218,8 @@ class EntityManager
                 $delete->where($pk_col)->is($pk_val);
             }
 
-            return (bool) $delete->delete();
-        }, null,false);
+            return (bool)$delete->delete();
+        }, null, false);
     }
 
     /**
@@ -226,7 +228,7 @@ class EntityManager
      */
     public function resolveEntityMapper(string $class): EntityMapper
     {
-        if(isset($this->entityMappers[$class])){
+        if (isset($this->entityMappers[$class])) {
             return $this->entityMappers[$class];
         }
 
@@ -236,13 +238,13 @@ class EntityManager
             throw new RuntimeException("Reflection error for '$class'", 0, $e);
         }
 
-        if(!$reflection->isSubclassOf(Entity::class)){
+        if (!$reflection->isSubclassOf(Entity::class)) {
             throw new RuntimeException("The '$class' must extend " . Entity::class);
         }
 
-        if(isset($this->entityMappersCallbacks[$class])){
-           $callback = $this->entityMappersCallbacks[$class];
-        } elseif ($reflection->implementsInterface(IEntityMapper::class)){
+        if (isset($this->entityMappersCallbacks[$class])) {
+            $callback = $this->entityMappersCallbacks[$class];
+        } elseif ($reflection->implementsInterface(IEntityMapper::class)) {
             $callback = $class . '::mapEntity';
         } else {
             $callback = null;
@@ -250,7 +252,7 @@ class EntityManager
 
         $entityMapper = new EntityMapper($class);
 
-        if($callback !== null){
+        if ($callback !== null) {
             $callback($entityMapper);
         }
 

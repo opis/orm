@@ -20,30 +20,34 @@ namespace Opis\ORM\Core;
 use DateTime;
 use RuntimeException;
 use Opis\Database\SQL\Select;
-use Opis\ORM\{Entity, EntityManager};
-use Opis\ORM\Relations\{BelongsTo, HasOneOrMany, HasOneOrManyThrough};
+use Opis\ORM\{
+    Entity, EntityManager
+};
+use Opis\ORM\Relations\{
+    BelongsTo, HasOneOrMany, HasOneOrManyThrough
+};
 
 class DataMapper
 {
-    /** @var array  */
+    /** @var array */
     protected $rawColumns;
 
-    /** @var array  */
+    /** @var array */
     protected $columns = [];
 
     /** @var  LazyLoader[] */
     protected $loaders;
 
-    /** @var EntityManager  */
+    /** @var EntityManager */
     protected $manager;
 
-    /** @var EntityMapper  */
+    /** @var EntityMapper */
     protected $mapper;
 
-    /** @var bool  */
+    /** @var bool */
     protected $isReadOnly;
 
-    /** @var bool  */
+    /** @var bool */
     protected $isNew;
 
     /** @var  string|null */
@@ -58,7 +62,7 @@ class DataMapper
     /** @var bool */
     protected $dehydrated = false;
 
-    /** @var bool  */
+    /** @var bool */
     protected $deleted = false;
 
     /** @var array */
@@ -73,8 +77,14 @@ class DataMapper
      * @param bool $isReadOnly
      * @param bool $isNew
      */
-    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, array $columns, array $loaders, bool $isReadOnly, bool $isNew)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        EntityMapper $entityMapper,
+        array $columns,
+        array $loaders,
+        bool $isReadOnly,
+        bool $isNew
+    ) {
         $this->manager = $entityManager;
         $this->mapper = $entityMapper;
         $this->loaders = $loaders;
@@ -82,7 +92,7 @@ class DataMapper
         $this->isNew = $isNew;
         $this->rawColumns = $columns;
 
-        if($isNew && !empty($columns)){
+        if ($isNew && !empty($columns)) {
             $this->rawColumns = [];
             $this->assign($columns);
         }
@@ -159,36 +169,36 @@ class DataMapper
      */
     public function getColumn(string $name)
     {
-        if($this->dehydrated){
+        if ($this->dehydrated) {
             $this->hydrate();
         }
 
-        if($this->deleted){
+        if ($this->deleted) {
             throw new RuntimeException("The record was deleted");
         }
 
-        if(array_key_exists($name, $this->columns)){
+        if (array_key_exists($name, $this->columns)) {
             return $this->columns[$name];
         }
 
-        if(!array_key_exists($name, $this->rawColumns)){
+        if (!array_key_exists($name, $this->rawColumns)) {
             throw new RuntimeException("Unknown column '$name'");
         }
 
         $value = $this->rawColumns[$name];
         $casts = $this->mapper->getTypeCasts();
 
-        if(isset($casts[$name])){
+        if (isset($casts[$name])) {
             $value = $this->castGet($value, $casts[$name]);
         }
 
-        if($name === $this->mapper->getPrimaryKey()){
+        if ($name === $this->mapper->getPrimaryKey()) {
             return $this->columns[$name] = $value;
         }
 
         $getters = $this->mapper->getGetters();
 
-        if(isset($getters[$name])){
+        if (isset($getters[$name])) {
             $value = $getters[$name]($value);
         }
 
@@ -201,26 +211,26 @@ class DataMapper
      */
     public function setColumn(string $name, $value)
     {
-        if($this->isReadOnly){
+        if ($this->isReadOnly) {
             throw new RuntimeException("The record is readonly");
         }
 
-        if($this->deleted){
+        if ($this->deleted) {
             throw new RuntimeException("The record was deleted");
         }
 
-        if($this->dehydrated){
+        if ($this->dehydrated) {
             $this->hydrate();
         }
 
         $casts = $this->mapper->getTypeCasts();
         $setters = $this->mapper->getSetters();
 
-        if(isset($setters[$name])){
+        if (isset($setters[$name])) {
             $value = $setters[$name]($value);
         }
 
-        if(isset($casts[$name])){
+        if (isset($casts[$name])) {
             $value = $this->castSet($value, $casts[$name]);
         }
 
@@ -247,23 +257,23 @@ class DataMapper
      */
     public function getRelated(string $name, callable $callback = null)
     {
-        if(array_key_exists($name, $this->relations)){
+        if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
         }
 
         $relations = $this->mapper->getRelations();
 
-        if(!isset($relations[$name])){
+        if (!isset($relations[$name])) {
             throw new RuntimeException("Unknown relation '$name'");
         }
 
         $this->hydrate();
 
-        if(isset($this->relations[$name])){
+        if (isset($this->relations[$name])) {
             return $this->relations[$name];
         }
 
-        if(isset($this->loaders[$name])){
+        if (isset($this->loaders[$name])) {
             return $this->relations[$name] = $this->loaders[$name]->getResult($this);
         }
 
@@ -278,18 +288,18 @@ class DataMapper
     {
         $relations = $this->mapper->getRelations();
 
-        if(!isset($relations[$relation])){
+        if (!isset($relations[$relation])) {
             throw new RuntimeException("Unknown relation '$relation'");
         }
 
         $rel = $relations[$relation];
 
         /** @var $rel BelongsTo|HasOneOrMany */
-        if(!($rel instanceof BelongsTo) && !($rel instanceof HasOneOrMany)){
+        if (!($rel instanceof BelongsTo) && !($rel instanceof HasOneOrMany)) {
             throw new RuntimeException("Unsupported relation type");
         }
 
-        if($entity === null && !($rel instanceof BelongsTo)){
+        if ($entity === null && !($rel instanceof BelongsTo)) {
             throw new RuntimeException("Unsupported relation type");
         }
 
@@ -303,16 +313,16 @@ class DataMapper
     public function link(string $relation, $items)
     {
         $relations = $this->mapper->getRelations();
-        if(!isset($relations[$relation])){
+        if (!isset($relations[$relation])) {
             throw new RuntimeException("Unknown relation '$relation'");
         }
 
         /** @var $rel HasOneOrManyThrough */
-        if(!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)){
+        if (!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)) {
             throw new RuntimeException("Unsupported relation type");
         }
 
-        if($this->isNew){
+        if ($this->isNew) {
             $this->pendingLinks[] = [
                 'relation' => $rel,
                 'items' => $items,
@@ -331,16 +341,16 @@ class DataMapper
     public function unlink(string $relation, $items)
     {
         $relations = $this->mapper->getRelations();
-        if(!isset($relations[$relation])){
+        if (!isset($relations[$relation])) {
             throw new RuntimeException("Unknown relation '$relation'");
         }
 
         /** @var $rel HasOneOrManyThrough */
-        if(!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)){
+        if (!(($rel = $relations[$relation]) instanceof HasOneOrManyThrough)) {
             throw new RuntimeException("Unsupported relation type");
         }
 
-        if($this->isNew){
+        if ($this->isNew) {
             $this->pendingLinks[] = [
                 'relation' => $rel,
                 'items' => $items,
@@ -357,12 +367,12 @@ class DataMapper
      */
     public function assign(array $columns)
     {
-        if(null !== $fillable = $this->mapper->getFillableColumns()){
+        if (null !== $fillable = $this->mapper->getFillableColumns()) {
             $columns = array_intersect_key($columns, array_flip($fillable));
-        } elseif (null !== $guarded = $this->mapper->getGuardedColumns()){
+        } elseif (null !== $guarded = $this->mapper->getGuardedColumns()) {
             $columns = array_diff_key($columns, array_flip($guarded));
         }
-        foreach ($columns as $name => $value){
+        foreach ($columns as $name => $value) {
             $this->setColumn($name, $value);
         }
     }
@@ -386,7 +396,7 @@ class DataMapper
         $this->dehydrated = true;
         $this->isNew = false;
         $this->modified = [];
-        if(!empty($this->pendingLinks)){
+        if (!empty($this->pendingLinks)) {
             $this->executePendingLinkage();
         }
         return true;
@@ -396,9 +406,9 @@ class DataMapper
      * @param string|null $updatedAt
      * @return bool
      */
-    protected function markAsUpdated(string $updatedAt =  null): bool
+    protected function markAsUpdated(string $updatedAt = null): bool
     {
-        if($updatedAt !== null){
+        if ($updatedAt !== null) {
             unset($this->columns['updated_at']);
             $this->rawColumns['updated_at'] = $updatedAt;
         }
@@ -423,24 +433,24 @@ class DataMapper
     {
         $originalCast = $cast;
 
-        if($cast[0] === '?'){
-            if($value === null){
+        if ($cast[0] === '?') {
+            if ($value === null) {
                 return null;
             }
             $cast = substr($cast, 1);
         }
 
-        switch ($cast){
+        switch ($cast) {
             case 'int':
             case 'integer':
-                return (int) $value;
+                return (int)$value;
             case 'float':
-                return (float) $value;
+                return (float)$value;
             case 'bool':
             case 'boolean':
-                return (bool) $value;
+                return (bool)$value;
             case 'string':
-                return (string) $value;
+                return (string)$value;
             case 'date':
                 return DateTime::createFromFormat($this->manager->getDateFormat(), $value);
             case 'json':
@@ -461,24 +471,24 @@ class DataMapper
     {
         $originalCast = $cast;
 
-        if($cast[0] === '?'){
-            if($value === null){
+        if ($cast[0] === '?') {
+            if ($value === null) {
                 return null;
             }
             $cast = substr($cast, 1);
         }
 
-        switch ($cast){
+        switch ($cast) {
             case 'int':
             case 'integer':
-                return (int) $value;
+                return (int)$value;
             case 'float':
-                return (float) $value;
+                return (float)$value;
             case 'bool':
             case 'boolean':
-                return (int) $value;
+                return (int)$value;
             case 'string':
-                return (string) $value;
+                return (string)$value;
             case 'date':
                 /** @var $value DateTime */
                 return $value->format($this->manager->getDateFormat());
@@ -495,7 +505,7 @@ class DataMapper
      */
     protected function hydrate()
     {
-        if(!$this->dehydrated){
+        if (!$this->dehydrated) {
             return;
         }
 
@@ -507,7 +517,7 @@ class DataMapper
 
         $columns = $select->select()->fetchAssoc()->first();
 
-        if($columns === false){
+        if ($columns === false) {
             $this->deleted = true;
             return;
         }
@@ -524,10 +534,10 @@ class DataMapper
      */
     protected function executePendingLinkage()
     {
-        foreach ($this->pendingLinks as $item){
+        foreach ($this->pendingLinks as $item) {
             /** @var HasOneOrManyThrough $rel */
             $rel = $item['relation'];
-            if($item['link']){
+            if ($item['link']) {
                 $rel->link($this, $item['items']);
             } else {
                 $rel->unlink($this, $item['items']);

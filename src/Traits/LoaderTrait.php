@@ -48,8 +48,8 @@ trait LoaderTrait
      */
     protected function getWithAttributes(): array
     {
-        $with = array();
-        $extra = array();
+        $with = [];
+        $extra = [];
 
         foreach ($this->with as $key => $value) {
             $fullName = $value;
@@ -69,13 +69,13 @@ trait LoaderTrait
                     $with[$name] = $callback;
 
                     if (!isset($extra[$name])) {
-                        $extra[$name] = array();
+                        $extra[$name] = [];
                     }
                 }
             } else {
                 if (!isset($extra[$name])) {
                     $with[$name] = null;
-                    $extra[$name] = array();
+                    $extra[$name] = [];
                 }
 
                 $t = &$extra[$name];
@@ -92,9 +92,9 @@ trait LoaderTrait
             }
         }
 
-        return array(
+        return [
             'with' => $with,
             'extra' => $extra,
-        );
+        ];
     }
 }

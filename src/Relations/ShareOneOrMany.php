@@ -19,7 +19,9 @@ namespace Opis\ORM\Relations;
 
 use Opis\ORM\Entity;
 use Opis\ORM\EntityManager;
-use Opis\Database\SQL\{Delete, Insert, Join, SQLStatement};
+use Opis\Database\SQL\{
+    Delete, Insert, Join, SQLStatement
+};
 use Opis\ORM\Core\{
     DataMapper, EntityMapper, EntityQuery, ForeignKey, Junction, LazyLoader, Proxy, Query, Relation
 };
@@ -32,11 +34,12 @@ class ShareOneOrMany extends Relation
     /** @var  bool */
     protected $hasMany;
 
-    public function __construct(string $entityClass,
-                                ForeignKey $foreignKey = null,
-                                Junction $junction = null,
-                                bool $hasMany = false)
-    {
+    public function __construct(
+        string $entityClass,
+        ForeignKey $foreignKey = null,
+        Junction $junction = null,
+        bool $hasMany = false
+    ) {
         parent::__construct($entityClass, $foreignKey);
         $this->hasMany = $hasMany;
         $this->junction = $junction;
@@ -57,7 +60,7 @@ class ShareOneOrMany extends Relation
             $this->junction = $this->buildJunction($owner, $related);
         }
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
 
@@ -75,7 +78,7 @@ class ShareOneOrMany extends Relation
         $cmd = new Insert($manager->getConnection());
         $cmd->insert($values);
 
-        return (bool) $cmd->into($this->junction->table());
+        return (bool)$cmd->into($this->junction->table());
     }
 
     /**
@@ -93,7 +96,7 @@ class ShareOneOrMany extends Relation
             $this->junction = $this->buildJunction($owner, $related);
         }
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
 
@@ -114,7 +117,7 @@ class ShareOneOrMany extends Relation
             $cmd->where($column)->is($value);
         }
 
-        return (bool) $cmd->delete();
+        return (bool)$cmd->delete();
     }
 
     /**
@@ -131,7 +134,7 @@ class ShareOneOrMany extends Relation
             $this->junction = $this->buildJunction($owner, $related);
         }
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
 
@@ -147,7 +150,8 @@ class ShareOneOrMany extends Relation
 
         $statement = new SQLStatement();
 
-        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery{
+        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery
+        {
 
             protected $junctionTable;
 
@@ -170,11 +174,11 @@ class ShareOneOrMany extends Relation
             }
         };
 
-        $linkKey = new ForeignKey(array_map(function($value) use($junctionTable) {
+        $linkKey = new ForeignKey(array_map(function ($value) use ($junctionTable) {
             return 'hidden_' . $junctionTable . '_' . $value;
         }, $this->foreignKey->columns()));
 
-        $select->join($joinTable, function (Join $join) use($junctionTable, $joinTable) {
+        $select->join($joinTable, function (Join $join) use ($junctionTable, $joinTable) {
             foreach ($this->junction->columns() as $pk_column => $fk_column) {
                 $join->on($junctionTable . '.' . $fk_column, $joinTable . '.' . $pk_column);
             }
@@ -191,7 +195,7 @@ class ShareOneOrMany extends Relation
             $statement->addColumn($junctionTable . '.' . $fk_col, $linkKeyCols[$pk_col]);
         }
 
-        if($options['callback'] !== null){
+        if ($options['callback'] !== null) {
             $options['callback'](new Query($statement));
         }
 
@@ -210,7 +214,7 @@ class ShareOneOrMany extends Relation
             $this->junction = $this->buildJunction($owner, $related);
         }
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
 
@@ -219,7 +223,8 @@ class ShareOneOrMany extends Relation
 
         $statement = new SQLStatement();
 
-        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery{
+        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery
+        {
 
             protected $junctionTable;
 
@@ -242,7 +247,7 @@ class ShareOneOrMany extends Relation
             }
         };
 
-        $select->join($joinTable, function (Join $join) use($junctionTable, $joinTable){
+        $select->join($joinTable, function (Join $join) use ($junctionTable, $joinTable) {
             foreach ($this->junction->columns() as $pk_column => $fk_column) {
                 $join->on($junctionTable . '.' . $fk_column, $joinTable . '.' . $pk_column);
             }
@@ -254,12 +259,12 @@ class ShareOneOrMany extends Relation
 
         $statement->addColumn($joinTable . '.*');
 
-        if($this->queryCallback !== null || $callback !== null){
+        if ($this->queryCallback !== null || $callback !== null) {
             $query = $select;//new Query($statement);
-            if($this->queryCallback !== null){
+            if ($this->queryCallback !== null) {
                 ($this->queryCallback)($query);
             }
-            if($callback !== null){
+            if ($callback !== null) {
                 $callback($query);
             }
         }
@@ -272,9 +277,10 @@ class ShareOneOrMany extends Relation
      * @param EntityMapper $related
      * @return Junction
      */
-    protected function buildJunction(EntityMapper $owner,EntityMapper $related): Junction
+    protected function buildJunction(EntityMapper $owner, EntityMapper $related): Junction
     {
-        return new class($owner, $related) extends Junction {
+        return new class($owner, $related) extends Junction
+        {
             public function __construct(EntityMapper $owner, EntityMapper $related)
             {
                 $table = [$owner->getTable(), $related->getTable()];

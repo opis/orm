@@ -18,8 +18,12 @@
 namespace Opis\ORM\Core;
 
 use Opis\Database\Connection;
-use Opis\Database\SQL\{Delete, SQLStatement, Update};
-use Opis\ORM\{Entity, EntityManager};
+use Opis\Database\SQL\{
+    Delete, SQLStatement, Update
+};
+use Opis\ORM\{
+    Entity, EntityManager
+};
 use Opis\ORM\Traits\AggregateTrait;
 
 class EntityQuery extends Query
@@ -41,8 +45,11 @@ class EntityQuery extends Query
      * @param EntityMapper $entityMapper
      * @param SQLStatement|null $statement
      */
-    public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, SQLStatement $statement = null)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        EntityMapper $entityMapper,
+        SQLStatement $statement = null
+    ) {
         parent::__construct($statement);
         $this->mapper = $entityMapper;
         $this->manager = $entityManager;
@@ -54,19 +61,19 @@ class EntityQuery extends Query
      */
     public function filter($names): self
     {
-        if(!is_array($names)){
+        if (!is_array($names)) {
             $names = [$names];
         }
 
         $query = new Query($this->sql);
         $filters = $this->mapper->getFilters();
 
-        foreach ($names as $name => $data){
+        foreach ($names as $name => $data) {
             if (is_int($name)) {
                 $name = $data;
                 $data = null;
             }
-            if(isset($filters[$name])){
+            if (isset($filters[$name])) {
                 $filters[$name]($query, $data);
             }
         }
@@ -81,10 +88,10 @@ class EntityQuery extends Query
     public function get(array $columns = [])
     {
         $result = $this->query($columns)
-                       ->fetchAssoc()
-                       ->first();
+            ->fetchAssoc()
+            ->first();
 
-        if($result === false){
+        if ($result === false) {
             return null;
         }
 
@@ -100,8 +107,8 @@ class EntityQuery extends Query
     public function all(array $columns = []): array
     {
         $results = $this->query($columns)
-                         ->fetchAssoc()
-                         ->all();
+            ->fetchAssoc()
+            ->all();
 
         $entities = [];
 
@@ -109,7 +116,7 @@ class EntityQuery extends Query
         $isReadOnly = $this->isReadOnly();
         $loaders = $this->getLazyLoaders($results);
 
-        foreach ($results as $result){
+        foreach ($results as $result) {
             $entities[] = new $class($this->manager, $this->mapper, $result, $loaders, $isReadOnly, false);
         }
 
@@ -124,10 +131,10 @@ class EntityQuery extends Query
      */
     public function delete(bool $force = false, array $tables = [])
     {
-        return $this->transaction(function (Connection $connection) use($tables, $force) {
-            if(!$force && $this->mapper->supportsSoftDelete()){
+        return $this->transaction(function (Connection $connection) use ($tables, $force) {
+            if (!$force && $this->mapper->supportsSoftDelete()) {
                 return (new Update($connection, $this->mapper->getTable(), $this->sql))->set([
-                    'deleted_at' => date($this->manager->getDateFormat())
+                    'deleted_at' => date($this->manager->getDateFormat()),
                 ]);
             }
             return (new Delete($connection, $this->mapper->getTable(), $this->sql))->delete($tables);
@@ -141,8 +148,8 @@ class EntityQuery extends Query
      */
     public function update(array $columns = [])
     {
-        return $this->transaction(function (Connection $connection) use($columns) {
-            if($this->mapper->supportsTimestamp()){
+        return $this->transaction(function (Connection $connection) use ($columns) {
+            if ($this->mapper->supportsTimestamp()) {
                 $columns['updated_at'] = date($this->manager->getDateFormat());
             }
             return (new Update($connection, $this->mapper->getTable(), $this->sql))->set($columns);
@@ -157,10 +164,10 @@ class EntityQuery extends Query
      */
     public function increment($column, $value = 1)
     {
-        return $this->transaction(function (Connection $connection) use($column, $value) {
-            if($this->mapper->supportsTimestamp()){
+        return $this->transaction(function (Connection $connection) use ($column, $value) {
+            if ($this->mapper->supportsTimestamp()) {
                 $this->sql->addUpdateColumns([
-                    'updated_at' => date($this->manager->getDateFormat())
+                    'updated_at' => date($this->manager->getDateFormat()),
                 ]);
             }
             return (new Update($connection, $this->mapper->getTable(), $this->sql))->increment($column, $value);
@@ -175,10 +182,10 @@ class EntityQuery extends Query
      */
     public function decrement($column, $value = 1)
     {
-        return $this->transaction(function(Connection $connection) use($column, $value) {
-            if($this->mapper->supportsTimestamp()){
+        return $this->transaction(function (Connection $connection) use ($column, $value) {
+            if ($this->mapper->supportsTimestamp()) {
                 $this->sql->addUpdateColumns([
-                    'updated_at' => date($this->manager->getDateFormat())
+                    'updated_at' => date($this->manager->getDateFormat()),
                 ]);
             }
             return (new Update($connection, $this->mapper->getTable(), $this->sql))->decrement($column, $value);
@@ -253,15 +260,15 @@ class EntityQuery extends Query
     protected function query(array $columns = [])
     {
         if (!$this->buildQuery()->locked && !empty($columns)) {
-            foreach ((array) $this->mapper->getPrimaryKey()->columns() as $pk_column) {
+            foreach ((array)$this->mapper->getPrimaryKey()->columns() as $pk_column) {
                 $columns[] = $pk_column;
             }
         }
 
-        if($this->mapper->supportsSoftDelete()){
-            if(!$this->withSoftDeleted){
+        if ($this->mapper->supportsSoftDelete()) {
+            if (!$this->withSoftDeleted) {
                 $this->where('deleted_at')->isNull();
-            } elseif ($this->onlySoftDeleted){
+            } elseif ($this->onlySoftDeleted) {
                 $this->where('deleted_at')->notNull();
             }
         }
@@ -273,7 +280,7 @@ class EntityQuery extends Query
 
         return $connection->query($compiler->select($this->sql), $compiler->getParams());
     }
-    
+
     /**
      * @return mixed
      */
@@ -281,10 +288,10 @@ class EntityQuery extends Query
     {
         $this->sql->addTables([$this->mapper->getTable()]);
 
-        if($this->mapper->supportsSoftDelete()){
-            if(!$this->withSoftDeleted){
+        if ($this->mapper->supportsSoftDelete()) {
+            if (!$this->withSoftDeleted) {
                 $this->where('deleted_at')->isNull();
-            } elseif ($this->onlySoftDeleted){
+            } elseif ($this->onlySoftDeleted) {
                 $this->where('deleted_at')->notNull();
             }
         }
@@ -310,7 +317,7 @@ class EntityQuery extends Query
      */
     protected function getLazyLoaders(array $results): array
     {
-        if(empty($this->with) || empty($results)){
+        if (empty($this->with) || empty($results)) {
             return [];
         }
 
@@ -319,18 +326,18 @@ class EntityQuery extends Query
         $relations = $this->mapper->getRelations();
 
         foreach ($attr['with'] as $with => $callback) {
-            if(!isset($relations[$with])){
+            if (!isset($relations[$with])) {
                 continue;
             }
 
-            $loader = $relations[$with]->getLazyLoader($this->manager, $this->mapper,[
+            $loader = $relations[$with]->getLazyLoader($this->manager, $this->mapper, [
                 'results' => $results,
                 'callback' => $callback,
                 'with' => $attr[$with]['extra'] ?? [],
                 'immediate' => $this->immediate,
             ]);
 
-            if(null === $loader){
+            if (null === $loader) {
                 continue;
             }
             $loaders[$with] = $loader;

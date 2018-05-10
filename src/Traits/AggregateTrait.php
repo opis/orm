@@ -17,7 +17,9 @@
 
 namespace Opis\ORM\Traits;
 
-use Opis\Database\SQL\{ColumnExpression, SQLStatement};
+use Opis\Database\SQL\{
+    ColumnExpression, SQLStatement
+};
 
 trait AggregateTrait
 {

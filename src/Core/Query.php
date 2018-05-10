@@ -17,8 +17,12 @@
 
 namespace Opis\ORM\Core;
 
-use Opis\Database\SQL\{BaseStatement, HavingStatement, SQLStatement};
-use Opis\ORM\Traits\{LoaderTrait, SelectTrait, SoftDeletesTrait};
+use Opis\Database\SQL\{
+    BaseStatement, HavingStatement, SQLStatement
+};
+use Opis\ORM\Traits\{
+    LoaderTrait, SelectTrait, SoftDeletesTrait
+};
 
 class Query extends BaseStatement
 {

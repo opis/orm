@@ -144,7 +144,7 @@ class Proxy
         if ($proxy === null) {
             try {
                 $proxy = new self();
-            } catch (\ReflectionException $exception){
+            } catch (\ReflectionException $exception) {
 
             }
         }

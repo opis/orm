@@ -18,9 +18,11 @@
 namespace Opis\ORM\Relations;
 
 use Opis\Database\SQL\SQLStatement;
-use Opis\ORM\{Entity, EntityManager};
+use Opis\ORM\{
+    Entity, EntityManager
+};
 use Opis\ORM\Core\{
-    DataMapper, EntityMapper, EntityQuery, ForeignKey, LazyLoader, Proxy, Relation, Query, EntityProxy
+    DataMapper, EntityMapper, EntityQuery, ForeignKey, LazyLoader, Proxy, Relation, Query
 };
 
 class HasOneOrMany extends Relation
@@ -48,7 +50,7 @@ class HasOneOrMany extends Relation
     {
         $mapper = $owner->getEntityMapper();
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $mapper->getForeignKey();
         }
 
@@ -69,7 +71,7 @@ class HasOneOrMany extends Relation
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
 
@@ -88,14 +90,14 @@ class HasOneOrMany extends Relation
         foreach ($this->foreignKey->getValue($ids, true) as $fk_col => $fk_val) {
             $select->where($fk_col)->in($fk_val);
         }
-        
 
-        if($options['callback'] !== null){
+
+        if ($options['callback'] !== null) {
             $options['callback'](new Query($statement));
         }
 
         $select->with($options['with'], $options['immediate']);
-        
+
         return new LazyLoader($select, $this->foreignKey, false, $this->hasMany, $options['immediate']);
     }
 
@@ -110,7 +112,7 @@ class HasOneOrMany extends Relation
         $owner = $data->getEntityMapper();
         $related = $manager->resolveEntityMapper($this->entityClass);
 
-        if($this->foreignKey === null){
+        if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
 
@@ -121,12 +123,12 @@ class HasOneOrMany extends Relation
             $select->where($fk_column)->is($fk_value);
         }
 
-        if($this->queryCallback !== null || $callback !== null){
+        if ($this->queryCallback !== null || $callback !== null) {
             $query = $select;//new Query($statement);
-            if($this->queryCallback !== null){
+            if ($this->queryCallback !== null) {
                 ($this->queryCallback)($query);
             }
-            if($callback !== null){
+            if ($callback !== null) {
                 $callback($query);
             }
         }

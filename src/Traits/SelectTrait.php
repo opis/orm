@@ -18,7 +18,9 @@
 namespace Opis\ORM\Traits;
 
 use Closure;
-use Opis\Database\SQL\{ColumnExpression, HavingStatement, SQLStatement};
+use Opis\Database\SQL\{
+    ColumnExpression, HavingStatement, SQLStatement
+};
 
 trait SelectTrait
 {
@@ -34,10 +36,10 @@ trait SelectTrait
 
 
     /**
-     * @param   string|array|Closure    $columns
+     * @param   string|array|Closure $columns
      *
      */
-    public function select($columns = array())
+    public function select($columns = [])
     {
         $expr = new ColumnExpression($this->getSQLStatement());
 
@@ -45,7 +47,7 @@ trait SelectTrait
             $columns($expr);
         } else {
             if (!is_array($columns)) {
-                $columns = array($columns);
+                $columns = [$columns];
             }
             $expr->columns($columns);
         }
@@ -68,15 +70,15 @@ trait SelectTrait
     public function groupBy($columns): self
     {
         if (!is_array($columns)) {
-            $columns = array($columns);
+            $columns = [$columns];
         }
         $this->getSQLStatement()->addGroupBy($columns);
         return $this;
     }
 
     /**
-     * @param   string  $column
-     * @param   Closure $value  (optional)
+     * @param   string $column
+     * @param   Closure $value (optional)
      *
      * @return  self|mixed
      */
@@ -87,7 +89,7 @@ trait SelectTrait
     }
 
     /**
-     * @param   string  $column
+     * @param   string $column
      * @param   Closure $value
      *
      * @return  self|mixed
@@ -99,7 +101,7 @@ trait SelectTrait
     }
 
     /**
-     * @param   string  $column
+     * @param   string $column
      * @param   Closure $value
      *
      * @return  self|mixed
@@ -111,16 +113,16 @@ trait SelectTrait
     }
 
     /**
-     * @param   string|array    $columns
-     * @param   string          $order      (optional)
-     * @param   string          $nulls      (optional)
+     * @param   string|array $columns
+     * @param   string $order (optional)
+     * @param   string $nulls (optional)
      *
      * @return  self|mixed
      */
     public function orderBy($columns, string $order = 'ASC', string $nulls = null): self
     {
         if (!is_array($columns)) {
-            $columns = array($columns);
+            $columns = [$columns];
         }
         $this->getSQLStatement()->addOrder($columns, $order, $nulls);
         return $this;

@@ -24,7 +24,7 @@ class LazyLoader
     /** @var EntityQuery */
     protected $query;
 
-    /** @var bool  */
+    /** @var bool */
     protected $inverse;
 
     /** @var ForeignKey */
@@ -47,14 +47,19 @@ class LazyLoader
      * @param bool $hasMany
      * @param bool $immediate
      */
-    public function __construct(EntityQuery $query, ForeignKey $foreignKey, bool $inverse, bool $hasMany, bool $immediate)
-    {
+    public function __construct(
+        EntityQuery $query,
+        ForeignKey $foreignKey,
+        bool $inverse,
+        bool $hasMany,
+        bool $immediate
+    ) {
         $this->query = $query;
         $this->foreignKey = $foreignKey;
         $this->inverse = $inverse;
         $this->hasMany = $hasMany;
 
-        if($immediate){
+        if ($immediate) {
             $this->loadResults();
         }
     }
@@ -97,7 +102,7 @@ class LazyLoader
      */
     protected function loadResults()
     {
-        if($this->results === null){
+        if ($this->results === null) {
             $this->results = $this->query->all();
             $this->keys = [];
             $proxy = Proxy::instance();

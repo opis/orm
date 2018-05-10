@@ -19,7 +19,7 @@ namespace Opis\ORM\Core;
 
 class EntityMapper
 {
-    /** @var string  */
+    /** @var string */
     protected $entityClass;
 
     protected $originalEntityClass;
@@ -30,7 +30,7 @@ class EntityMapper
     /** @var string|null */
     protected $table;
 
-    /** @var null|PrimaryKey  */
+    /** @var null|PrimaryKey */
     protected $primaryKey;
 
     /** @var null|ForeignKey */
@@ -45,7 +45,7 @@ class EntityMapper
     /** @var callable[] */
     protected $setters = [];
 
-    /** @var array  */
+    /** @var array */
     protected $casts = [];
 
     /** @var Relation[] */
@@ -156,8 +156,8 @@ class EntityMapper
      */
     public function relation(string $name): RelationFactory
     {
-        return new RelationFactory($name, function ($name, Relation $relation){
-           return $this->relations[$name] = $relation;
+        return new RelationFactory($name, function ($name, Relation $relation) {
+            return $this->relations[$name] = $relation;
         });
     }
 
@@ -185,7 +185,7 @@ class EntityMapper
      * @param bool $value
      * @return EntityMapper
      */
-    public function useTimestamp(bool $value = true):self
+    public function useTimestamp(bool $value = true): self
     {
         $this->timestamp = $value;
         return $this;
@@ -273,7 +273,8 @@ class EntityMapper
         if ($this->foreignKey === null) {
             $pk = $this->getPrimaryKey();
             $prefix = $this->getClassShortName();
-            $this->foreignKey = new class($pk, $prefix) extends ForeignKey {
+            $this->foreignKey = new class($pk, $prefix) extends ForeignKey
+            {
                 /**
                  *  constructor.
                  * @param PrimaryKey $primaryKey
@@ -332,7 +333,7 @@ class EntityMapper
      */
     public function getSequence(): string
     {
-        if($this->sequence === null){
+        if ($this->sequence === null) {
             $this->sequence = $this->getTable() . '_' . $this->getPrimaryKey()->columns()[0] . '_seq';
         }
         return $this->sequence;
