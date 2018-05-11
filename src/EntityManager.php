@@ -141,7 +141,7 @@ class EntityManager
 
                 (new Insert($connection))->insert($columns)->into($mapper->getTable());
 
-                if ($pkgen !== null && !is_array($pk_data)) {
+                if ($pkgen !== null && isset($pk_data) && !is_array($pk_data)) {
                     return $pk_data ?? false;
                 }
 

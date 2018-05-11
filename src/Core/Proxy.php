@@ -17,7 +17,6 @@
 
 namespace Opis\ORM\Core;
 
-use Opis\ORM\EntityManager;
 use ReflectionClass;
 use ReflectionProperty;
 use Opis\ORM\Entity;

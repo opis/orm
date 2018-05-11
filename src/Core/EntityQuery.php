@@ -22,7 +22,7 @@ use Opis\Database\SQL\{
     Delete, SQLStatement, Update
 };
 use Opis\ORM\{
-    Entity, EntityManager
+    EntityManager
 };
 use Opis\ORM\Traits\AggregateTrait;
 

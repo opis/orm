@@ -22,7 +22,7 @@ use Opis\ORM\{
     Entity, EntityManager
 };
 use Opis\ORM\Core\{
-    DataMapper, EntityMapper, EntityQuery, LazyLoader, Proxy, Relation, Query, EntityProxy
+    DataMapper, EntityMapper, EntityQuery, LazyLoader, Proxy, Relation, Query
 };
 
 class BelongsTo extends Relation
