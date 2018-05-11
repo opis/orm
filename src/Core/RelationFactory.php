@@ -48,9 +48,7 @@ class RelationFactory
      */
     public function hasOne(string $entityClass, ForeignKey $foreignKey = null): Relation
     {
-        $relation = new HasOneOrMany($entityClass, $foreignKey);
-        $callback = $this->callback;
-        return $callback($this->name, $relation);
+        return ($this->callback)($this->name, new HasOneOrMany($entityClass, $foreignKey));
     }
 
     /**
@@ -60,9 +58,7 @@ class RelationFactory
      */
     public function hasMany(string $entityClass, ForeignKey $foreignKey = null): Relation
     {
-        $relation = new HasOneOrMany($entityClass, $foreignKey, true);
-        $callback = $this->callback;
-        return $callback($this->name, $relation);
+        return ($this->callback)($this->name, new HasOneOrMany($entityClass, $foreignKey, true));
     }
 
     /**
@@ -72,9 +68,7 @@ class RelationFactory
      */
     public function belongsTo(string $entityClass, ForeignKey $foreignKey = null): Relation
     {
-        $relation = new BelongsTo($entityClass, $foreignKey);
-        $callback = $this->callback;
-        return $callback($this->name, $relation);
+        return ($this->callback)($this->name, new BelongsTo($entityClass, $foreignKey));
     }
 
     /**
@@ -85,9 +79,7 @@ class RelationFactory
      */
     public function shareOne(string $entityClass, ForeignKey $foreignKey = null, Junction $junction = null): Relation
     {
-        $relation = new ShareOneOrMany($entityClass, $foreignKey, $junction);
-        $callback = $this->callback;
-        return $callback($this->name, $relation);
+        return ($this->callback)($this->name, new ShareOneOrMany($entityClass, $foreignKey, $junction));
     }
 
     /**
@@ -98,8 +90,6 @@ class RelationFactory
      */
     public function shareMany(string $entityClass, ForeignKey $foreignKey = null, Junction $junction = null): Relation
     {
-        $relation = new ShareOneOrMany($entityClass, $foreignKey, $junction, true);
-        $callback = $this->callback;
-        return $callback($this->name, $relation);
+        return ($this->callback)($this->name, new ShareOneOrMany($entityClass, $foreignKey, $junction, true));
     }
 }
