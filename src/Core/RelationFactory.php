@@ -19,7 +19,7 @@ namespace Opis\ORM\Core;
 
 use Closure;
 use Opis\ORM\Relations\{
-    BelongsTo, HasOneOrManyThrough, HasOneOrMany, ShareOneOrMany
+    BelongsTo, HasOneOrMany, ShareOneOrMany
 };
 
 class RelationFactory
