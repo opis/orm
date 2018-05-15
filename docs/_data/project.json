@@ -12,8 +12,8 @@
     },
     "title_suffix": " | Opis ORM",
     "ga": false,
-    "logo": "/orm/assets/v2/logo.svg",
-    "favicon": "/orm/assets/v2/favicon.png",
+    "logo": "/assets/v2/logo.svg",
+    "favicon": "/assets/v2/favicon.png",
     "styles": [
         "https://cristiansarca.github.io/themesolution/opis/css/bootstrap.css",
         "/assets/v2/prism.css",
