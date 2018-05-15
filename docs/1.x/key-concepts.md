@@ -25,8 +25,9 @@ class User extends Entity
 }
 ```
 
-The base class provides a single method, named `orm`, which returns a
+The entity base class, provides a single method, named `orm`, which returns a
 [data mapper][0] object, that can be used to manipulate the row's records.
+
 
 ```php
 use Opis\ORM\Entity;
@@ -39,9 +40,9 @@ class User extends Entity
     }
 }
 ```
-
-The constructor of the base entity class is marked as `final`, therefor
-you can not provide a custom `__construct` method.
+Since an entity is not meant to be directly instantiable,
+the constructor of the base entity class is marked as being `final`, 
+in order to prevent to be accidentally overwritten.
 
 ```php
 use Opis\ORM\Entity;

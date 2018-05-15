@@ -1,6 +1,6 @@
 ---
 layout: project
 version: 1.x
-title: Query builders
+title: Query builder
 ---
-# Query builders
+# Query builder

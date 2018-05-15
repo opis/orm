@@ -1,9 +1,9 @@
 ---
 layout: project
 version: 1.x
-title: The entity manager
+title: Entity manager
 ---
-# The entity manager
+# Entity manager
 
 1. [Instantiation](#instantiation)
 2. [Creating entities](#creating-entities)
@@ -45,6 +45,7 @@ use My\Blog\User;
  */
 $user = $orm->create(User::class);
 ```
+
 ## Persisting entities
 
 The newly created entity is not persisted into the database until
@@ -82,7 +83,7 @@ $orm->save($user);
 ## Fetching entities
 
 Fetching existing records is done with the help of the `query` method.
-The method returns an instance of a *query builder* that provides 
+The method returns an instance of a [query builder][0] that provides 
 various methods that can be used to filter records.
 
 ```php
@@ -110,3 +111,5 @@ if (!$orm->delete($user)) {
     die('Could not delete user');
 }
 ```
+
+[0]: query-builder.html "Query builder"

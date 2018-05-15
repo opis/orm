@@ -34,8 +34,9 @@ class User extends Entity
 }
 ```
 
-The constructor of the base entity class is marked as `final`, therefor
-you can not provide a custom `__construct` method.
+Since an entity is not meant to be directly instantiable,
+the constructor of the base entity class is marked as being `final`, 
+in order to prevent of being accidentally overwritten.
 
 ```php
 use Opis\ORM\Entity;

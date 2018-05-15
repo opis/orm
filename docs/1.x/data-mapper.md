@@ -1,6 +1,7 @@
 ---
 layout: project
 version: 1.x
-title: Data mappers
+title: Data mapper
 ---
-# Data mappers
+# Data mapper
+

@@ -34,14 +34,14 @@
                     "description": "Query builder"
                 },
                 {
-                    "title": "Entity mappers",
-                    "url": "/1.x/entity-mappers.html",
-                    "description": "Registering entity mappers"
-                },
-                {
                     "title": "Data mapper",
                     "url": "/1.x/data-mapper.html",
                     "description": "Learn how to use data mappers"
+                },
+                {
+                    "title": "Entity mappers",
+                    "url": "/1.x/entity-mappers.html",
+                    "description": "Registering entity mappers"
                 },
                 {
                     "title": "Entity mapping",
