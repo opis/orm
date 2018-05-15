@@ -13,7 +13,11 @@ compress_html:
   blanklines: true
   profile: false
   startings: []
-favicon: /assets/img/favicon.png
+favicon: /assets/v2/favicon.png
+layouts_dir: shared/_private/_layouts
+includes_dir: shared/_private/_includes
+exclude: ["Gemfile", "Gemfile.lock", "node_modules",
+"vendor/bundle/", "vendor/cache/", "vendor/gems/", "vendor/ruby/", "shared"]
 plugins:
   - jekyll-coffeescript
   - jekyll-paginate
