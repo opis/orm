@@ -18,7 +18,7 @@
 namespace Opis\ORM\Test\Entities;
 
 use Opis\ORM\Core\DataMapper;
-use Opis\ORM\Core\EntityMapper;
+use Opis\ORM\IEntityMapper;
 use Opis\ORM\Core\Query;
 use Opis\ORM\Entity;
 use Opis\ORM\IMappableEntity;
@@ -77,7 +77,7 @@ class User extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(EntityMapper $mapper)
+    public static function mapEntity(IEntityMapper $mapper)
     {
         $mapper->primaryKeyGenerator(function(DataMapper $data){
             return $data->getColumn('id');

@@ -17,10 +17,9 @@
 
 namespace Opis\ORM\Test\Entities;
 
-use Opis\ORM\Core\DataMapper;
-use Opis\ORM\Core\EntityMapper;
-use Opis\ORM\Entity;
-use Opis\ORM\IMappableEntity;
+use Opis\ORM\{
+    Core\DataMapper, Core\EntityMapper, Entity, IMappableEntity, IEntityMapper
+};
 
 class Tag extends Entity implements IMappableEntity
 {
@@ -48,7 +47,7 @@ class Tag extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(EntityMapper $mapper)
+    public static function mapEntity(IEntityMapper $mapper)
     {
         $mapper->primaryKeyGenerator(function(DataMapper $data){
             return $data->getColumn('id');
