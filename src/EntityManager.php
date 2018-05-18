@@ -110,8 +110,7 @@ class EntityManager
      */
     public function save(Entity $entity): bool
     {
-        $proxy = Proxy::instance();
-        $data = $proxy->getDataMapper($entity);
+        $data = Proxy::instance()->getDataMapper($entity);
 
         if ($data->isDeleted()) {
             throw new RuntimeException("The record is deleted");
@@ -148,7 +147,7 @@ class EntityManager
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
             }, null, false);
 
-            return $id !== false ? $proxy->markAsSaved($data, $id) : false;
+            return $id !== false ? $data->markAsSaved($id) : false;
         }
 
         if (!$data->wasModified()) {
@@ -158,7 +157,7 @@ class EntityManager
         $modified = $data->getModifiedColumns(false);
 
         if (!empty($modified)) {
-            return $this->connection->transaction(function (Connection $connection) use ($data, $proxy, $modified) {
+            return $this->connection->transaction(function (Connection $connection) use ($data, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), $modified);
                 $mapper = $data->getEntityMapper();
 
@@ -168,7 +167,7 @@ class EntityManager
                     $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
                 }
 
-                $proxy->markAsUpdated($data, $updatedAt);
+                $data->markAsUpdated($updatedAt);
 
                 $update = new Update($connection, $mapper->getTable());
 
@@ -180,8 +179,8 @@ class EntityManager
             }, null, false);
         }
 
-        return $this->connection->transaction(function(Connection $connection) use($data, $proxy) {
-            $proxy->executePendingLinkage($data);
+        return $this->connection->transaction(function(Connection $connection) use($data) {
+            $data->executePendingLinkage();
             return true;
         }, null, false);
     }
@@ -204,8 +203,7 @@ class EntityManager
     {
         return $this->connection->transaction(function () use ($entity) {
 
-            $proxy = Proxy::instance();
-            $data = $proxy->getDataMapper($entity);
+            $data = Proxy::instance()->getDataMapper($entity);
 
             if ($data->isDeleted()) {
                 throw new RuntimeException("The record was already deleted");
@@ -215,17 +213,15 @@ class EntityManager
                 throw new RuntimeException("Can't delete an unsaved entity");
             }
 
-            $proxy->markAsDeleted($data);
-
+            $data->markAsDeleted();
             $mapper = $data->getEntityMapper();
-
             $delete = new EntityQuery($this, $mapper);
 
             foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pk_col => $pk_val) {
                 $delete->where($pk_col)->is($pk_val);
             }
 
-            return (bool)$delete->delete();
+            return (bool) $delete->delete();
         }, null, false);
     }
 
