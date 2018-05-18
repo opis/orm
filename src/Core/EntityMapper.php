@@ -17,7 +17,9 @@
 
 namespace Opis\ORM\Core;
 
-class EntityMapper
+use Opis\ORM\IEntityMapper;
+
+class EntityMapper implements IEntityMapper
 {
     /** @var string */
     protected $entityClass;
@@ -82,7 +84,7 @@ class EntityMapper
      * @param string $class
      * @return EntityMapper
      */
-    public function entityClass(string $class): self
+    public function entityClass(string $class): IEntityMapper
     {
         $this->entityClass = $class;
         return $this;
@@ -92,7 +94,7 @@ class EntityMapper
      * @param string $table
      * @return EntityMapper
      */
-    public function table(string $table): self
+    public function table(string $table): IEntityMapper
     {
         $this->table = $table;
         return $this;
@@ -102,7 +104,7 @@ class EntityMapper
      * @param string ...$primaryKey
      * @return EntityMapper
      */
-    public function primaryKey(string ...$primaryKey): self
+    public function primaryKey(string ...$primaryKey): IEntityMapper
     {
         $this->primaryKey = new PrimaryKey(...$primaryKey);
         return $this;
@@ -112,7 +114,7 @@ class EntityMapper
      * @param callable $callback
      * @return EntityMapper
      */
-    public function primaryKeyGenerator(callable $callback): self
+    public function primaryKeyGenerator(callable $callback): IEntityMapper
     {
         $this->primaryKeyGenerator = $callback;
         return $this;
@@ -122,7 +124,7 @@ class EntityMapper
      * @param string $sequence
      * @return EntityMapper
      */
-    public function sequence(string $sequence): self
+    public function sequence(string $sequence): IEntityMapper
     {
         $this->sequence = $sequence;
         return $this;
@@ -133,7 +135,7 @@ class EntityMapper
      * @param callable $callback
      * @return EntityMapper
      */
-    public function getter(string $column, callable $callback): self
+    public function getter(string $column, callable $callback): IEntityMapper
     {
         $this->getters[$column] = $callback;
         return $this;
@@ -144,7 +146,7 @@ class EntityMapper
      * @param callable $callback
      * @return EntityMapper
      */
-    public function setter(string $column, callable $callback): self
+    public function setter(string $column, callable $callback): IEntityMapper
     {
         $this->setters[$column] = $callback;
         return $this;
@@ -165,7 +167,7 @@ class EntityMapper
      * @param array $casts
      * @return EntityMapper
      */
-    public function cast(array $casts): self
+    public function cast(array $casts): IEntityMapper
     {
         $this->casts = $casts;
         return $this;
@@ -175,7 +177,7 @@ class EntityMapper
      * @param bool $value
      * @return EntityMapper
      */
-    public function useSoftDelete(bool $value = true): self
+    public function useSoftDelete(bool $value = true): IEntityMapper
     {
         $this->softDelete = $value;
         return $this;
@@ -185,7 +187,7 @@ class EntityMapper
      * @param bool $value
      * @return EntityMapper
      */
-    public function useTimestamp(bool $value = true): self
+    public function useTimestamp(bool $value = true): IEntityMapper
     {
         $this->timestamp = $value;
         return $this;
@@ -195,7 +197,7 @@ class EntityMapper
      * @param string[] $columns
      * @return EntityMapper
      */
-    public function fillable(array $columns): self
+    public function fillable(array $columns): IEntityMapper
     {
         $this->fillable = $columns;
         return $this;
@@ -205,7 +207,7 @@ class EntityMapper
      * @param string[] $columns
      * @return EntityMapper
      */
-    public function guarded(array $columns): self
+    public function guarded(array $columns): IEntityMapper
     {
         $this->guarded = $columns;
         return $this;
@@ -216,7 +218,7 @@ class EntityMapper
      * @param callable $callback
      * @return EntityMapper
      */
-    public function filter(string $name, callable $callback): self
+    public function filter(string $name, callable $callback): IEntityMapper
     {
         $this->filters[$name] = $callback;
         return $this;
