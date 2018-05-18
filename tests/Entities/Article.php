@@ -20,10 +20,10 @@ namespace Opis\ORM\Test\Entities;
 use Opis\ORM\Core\EntityMapper;
 use Opis\ORM\Core\Query;
 use Opis\ORM\Entity;
-use Opis\ORM\IEntityMapper;
+use Opis\ORM\IMappableEntity;
 use function Opis\ORM\Test\unique_id;
 
-class Article extends Entity implements IEntityMapper
+class Article extends Entity implements IMappableEntity
 {
     public function id(): string
     {

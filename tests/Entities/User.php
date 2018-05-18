@@ -21,9 +21,9 @@ use Opis\ORM\Core\DataMapper;
 use Opis\ORM\Core\EntityMapper;
 use Opis\ORM\Core\Query;
 use Opis\ORM\Entity;
-use Opis\ORM\IEntityMapper;
+use Opis\ORM\IMappableEntity;
 
-class User extends Entity implements IEntityMapper
+class User extends Entity implements IMappableEntity
 {
     public function id(): int
     {

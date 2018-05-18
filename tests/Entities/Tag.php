@@ -20,9 +20,9 @@ namespace Opis\ORM\Test\Entities;
 use Opis\ORM\Core\DataMapper;
 use Opis\ORM\Core\EntityMapper;
 use Opis\ORM\Entity;
-use Opis\ORM\IEntityMapper;
+use Opis\ORM\IMappableEntity;
 
-class Tag extends Entity implements IEntityMapper
+class Tag extends Entity implements IMappableEntity
 {
 
     public function name(): string

@@ -19,7 +19,7 @@ namespace Opis\ORM;
 
 use Opis\ORM\Core\EntityMapper;
 
-interface IEntityMapper
+interface IMappableEntity
 {
     /**
      * @param EntityMapper $mapper
