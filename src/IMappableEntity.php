@@ -17,13 +17,11 @@
 
 namespace Opis\ORM;
 
-use Opis\ORM\Core\EntityMapper;
-
 interface IMappableEntity
 {
     /**
-     * @param EntityMapper $mapper
+     * @param IEntityMapper $mapper
      * @return mixed
      */
-    public static function mapEntity(EntityMapper $mapper);
+    public static function mapEntity(IEntityMapper $mapper);
 }
