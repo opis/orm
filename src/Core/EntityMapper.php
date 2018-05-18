@@ -63,7 +63,7 @@ class EntityMapper implements IEntityMapper
     protected $timestamp = true;
 
     /** @var  null|array */
-    protected $fillable;
+    protected $assignable;
 
     /** @var null|array */
     protected $guarded;
@@ -197,9 +197,9 @@ class EntityMapper implements IEntityMapper
      * @param string[] $columns
      * @return EntityMapper
      */
-    public function fillable(array $columns): IEntityMapper
+    public function assignable(array $columns): IEntityMapper
     {
-        $this->fillable = $columns;
+        $this->assignable = $columns;
         return $this;
     }
 
@@ -362,9 +362,9 @@ class EntityMapper implements IEntityMapper
     /**
      * @return string[]|null
      */
-    public function getFillableColumns()
+    public function getAssignableColumns()
     {
-        return $this->fillable;
+        return $this->assignable;
     }
 
     /**

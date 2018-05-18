@@ -349,7 +349,7 @@ class DataMapper implements IDataMapper
      */
     public function assign(array $columns)
     {
-        if (null !== $fillable = $this->mapper->getFillableColumns()) {
+        if (null !== $fillable = $this->mapper->getAssignableColumns()) {
             $columns = array_intersect_key($columns, array_flip($fillable));
         } elseif (null !== $guarded = $this->mapper->getGuardedColumns()) {
             $columns = array_diff_key($columns, array_flip($guarded));

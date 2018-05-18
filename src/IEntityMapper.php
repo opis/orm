@@ -93,7 +93,7 @@ interface IEntityMapper
      * @param string[] $columns
      * @return IEntityMapper
      */
-    public function fillable(array $columns): self;
+    public function assignable(array $columns): self;
 
     /**
      * @param string[] $columns
