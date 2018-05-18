@@ -98,43 +98,6 @@ class Proxy
     }
 
     /**
-     * @param DataMapper $data
-     * @param $id
-     * @return bool
-     */
-    public function markAsSaved(DataMapper $data, $id): bool
-    {
-        return $this->markAsSaved->invoke($data, $id);
-    }
-
-    /**
-     * @param DataMapper $data
-     * @param string|null $updatedAt
-     * @return bool
-     */
-    public function markAsUpdated(DataMapper $data, string $updatedAt = null): bool
-    {
-        return $this->markAsUpdated->invoke($data, $updatedAt);
-    }
-
-    /**
-     * @param DataMapper $data
-     * @return bool
-     */
-    public function markAsDeleted(DataMapper $data): bool
-    {
-        return $this->markAsDeleted->invoke($data);
-    }
-
-    /**
-     * @param DataMapper $data
-     */
-    public function executePendingLinkage(DataMapper $data)
-    {
-        $this->executePendingLinkage->invoke($data);
-    }
-
-    /**
      * @return Proxy
      */
     public static function instance(): Proxy
