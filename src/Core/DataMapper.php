@@ -371,7 +371,7 @@ class DataMapper implements IDataMapper
      * @param $id
      * @return bool
      */
-    protected function markAsSaved($id): bool
+    public function markAsSaved($id): bool
     {
         $pk = $this->mapper->getPrimaryKey();
 
@@ -396,7 +396,7 @@ class DataMapper implements IDataMapper
      * @param string|null $updatedAt
      * @return bool
      */
-    protected function markAsUpdated(string $updatedAt = null): bool
+    public function markAsUpdated(string $updatedAt = null): bool
     {
         if ($updatedAt !== null) {
             unset($this->columns['updated_at']);
@@ -412,9 +412,27 @@ class DataMapper implements IDataMapper
     /**
      * @return bool
      */
-    protected function markAsDeleted(): bool
+    public function markAsDeleted(): bool
     {
         return $this->deleted = true;
+    }
+
+    /**
+     * Execute pending linkage
+     */
+    public function executePendingLinkage()
+    {
+        foreach ($this->pendingLinks as $item) {
+            /** @var ShareOneOrMany $rel */
+            $rel = $item['relation'];
+            if ($item['link']) {
+                $rel->link($this, $item['entity']);
+            } else {
+                $rel->unlink($this, $item['entity']);
+            }
+        }
+
+        $this->pendingLinks = [];
     }
 
     /**
@@ -520,24 +538,6 @@ class DataMapper implements IDataMapper
         $this->relations = [];
         $this->loaders = [];
         $this->stale = false;
-    }
-
-    /**
-     * Execute pending linkage
-     */
-    protected function executePendingLinkage()
-    {
-        foreach ($this->pendingLinks as $item) {
-            /** @var ShareOneOrMany $rel */
-            $rel = $item['relation'];
-            if ($item['link']) {
-                $rel->link($this, $item['entity']);
-            } else {
-                $rel->unlink($this, $item['entity']);
-            }
-        }
-
-        $this->pendingLinks = [];
     }
 
     /**
