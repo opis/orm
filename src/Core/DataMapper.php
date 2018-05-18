@@ -21,13 +21,13 @@ use DateTime;
 use RuntimeException;
 use Opis\Database\SQL\Select;
 use Opis\ORM\{
-    Entity, EntityManager
+    Entity, EntityManager, IDataMapper
 };
 use Opis\ORM\Relations\{
     BelongsTo, HasOneOrMany, ShareOneOrMany
 };
 
-class DataMapper
+class DataMapper implements IDataMapper
 {
     /** @var array */
     protected $rawColumns;
