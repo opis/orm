@@ -122,8 +122,8 @@ class EntityManager
                 $columns = $data->getRawColumns();
                 $mapper = $data->getEntityMapper();
 
-                if (null !== $pkgen = $mapper->getPrimaryKeyGenerator()) {
-                    $pk_data = $pkgen($data);
+                if (null !== $pk_generator = $mapper->getPrimaryKeyGenerator()) {
+                    $pk_data = $pk_generator($data);
                     if (is_array($pk_data)) {
                         foreach ($pk_data as $pk_column => $pk_value) {
                             $columns[$pk_column] = $pk_value;
@@ -140,7 +140,7 @@ class EntityManager
 
                 (new Insert($connection))->insert($columns)->into($mapper->getTable());
 
-                if ($pkgen !== null && isset($pk_data) && !is_array($pk_data)) {
+                if ($pk_generator !== null && isset($pk_data) && !is_array($pk_data)) {
                     return $pk_data ?? false;
                 }
 
