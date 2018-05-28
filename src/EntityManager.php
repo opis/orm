@@ -41,7 +41,7 @@ class EntityManager
     protected $entityMappers = [];
 
     /** @var callable[] */
-    protected $entityMappersCallbacks;
+    protected $entityMappingCallbacks;
 
     /**
      * EntityManager constructor.
@@ -51,7 +51,7 @@ class EntityManager
     public function __construct(Connection $connection, array $callbacks = [])
     {
         $this->connection = $connection;
-        $this->entityMappersCallbacks = $callbacks;
+        $this->entityMappingCallbacks = $callbacks;
     }
 
     /**
@@ -245,8 +245,8 @@ class EntityManager
             throw new RuntimeException("The '$class' must extend " . Entity::class);
         }
 
-        if (isset($this->entityMappersCallbacks[$class])) {
-            $callback = $this->entityMappersCallbacks[$class];
+        if (isset($this->entityMappingCallbacks[$class])) {
+            $callback = $this->entityMappingCallbacks[$class];
         } elseif ($reflection->implementsInterface(IMappableEntity::class)) {
             $callback = $class . '::mapEntity';
         } else {
@@ -267,9 +267,9 @@ class EntityManager
      * @param callable $callback
      * @return EntityManager
      */
-    public function registerEntityMapper(string $class, callable $callback): self
+    public function registerMappingCallback(string $class, callable $callback): self
     {
-        $this->entityMappersCallbacks[$class] = $callback;
+        $this->entityMappingCallbacks[$class] = $callback;
         return $this;
     }
 }
