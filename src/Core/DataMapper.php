@@ -155,12 +155,11 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @param bool $list
-     * @return array
+     * @return string[]
      */
-    public function getModifiedColumns(bool $list = true): array
+    public function getModifiedColumns(): array
     {
-        return $list ? array_keys($this->modified) : $this->modified;
+        return array_keys($this->modified);
     }
 
     /**

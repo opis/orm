@@ -45,10 +45,9 @@ interface IDataMapper
     public function getRawColumns(): array;
 
     /**
-     * @param bool $list
-     * @return array
+     * @return string[]
      */
-    public function getModifiedColumns(bool $list = true): array;
+    public function getModifiedColumns(): array;
 
     /**
      * @param string $name

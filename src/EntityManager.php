@@ -154,11 +154,11 @@ class EntityManager
             return true;
         }
 
-        $modified = $data->getModifiedColumns(false);
+        $modified = $data->getModifiedColumns();
 
         if (!empty($modified)) {
             return $this->connection->transaction(function (Connection $connection) use ($data, $modified) {
-                $columns = array_intersect_key($data->getRawColumns(), $modified);
+                $columns = array_intersect_key($data->getRawColumns(), array_flip($modified));
                 $mapper = $data->getEntityMapper();
 
                 $updatedAt = null;
