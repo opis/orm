@@ -110,4 +110,12 @@ class ForeignKey
 
         return $value;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return implode(', ', $this->columns);
+    }
 }

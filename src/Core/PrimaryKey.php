@@ -89,4 +89,12 @@ class PrimaryKey
     {
         return $this->getValue(Proxy::instance()->getEntityColumns($entity), $map);
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return implode(', ', $this->columns);
+    }
 }
