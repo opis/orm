@@ -66,6 +66,21 @@ class User extends Entity implements IMappableEntity
         return $this->orm()->getRelated('articles');
     }
 
+    public function publishedArticles(bool $prefix = false): array
+    {
+        return $this->orm()->getRelated($prefix ? 'pub:articles' : 'articles', function(Query $query){
+            $query->where('published')->is(true);
+        });
+    }
+
+
+    public function unpublishedArticles(bool $prefix = false): array
+    {
+        return $this->orm()->getRelated($prefix ? 'unpub:articles' : 'articles', function(Query $query){
+            $query->where('published')->is(false);
+        });
+    }
+
     /**
      * @return Profile|null
      */

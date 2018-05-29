@@ -10,8 +10,9 @@
     {"id": 8, "name": "Olivia", "age": 32, "gender": "f"}
   ],
   "articles": [
-    {"id": "00000000000000000000000000000001", "user_id": 1, "title": "Hello, World!", "content": "My first article"},
-    {"id": "00000000000000000000000000000002", "user_id": 1, "title": "Second article", "content": "My second article"}
+    {"id": "00000000000000000000000000000001", "user_id": 1, "published": true, "title": "Hello, World!", "content": "My first article"},
+    {"id": "00000000000000000000000000000002", "user_id": 1, "published": true, "title": "Second article", "content": "My second article"},
+    {"id": "00000000000000000000000000000003", "user_id": 1, "published": false, "title": "Third article", "content": "My third article"}
   ],
   "profiles": [
     {"id": "00000000000000000000000000000001", "user_id": 1, "city": "New York"}

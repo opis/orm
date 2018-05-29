@@ -42,6 +42,24 @@ class RelationsTest extends TestCase
         $this->assertEquals("Hello, World!", $user->articles()[0]->title());
     }
 
+    public function testHasManyUseUnprefixed()
+    {
+        /** @var User $user */
+        $user = entity(User::class)->find(1);
+        $this->assertEquals(3, count($user->articles()));
+        $this->assertEquals(3, count($user->publishedArticles()));
+        $this->assertEquals(3, count($user->unpublishedArticles()));
+    }
+
+    public function testHasManyUsePrefixed()
+    {
+        /** @var User $user */
+        $user = entity(User::class)->find(1);
+        $this->assertEquals(3, count($user->articles()));
+        $this->assertEquals(2, count($user->publishedArticles(true)));
+        $this->assertEquals(1, count($user->unpublishedArticles(true)));
+    }
+
     public function testBelongsTo()
     {
         /** @var Article $article */

@@ -54,6 +54,7 @@ $schema->create('users', function(CreateTable $table) {
 $schema->create('articles', function(CreateTable $table){
     $table->string('id', 32)->primary();
     $table->integer('user_id')->notNull()->index();
+    $table->boolean('published')->notNull();
     $table->string('title')->notNull();
     $table->string('content')->notNull();
 
