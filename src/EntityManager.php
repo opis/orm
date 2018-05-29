@@ -197,11 +197,12 @@ class EntityManager
 
     /**
      * @param Entity $entity
+     * @param bool $force
      * @return bool
      */
-    public function delete(Entity $entity): bool
+    public function delete(Entity $entity, bool $force = false): bool
     {
-        return $this->connection->transaction(function () use ($entity) {
+        return $this->connection->transaction(function () use ($entity, $force) {
 
             $data = Proxy::instance()->getDataMapper($entity);
 
@@ -221,7 +222,7 @@ class EntityManager
                 $delete->where($pk_col)->is($pk_val);
             }
 
-            return (bool) $delete->delete();
+            return (bool) $delete->delete($force);
         }, null, false);
     }
 
