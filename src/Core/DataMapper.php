@@ -270,21 +270,27 @@ class DataMapper implements IDataMapper
 
         $relations = $this->mapper->getRelations();
 
+        $cache_key = $name;
+
+        if (false !== $index = strpos($name, ':')) {
+            $name = substr($name, $index + 1);
+        }
+
         if (!isset($relations[$name])) {
             throw new RuntimeException("Unknown relation '$name'");
         }
 
         $this->hydrate();
 
-        if (isset($this->relations[$name])) {
-            return $this->relations[$name];
+        if (isset($this->relations[$cache_key])) {
+            return $this->relations[$cache_key];
         }
 
-        if (isset($this->loaders[$name])) {
-            return $this->relations[$name] = $this->loaders[$name]->getResult($this);
+        if (isset($this->loaders[$cache_key])) {
+            return $this->relations[$cache_key] = $this->loaders[$name]->getResult($this);
         }
 
-        return $this->relations[$name] = $relations[$name]->getResult($this, $callback);
+        return $this->relations[$cache_key] = $relations[$name]->getResult($this, $callback);
     }
 
     /**
@@ -319,7 +325,14 @@ class DataMapper implements IDataMapper
      */
     public function clearRelated(string $name, bool $loaders = false)
     {
-        unset($this->relations[$name]);
+        $cache_key = $name;
+
+        if (false !== $index = strpos($name, ':')) {
+            $name = substr($name, $index + 1);
+        }
+
+        unset($this->relations[$cache_key]);
+
         if ($loaders) {
             unset($this->loaders[$name]);
         }
