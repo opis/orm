@@ -8,7 +8,7 @@ Opis ORM
 Simple, productive, and easy to learn
 -------------------------------------
 
-Opis ORM is a library, that provides an implementation for the Data Mapper pattern, 
+**Opis ORM** is a library, that provides an implementation for the Data Mapper pattern, 
 built with the following goals in mind: simplicity, productivity, and smooth learning curve.
 
 ### Documentation
