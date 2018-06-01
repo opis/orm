@@ -220,7 +220,7 @@ class EntityQuery extends Query
             $values = [];
             foreach ($ids as $pk_value) {
                 foreach ($keys as $pk_column) {
-                    $values[$pk_column][] = $pk_value;
+                    $values[$pk_column][] = $pk_value[$pk_column];
                 }
             }
             foreach ($values as $pk_column => $pk_values) {
