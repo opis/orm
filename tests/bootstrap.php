@@ -79,6 +79,23 @@ $schema->create('tags', function(CreateTable $table){
     $table->string('id', 32)->primary();
 });
 
+$schema->create('ck_records', function(CreateTable $table){
+    $table->integer('key1')->notNull();
+    $table->integer('key2')->notNull();
+    $table->string('data');
+    $table->primary(['key1', 'key2']);
+});
+
+$schema->create('ck_related', function(CreateTable $table){
+    $table->integer('id')->notNull()->primary();
+    $table->integer('ck_record_key1')->notNull();
+    $table->integer('ck_record_key2')->notNull();
+    $table->index(['ck_record_key1', 'ck_record_key2']);
+
+    /*$table->foreign(['ck_record_key1', 'ck_record_key2'])
+        ->references()*/
+});
+
 $schema->create('articles_tags', function(CreateTable $table){
     $table->string('article_id', 32);
     $table->string('tag_id', 32);

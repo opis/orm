@@ -18,6 +18,7 @@
 namespace Opis\ORM\Test;
 
 use Opis\ORM\Test\Entities\Article;
+use Opis\ORM\Test\Entities\CKRecord;
 use Opis\ORM\Test\Entities\Tag;
 use Opis\ORM\Test\Entities\User;
 use function Opis\ORM\Test\{
@@ -40,9 +41,23 @@ class QueryTest extends TestCase
         $this->assertEquals(1, $user->id());
     }
 
+    public function testFindByIdComposite()
+    {
+        /** @var CKRecord $e1 , $e2 */
+        $e1 = entity(CKRecord::class)->find(['key1' => 1, 'key2' => 1]);
+        $e2 = entity(CKRecord::class)->find(['key1' => 1, 'key2' => 2]);
+        $this->assertEquals("k11", $e1->getData());
+        $this->assertEquals("k12", $e2->getData());
+    }
+
     public function testNotFoundById()
     {
         $this->assertNull(entity(User::class)->find(10000));
+    }
+
+    public function testNotFoundByIdComposite()
+    {
+        $this->assertNull(entity(CKRecord::class)->find(['key1' => 0, 'key2' => 1]));
     }
 
     public function testFindAll()
@@ -50,6 +65,26 @@ class QueryTest extends TestCase
         /** @var User[] $users */
         $users = entity(User::class)->findAll(1, 2, 3);
         $this->assertEquals(3, count($users));
+    }
+
+    public function testFindAllPartial()
+    {
+        /** @var User[] $users */
+        $users = entity(User::class)->findAll(1, 2, 3, 1000);
+        $this->assertEquals(3, count($users));
+    }
+
+    public function testFindAllComposite()
+    {
+        $entities = entity(CKRecord::class)->findAll(['key1' => 1, 'key2' => 1], ['key1' => 1, 'key2' => 2]);
+        $this->assertEquals(2, count($entities));
+    }
+
+    public function testFindAllCompositePartial()
+    {
+        $entities = entity(CKRecord::class)->findAll(['key1' => 1, 'key2' => 1],
+            ['key1' => 1, 'key2' => 2], ['key1' => 0, 'key2' => 1]);
+        $this->assertEquals(2, count($entities));
     }
 
     public function testFilter1()

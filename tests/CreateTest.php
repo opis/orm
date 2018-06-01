@@ -17,6 +17,7 @@
 
 namespace Opis\ORM\Test;
 
+use Opis\ORM\Test\Entities\CKRecord;
 use Opis\ORM\Test\Entities\Tag;
 use function Opis\ORM\Test\{
     entityManager as em,
@@ -41,6 +42,16 @@ class CreateTest extends TestCase
         $tag->setName('tag3');
         $this->assertTrue(em()->save($tag));
         $this->assertEquals($count + 1, entity(Tag::class)->count());
+    }
+
+    public function testCreateComposite()
+    {
+        $count = entity(CKRecord::class)->count();
+        /** @var CKRecord $entity */
+        $entity = em()->create(CKRecord::class);
+        $entity->setData('c');
+        $this->assertTrue(em()->save($entity));
+        $this->assertEquals($count + 1, entity(CKRecord::class)->count());
     }
 
     public function testFailCreate()
