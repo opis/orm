@@ -18,6 +18,8 @@
 namespace Opis\ORM\Test;
 
 use Opis\ORM\Test\Entities\Article;
+use Opis\ORM\Test\Entities\CKRecord;
+use Opis\ORM\Test\Entities\CKRelated;
 use Opis\ORM\Test\Entities\Tag;
 use Opis\ORM\Test\Entities\User;
 use function Opis\ORM\Test\{
@@ -40,6 +42,15 @@ class RelationsTest extends TestCase
         /** @var User $user */
         $user = entity(User::class)->find(1);
         $this->assertEquals("Hello, World!", $user->articles()[0]->title());
+    }
+
+    public function testHasManyComposite()
+    {
+        /** @var CKRecord $entity */
+        $entity = entity(CKRecord::class)->find(['key1' => 1, 'key2' => 1]);
+        entityManager()->getConnection()->logQueries(true);
+        $related = $entity->getCKRelated();
+        $this->assertEquals(2, count($related));
     }
 
     public function testHasManyUseUnprefixed()
@@ -65,6 +76,15 @@ class RelationsTest extends TestCase
         /** @var Article $article */
         $article = entity(Article::class)->find("00000000000000000000000000000001");
         $this->assertEquals("Emma", $article->author()->name());
+    }
+
+    public function testBelongsToComposite()
+    {
+        /** @var CKRelated $entity */
+        $entity = entity(CKRelated::class)->find(3);
+        $related = $entity->getRecord();
+        $this->assertInstanceOf(CKRecord::class, $related);
+        $this->assertEquals('k12', $related->getData());
     }
 
     public function testShareOne()

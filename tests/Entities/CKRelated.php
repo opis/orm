@@ -23,6 +23,11 @@ use Opis\ORM\{
 
 class CKRelated extends Entity implements IMappableEntity
 {
+    public function getRecord(): CKRecord
+    {
+        return $this->orm()->getRelated('ck_record');
+    }
+
     /**
      * @inheritDoc
      */

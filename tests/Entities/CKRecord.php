@@ -43,6 +43,7 @@ class CKRecord extends Entity implements IMappableEntity
      */
     public static function mapEntity(IEntityMapper $mapper)
     {
+        $mapper->entityClass(CkRecord::class);
         $mapper->table('ck_records');
         $mapper->primaryKey('key1', 'key2');
         $mapper->primaryKeyGenerator(function(){

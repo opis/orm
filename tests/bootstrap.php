@@ -87,13 +87,15 @@ $schema->create('ck_records', function(CreateTable $table){
 });
 
 $schema->create('ck_related', function(CreateTable $table){
-    $table->integer('id')->notNull()->primary();
+    $table->integer('id')->primary();
     $table->integer('ck_record_key1')->notNull();
     $table->integer('ck_record_key2')->notNull();
     $table->index(['ck_record_key1', 'ck_record_key2']);
 
-    /*$table->foreign(['ck_record_key1', 'ck_record_key2'])
-        ->references()*/
+    $table->foreign(['ck_record_key1', 'ck_record_key2'])
+        ->references('ck_records', 'key1', 'key2')
+        ->onUpdate('cascade')
+        ->onDelete('cascade');
 });
 
 $schema->create('articles_tags', function(CreateTable $table){
