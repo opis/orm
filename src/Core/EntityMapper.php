@@ -24,10 +24,8 @@ class EntityMapper implements IEntityMapper
     /** @var string */
     protected $entityClass;
 
-    protected $originalEntityClass;
-
-    /** @var string */
-    protected $className;
+    /** @var string|null */
+    protected $entityName;
 
     /** @var string|null */
     protected $table;
@@ -77,16 +75,16 @@ class EntityMapper implements IEntityMapper
      */
     public function __construct(string $entityClass)
     {
-        $this->entityClass = $this->originalEntityClass = $entityClass;
+        $this->entityClass = $entityClass;
     }
 
     /**
-     * @param string $class
+     * @param string $name
      * @return EntityMapper
      */
-    public function entityClass(string $class): IEntityMapper
+    public function entityName(string $name): IEntityMapper
     {
-        $this->entityClass = $class;
+        $this->entityName = $name;
         return $this;
     }
 
@@ -229,7 +227,7 @@ class EntityMapper implements IEntityMapper
      */
     public function getClass(): string
     {
-        return $this->originalEntityClass;
+        return $this->entityClass;
     }
 
     /**
@@ -240,7 +238,7 @@ class EntityMapper implements IEntityMapper
     public function getTable(): string
     {
         if ($this->table === null) {
-            $this->table = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $this->getClassShortName())) . 's';
+            $this->table = $this->getEntityName() . 's';
         }
 
         return $this->table;
@@ -274,7 +272,7 @@ class EntityMapper implements IEntityMapper
     {
         if ($this->foreignKey === null) {
             $pk = $this->getPrimaryKey();
-            $prefix = $this->getClassShortName();
+            $prefix = $this->getEntityName();
             $this->foreignKey = new class($pk, $prefix) extends ForeignKey
             {
                 /**
@@ -285,8 +283,6 @@ class EntityMapper implements IEntityMapper
                 public function __construct(PrimaryKey $primaryKey, string $prefix)
                 {
                     $columns = [];
-                    $prefix = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $prefix));
-                    $prefix = str_replace('-', '_', strtolower($prefix));
                     foreach ($primaryKey->columns() as $column) {
                         $columns[$column] = $prefix . '_' . $column;
                     }
@@ -384,22 +380,23 @@ class EntityMapper implements IEntityMapper
     }
 
     /**
-     * Returns the short class name of the entity
+     * Returns the entity's name
      *
      * @return  string
      */
-    protected function getClassShortName()
+    protected function getEntityName()
     {
-        if ($this->className === null) {
+        if ($this->entityName === null) {
             $name = $this->entityClass;
 
             if (false !== $pos = strrpos($name, '\\')) {
                 $name = substr($name, $pos + 1);
             }
-
-            $this->className = $name;
+            $name = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $name));
+            $name = str_replace('-', '_', $name);
+            $this->entityName = $name;
         }
 
-        return $this->className;
+        return $this->entityName;
     }
 }

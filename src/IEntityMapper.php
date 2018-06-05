@@ -22,10 +22,10 @@ use Opis\ORM\Core\RelationFactory;
 interface IEntityMapper
 {
     /**
-     * @param string $class
+     * @param string $name
      * @return IEntityMapper
      */
-    public function entityClass(string $class): self;
+    public function entityName(string $name): self;
 
     /**
      * @param string $table
