@@ -37,5 +37,9 @@
   "automated_entity_1": [
     {"id": 1, "data": "a", "deleted_at": null, "created_at": "2019-06-05", "updated_at": null},
     {"id": 2, "data": "b", "deleted_at": null, "created_at": "2019-06-05", "updated_at": null}
+  ],
+  "automated_entity_2": [
+    {"id": 1, "data": "a", "d_at": null, "c_at": "2019-06-05", "u_at": null},
+    {"id": 2, "data": "b", "d_at": null, "c_at": "2019-06-05", "u_at": null}
   ]
 }

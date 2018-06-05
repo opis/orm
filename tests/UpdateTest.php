@@ -18,6 +18,7 @@
 namespace Opis\ORM\Test;
 
 use Opis\ORM\Test\Entities\AutomatedEntity1;
+use Opis\ORM\Test\Entities\AutomatedEntity2;
 use Opis\ORM\Test\Entities\Tag;
 use Opis\ORM\Test\Entities\User;
 use function Opis\ORM\Test\{
@@ -66,6 +67,17 @@ class UpdateTest extends TestCase
     {
         /** @var AutomatedEntity1 $entity */
         $entity = entity(AutomatedEntity1::class)->find(2);
+        $this->assertNotNull($entity);
+        $this->assertNull($entity->getUpdatedAt());
+        $entity->setData('bb');
+        $this->assertTrue(em()->save($entity));
+        $this->assertInstanceOf(\DateTime::class, $entity->getUpdatedAt());
+    }
+
+    public function testCustomUpdatedAt()
+    {
+        /** @var AutomatedEntity2 $entity */
+        $entity = entity(AutomatedEntity2::class)->find(2);
         $this->assertNotNull($entity);
         $this->assertNull($entity->getUpdatedAt());
         $entity->setData('bb');

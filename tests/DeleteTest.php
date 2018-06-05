@@ -18,6 +18,7 @@
 namespace Opis\ORM\Test;
 
 use Opis\ORM\Test\Entities\AutomatedEntity1;
+use Opis\ORM\Test\Entities\AutomatedEntity2;
 use Opis\ORM\Test\Entities\Tag;
 use function Opis\ORM\Test\{
     entityManager as em,
@@ -53,6 +54,24 @@ class DeleteTest extends TestCase
         $this->assertEquals($count - 1, entity(AutomatedEntity1::class)->count());
         $this->assertEquals($count - 1, entity(AutomatedEntity1::class)->withSoftDeleted()->count());
         $this->assertEquals(0, entity(AutomatedEntity1::class)->onlySoftDeleted()->count());
+    }
+
+    public function testCustomSoftDelete()
+    {
+        $count = entity(AutomatedEntity2::class)->count();
+        $entity = entity(AutomatedEntity2::class)->find(1);
+        em()->delete($entity);
+        $this->assertEquals($count - 1, entity(AutomatedEntity2::class)->count());
+        $this->assertEquals($count, entity(AutomatedEntity2::class)->withSoftDeleted()->count());
+        $this->assertEquals(1, entity(AutomatedEntity2::class)->onlySoftDeleted()->count());
+        $entity = entity(AutomatedEntity2::class)->find(1);
+        $this->assertNull($entity);
+        $entity = entity(AutomatedEntity2::class)->withSoftDeleted()->find(1);
+        $this->assertInstanceOf(AutomatedEntity2::class, $entity);
+        em()->delete($entity, true);
+        $this->assertEquals($count - 1, entity(AutomatedEntity2::class)->count());
+        $this->assertEquals($count - 1, entity(AutomatedEntity2::class)->withSoftDeleted()->count());
+        $this->assertEquals(0, entity(AutomatedEntity2::class)->onlySoftDeleted()->count());
     }
 
 }

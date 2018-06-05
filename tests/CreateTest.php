@@ -18,6 +18,7 @@
 namespace Opis\ORM\Test;
 
 use Opis\ORM\Test\Entities\AutomatedEntity1;
+use Opis\ORM\Test\Entities\AutomatedEntity2;
 use Opis\ORM\Test\Entities\CKRecord;
 use Opis\ORM\Test\Entities\Tag;
 use function Opis\ORM\Test\{
@@ -76,6 +77,15 @@ class CreateTest extends TestCase
     {
         /** @var AutomatedEntity1 $entity */
         $entity = em()->create(AutomatedEntity1::class);
+        $entity->setData('c');
+        $this->assertTrue(em()->save($entity));
+        $this->assertInstanceOf(\DateTime::class, $entity->getCreatedAt());
+    }
+
+    public function testCustomCreatedAtAutomation()
+    {
+        /** @var AutomatedEntity2 $entity */
+        $entity = em()->create(AutomatedEntity2::class);
         $entity->setData('c');
         $this->assertTrue(em()->save($entity));
         $this->assertInstanceOf(\DateTime::class, $entity->getCreatedAt());

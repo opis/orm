@@ -119,6 +119,14 @@ $schema->create('automated_entity_1', function(CreateTable $table){
     $table->timestamps();
 });
 
+
+$schema->create('automated_entity_2', function(CreateTable $table){
+    $table->integer('id')->autoincrement();
+    $table->string('data')->notNull();
+    $table->softDelete('d_at');
+    $table->timestamps('c_at', 'u_at');
+});
+
 $data = json_decode(file_get_contents(__DIR__ . '/data.json'), true);
 
 foreach ($data as $table => $records) {
