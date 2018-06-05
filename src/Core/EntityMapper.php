@@ -18,7 +18,6 @@
 namespace Opis\ORM\Core;
 
 use Opis\ORM\IEntityMapper;
-use function PHPSTORM_META\elementType;
 
 class EntityMapper implements IEntityMapper
 {
@@ -70,7 +69,7 @@ class EntityMapper implements IEntityMapper
     /** @var callable[] */
     protected $filters = [];
 
-    /** @var string  */
+    /** @var string */
     protected $softDeleteColumn = 'deleted_at';
 
     /** @var string[] */
@@ -198,8 +197,11 @@ class EntityMapper implements IEntityMapper
      * @param string|null $updated_at
      * @return IEntityMapper
      */
-    public function useTimestamp(bool $value = true, string $created_at = null, string $updated_at = null): IEntityMapper
-    {
+    public function useTimestamp(
+        bool $value = true,
+        string $created_at = null,
+        string $updated_at = null
+    ): IEntityMapper {
         $this->timestamp = $value;
         if ($created_at !== null) {
             $this->timestampColumns[0] = $created_at;

@@ -180,7 +180,10 @@ class EntityManager
             }, null, false);
         }
 
-        return $this->connection->transaction(function(Connection $connection) use($data) {
+        return $this->connection->transaction(function (
+            /** @noinspection PhpUnusedParameterInspection */
+            Connection $connection
+        ) use ($data) {
             $data->executePendingLinkage();
             return true;
         }, null, false);
@@ -223,7 +226,7 @@ class EntityManager
                 $delete->where($pk_col)->is($pk_val);
             }
 
-            return (bool) $delete->delete($force);
+            return (bool)$delete->delete($force);
         }, null, false);
     }
 

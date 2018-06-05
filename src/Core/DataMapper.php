@@ -191,7 +191,7 @@ class DataMapper implements IDataMapper
             $value = $this->castGet($value, $casts[$name]);
         }
 
-        if ($name === (string) $this->mapper->getPrimaryKey()) {
+        if ($name === (string)$this->mapper->getPrimaryKey()) {
             return $this->columns[$name] = $value;
         }
 
