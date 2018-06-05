@@ -134,8 +134,9 @@ class EntityManager
                 }
 
                 if ($mapper->supportsTimestamp()) {
-                    $columns['created_at'] = date($this->getDateFormat());
-                    $columns['updated_at'] = null;
+                    $timestamp_cols = $mapper->getTimestampColumns();
+                    $columns[$timestamp_cols[0]] = date($this->getDateFormat());
+                    $columns[$timestamp_cols[1]] = null;
                 }
 
                 (new Insert($connection))->insert($columns)->into($mapper->getTable());
@@ -164,7 +165,7 @@ class EntityManager
                 $updatedAt = null;
 
                 if ($mapper->supportsTimestamp()) {
-                    $columns['updated_at'] = $updatedAt = date($this->getDateFormat());
+                    $columns[$mapper->getTimestampColumns()[1]] = $updatedAt = date($this->getDateFormat());
                 }
 
                 $data->markAsUpdated($updatedAt);

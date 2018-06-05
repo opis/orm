@@ -134,7 +134,7 @@ class EntityQuery extends Query
         return $this->transaction(function (Connection $connection) use ($tables, $force) {
             if (!$force && $this->mapper->supportsSoftDelete()) {
                 return (new Update($connection, $this->mapper->getTable(), $this->sql))->set([
-                    'deleted_at' => date($this->manager->getDateFormat()),
+                    $this->mapper->getSoftDeleteColumn() => date($this->manager->getDateFormat()),
                 ]);
             }
             return (new Delete($connection, $this->mapper->getTable(), $this->sql))->delete($tables);
@@ -150,7 +150,7 @@ class EntityQuery extends Query
     {
         return $this->transaction(function (Connection $connection) use ($columns) {
             if ($this->mapper->supportsTimestamp()) {
-                $columns['updated_at'] = date($this->manager->getDateFormat());
+                $columns[$this->mapper->getTimestampColumns()[1]] = date($this->manager->getDateFormat());
             }
             return (new Update($connection, $this->mapper->getTable(), $this->sql))->set($columns);
         });
@@ -167,7 +167,7 @@ class EntityQuery extends Query
         return $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->supportsTimestamp()) {
                 $this->sql->addUpdateColumns([
-                    'updated_at' => date($this->manager->getDateFormat()),
+                    $this->mapper->getTimestampColumns()[1] => date($this->manager->getDateFormat()),
                 ]);
             }
             return (new Update($connection, $this->mapper->getTable(), $this->sql))->increment($column, $value);
@@ -185,7 +185,7 @@ class EntityQuery extends Query
         return $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->supportsTimestamp()) {
                 $this->sql->addUpdateColumns([
-                    'updated_at' => date($this->manager->getDateFormat()),
+                    $this->mapper->getTimestampColumns()[1] => date($this->manager->getDateFormat()),
                 ]);
             }
             return (new Update($connection, $this->mapper->getTable(), $this->sql))->decrement($column, $value);
@@ -267,9 +267,9 @@ class EntityQuery extends Query
 
         if ($this->mapper->supportsSoftDelete()) {
             if (!$this->withSoftDeleted) {
-                $this->where('deleted_at')->isNull();
+                $this->where($this->mapper->getSoftDeleteColumn())->isNull();
             } elseif ($this->onlySoftDeleted) {
-                $this->where('deleted_at')->notNull();
+                $this->where($this->mapper->getSoftDeleteColumn())->notNull();
             }
         }
 
@@ -290,9 +290,9 @@ class EntityQuery extends Query
 
         if ($this->mapper->supportsSoftDelete()) {
             if (!$this->withSoftDeleted) {
-                $this->where('deleted_at')->isNull();
+                $this->where($this->mapper->getSoftDeleteColumn())->isNull();
             } elseif ($this->onlySoftDeleted) {
-                $this->where('deleted_at')->notNull();
+                $this->where($this->mapper->getSoftDeleteColumn())->notNull();
             }
         }
 

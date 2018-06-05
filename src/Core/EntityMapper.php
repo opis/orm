@@ -18,6 +18,7 @@
 namespace Opis\ORM\Core;
 
 use Opis\ORM\IEntityMapper;
+use function PHPSTORM_META\elementType;
 
 class EntityMapper implements IEntityMapper
 {
@@ -68,6 +69,12 @@ class EntityMapper implements IEntityMapper
 
     /** @var callable[] */
     protected $filters = [];
+
+    /** @var string  */
+    protected $softDeleteColumn = 'deleted_at';
+
+    /** @var string[] */
+    protected $timestampColumns = ['created_at', 'updated_at'];
 
     /**
      * EntityMapper constructor.
@@ -173,21 +180,33 @@ class EntityMapper implements IEntityMapper
 
     /**
      * @param bool $value
-     * @return EntityMapper
+     * @param string|null $column
+     * @return IEntityMapper
      */
-    public function useSoftDelete(bool $value = true): IEntityMapper
+    public function useSoftDelete(bool $value = true, string $column = null): IEntityMapper
     {
         $this->softDelete = $value;
+        if ($column !== null) {
+            $this->softDeleteColumn = $column;
+        }
         return $this;
     }
 
     /**
      * @param bool $value
-     * @return EntityMapper
+     * @param string|null $created_at
+     * @param string|null $updated_at
+     * @return IEntityMapper
      */
-    public function useTimestamp(bool $value = true): IEntityMapper
+    public function useTimestamp(bool $value = true, string $created_at = null, string $updated_at = null): IEntityMapper
     {
         $this->timestamp = $value;
+        if ($created_at !== null) {
+            $this->timestampColumns[0] = $created_at;
+        }
+        if ($updated_at !== null) {
+            $this->timestampColumns[1] = $updated_at;
+        }
         return $this;
     }
 
@@ -342,17 +361,34 @@ class EntityMapper implements IEntityMapper
      */
     public function supportsSoftDelete(): bool
     {
-        return $this->softDelete && isset($this->casts['deleted_at']) && $this->casts['deleted_at'] === '?date';
+        $deleted_at = $this->softDeleteColumn;
+        return $this->softDelete && isset($this->casts[$deleted_at]) && $this->casts[$deleted_at] === '?date';
     }
 
+    /**
+     * @return string
+     */
+    public function getSoftDeleteColumn(): string
+    {
+        return $this->softDeleteColumn;
+    }
 
     /**
      * @return bool
      */
     public function supportsTimestamp(): bool
     {
-        return $this->timestamp && isset($this->casts['created_at'], $this->casts['updated_at'])
-            && $this->casts['created_at'] === 'date' && $this->casts['updated_at'] === '?date';
+        list($created_at, $updated_at) = $this->timestampColumns;
+        return $this->timestamp && isset($this->casts[$created_at], $this->casts[$updated_at])
+            && $this->casts[$created_at] === 'date' && $this->casts[$updated_at] === '?date';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTimestampColumns(): array
+    {
+        return $this->timestampColumns;
     }
 
     /**

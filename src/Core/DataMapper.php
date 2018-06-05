@@ -411,8 +411,9 @@ class DataMapper implements IDataMapper
     public function markAsUpdated(string $updatedAt = null): bool
     {
         if ($updatedAt !== null) {
-            unset($this->columns['updated_at']);
-            $this->rawColumns['updated_at'] = $updatedAt;
+            $col = $this->mapper->getTimestampColumns()[1];
+            unset($this->columns[$col]);
+            $this->rawColumns[$col] = $updatedAt;
         }
         $this->modified = [];
         if (!empty($this->pendingLinks)) {

@@ -79,15 +79,18 @@ interface IEntityMapper
 
     /**
      * @param bool $value
+     * @param string|null $column
      * @return IEntityMapper
      */
-    public function useSoftDelete(bool $value = true): self;
+    public function useSoftDelete(bool $value = true, string $column = null): self;
 
     /**
      * @param bool $value
+     * @param string|null $created_at
+     * @param string|null $updated_at
      * @return IEntityMapper
      */
-    public function useTimestamp(bool $value = true): self;
+    public function useTimestamp(bool $value = true, string $created_at = null, string $updated_at = null): self;
 
     /**
      * @param string[] $columns
