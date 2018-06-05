@@ -17,6 +17,7 @@
 
 namespace Opis\ORM\Test;
 
+use Opis\ORM\Test\Entities\AutomatedEntity1;
 use Opis\ORM\Test\Entities\CKRecord;
 use Opis\ORM\Test\Entities\Tag;
 use function Opis\ORM\Test\{
@@ -60,5 +61,23 @@ class CreateTest extends TestCase
         $tag = em()->create(Tag::class);
         $tag->setName('tag3');
         $this->assertFalse(em()->save($tag));
+    }
+
+    public function testCreatedAtAutomationFail()
+    {
+        /** @var AutomatedEntity1 $entity */
+        $entity = em()->create(AutomatedEntity1::class);
+        $entity->setData('c');
+        $this->expectException(\Exception::class);
+        $this->assertNull($entity->getCreatedAt());
+    }
+
+    public function testCreatedAtAutomation()
+    {
+        /** @var AutomatedEntity1 $entity */
+        $entity = em()->create(AutomatedEntity1::class);
+        $entity->setData('c');
+        $this->assertTrue(em()->save($entity));
+        $this->assertInstanceOf(\DateTime::class, $entity->getCreatedAt());
     }
 }

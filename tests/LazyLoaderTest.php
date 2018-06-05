@@ -38,6 +38,7 @@ class LazyLoaderTest extends TestCase
             $user->profile();
         }
         $this->assertEquals(2, count(em()->getConnection()->getLog()) - $initial);
+        em()->getConnection()->logQueries(false);
     }
 
     public function testHasMany()
@@ -50,6 +51,7 @@ class LazyLoaderTest extends TestCase
             $user->articles();
         }
         $this->assertEquals(2, count(em()->getConnection()->getLog()) - $initial);
+        em()->getConnection()->logQueries(false);
     }
 
     public function testBelongsTo()
@@ -62,6 +64,7 @@ class LazyLoaderTest extends TestCase
             $article->author();
         }
         $this->assertEquals(2, count(em()->getConnection()->getLog()) - $initial);
+        em()->getConnection()->logQueries(false);
     }
 
     public function testShareOne()
@@ -79,6 +82,7 @@ class LazyLoaderTest extends TestCase
             }
         }
         $this->assertEquals(2, count(em()->getConnection()->getLog()) - $initial);
+        em()->getConnection()->logQueries(false);
     }
 
     public function testShareMany()
@@ -96,5 +100,6 @@ class LazyLoaderTest extends TestCase
             }
         }
         $this->assertEquals(2, count(em()->getConnection()->getLog()) - $initial);
+        em()->getConnection()->logQueries(false);
     }
 }

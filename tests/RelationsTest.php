@@ -48,9 +48,10 @@ class RelationsTest extends TestCase
     {
         /** @var CKRecord $entity */
         $entity = entity(CKRecord::class)->find(['key1' => 1, 'key2' => 1]);
-        entityManager()->getConnection()->logQueries(true);
+        entityManager()->getConnection()->logQueries();
         $related = $entity->getCKRelated();
         $this->assertEquals(2, count($related));
+        em()->getConnection()->logQueries(false);
     }
 
     public function testHasManyUseUnprefixed()

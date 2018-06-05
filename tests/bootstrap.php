@@ -112,6 +112,13 @@ $schema->create('articles_tags', function(CreateTable $table){
         ->onUpdate('cascade');
 });
 
+$schema->create('automated_entity_1', function(CreateTable $table){
+    $table->integer('id')->autoincrement();
+    $table->string('data')->notNull();
+    $table->softDelete();
+    $table->timestamps();
+});
+
 $data = json_decode(file_get_contents(__DIR__ . '/data.json'), true);
 
 foreach ($data as $table => $records) {

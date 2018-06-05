@@ -17,6 +17,7 @@
 
 namespace Opis\ORM\Test;
 
+use Opis\ORM\Test\Entities\AutomatedEntity1;
 use Opis\ORM\Test\Entities\Tag;
 use function Opis\ORM\Test\{
     entityManager as em,
@@ -32,5 +33,26 @@ class DeleteTest extends TestCase
         $tag = entity(Tag::class)->find('foo');
         $this->assertTrue(em()->delete($tag));
         $this->assertNull(entity(Tag::class)->find('foo'));
+        $this->expectException(\Exception::class);
+        em()->delete($tag);
     }
+
+    public function testSoftDelete()
+    {
+        $count = entity(AutomatedEntity1::class)->count();
+        $entity = entity(AutomatedEntity1::class)->find(1);
+        em()->delete($entity);
+        $this->assertEquals($count - 1, entity(AutomatedEntity1::class)->count());
+        $this->assertEquals($count, entity(AutomatedEntity1::class)->withSoftDeleted()->count());
+        $this->assertEquals(1, entity(AutomatedEntity1::class)->onlySoftDeleted()->count());
+        $entity = entity(AutomatedEntity1::class)->find(1);
+        $this->assertNull($entity);
+        $entity = entity(AutomatedEntity1::class)->withSoftDeleted()->find(1);
+        $this->assertInstanceOf(AutomatedEntity1::class, $entity);
+        em()->delete($entity, true);
+        $this->assertEquals($count - 1, entity(AutomatedEntity1::class)->count());
+        $this->assertEquals($count - 1, entity(AutomatedEntity1::class)->withSoftDeleted()->count());
+        $this->assertEquals(0, entity(AutomatedEntity1::class)->onlySoftDeleted()->count());
+    }
+
 }

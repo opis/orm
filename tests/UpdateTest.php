@@ -17,6 +17,7 @@
 
 namespace Opis\ORM\Test;
 
+use Opis\ORM\Test\Entities\AutomatedEntity1;
 use Opis\ORM\Test\Entities\Tag;
 use Opis\ORM\Test\Entities\User;
 use function Opis\ORM\Test\{
@@ -59,5 +60,16 @@ class UpdateTest extends TestCase
         $this->assertNotNull($tag);
         $this->assertNull(entity(Tag::class)->find('tag3'));
         $this->assertEquals('foo', $tag->name());
+    }
+
+    public function testUpdatedAt()
+    {
+        /** @var AutomatedEntity1 $entity */
+        $entity = entity(AutomatedEntity1::class)->find(2);
+        $this->assertNotNull($entity);
+        $this->assertNull($entity->getUpdatedAt());
+        $entity->setData('bb');
+        $this->assertTrue(em()->save($entity));
+        $this->assertInstanceOf(\DateTime::class, $entity->getUpdatedAt());
     }
 }
