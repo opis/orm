@@ -387,11 +387,11 @@ class DataMapper implements IDataMapper
     {
         $pk = $this->mapper->getPrimaryKey();
 
-        if ($pk->isComposite()) {
+        if (!$pk->isComposite()) {
             $this->rawColumns[$pk->columns()[0]] = $id;
         } else {
-            foreach ($pk->columns() as $pk_index => $pk_column) {
-                $this->rawColumns[$pk_column] = $id[$pk_index];
+            foreach ($pk->columns() as $pk_column) {
+                $this->rawColumns[$pk_column] = $id[$pk_column];
             }
         }
 

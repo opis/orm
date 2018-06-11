@@ -60,7 +60,7 @@ class PrimaryKey
      */
     public function getValue(array $columns, bool $map = false)
     {
-        if ($this->composite && !$map) {
+        if (!$this->composite && !$map) {
             return $columns[$this->columns[0]] ?? null;
         }
         $value = [];

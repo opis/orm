@@ -43,6 +43,7 @@ class CreateTest extends TestCase
         $tag = em()->create(Tag::class);
         $tag->setName('tag3');
         $this->assertTrue(em()->save($tag));
+        $this->assertEquals('tag3', $tag->name());
         $this->assertEquals($count + 1, entity(Tag::class)->count());
     }
 
@@ -53,6 +54,7 @@ class CreateTest extends TestCase
         $entity = em()->create(CKRecord::class);
         $entity->setData('c');
         $this->assertTrue(em()->save($entity));
+        $this->assertEquals('c', $entity->getData());
         $this->assertEquals($count + 1, entity(CKRecord::class)->count());
     }
 
