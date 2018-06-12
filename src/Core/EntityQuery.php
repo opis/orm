@@ -144,7 +144,6 @@ class EntityQuery extends Query
     /**
      * @param array $columns
      * @return int
-     * @throws \Exception
      */
     public function update(array $columns = [])
     {
@@ -160,7 +159,6 @@ class EntityQuery extends Query
      * @param string[]|string $column
      * @param int $value
      * @return int
-     * @throws \Exception
      */
     public function increment($column, $value = 1)
     {
@@ -178,7 +176,6 @@ class EntityQuery extends Query
      * @param string[]|string $column
      * @param int $value
      * @return int
-     * @throws \Exception
      */
     public function decrement($column, $value = 1)
     {
@@ -237,7 +234,6 @@ class EntityQuery extends Query
      * @param \Closure $callback
      * @param int $default
      * @return int
-     * @throws \Exception
      */
     protected function transaction(\Closure $callback, $default = 0)
     {
