@@ -198,7 +198,7 @@ class DataMapper implements IDataMapper
         $getters = $this->mapper->getGetters();
 
         if (isset($getters[$name])) {
-            $value = $getters[$name]($value);
+            $value = $getters[$name]($value, $this);
         }
 
         return $this->columns[$name] = $value;
@@ -226,7 +226,7 @@ class DataMapper implements IDataMapper
         $setters = $this->mapper->getSetters();
 
         if (isset($setters[$name])) {
-            $value = $setters[$name]($value);
+            $value = $setters[$name]($value, $this);
         }
 
         if (isset($casts[$name])) {
