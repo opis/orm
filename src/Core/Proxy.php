@@ -29,24 +29,6 @@ class Proxy
     /** @var \ReflectionMethod */
     private $ormMethod;
 
-    /** @var \ReflectionMethod */
-    private $relationGetResult;
-
-    /** @var \ReflectionMethod */
-    private $relationGetLazyLoader;
-
-    /** @var \ReflectionMethod */
-    private $markAsSaved;
-
-    /** @var \ReflectionMethod */
-    private $markAsUpdated;
-
-    /** @var \ReflectionMethod */
-    private $markAsDeleted;
-
-    /** @var \ReflectionMethod */
-    private $executePendingLinkage;
-
     /**
      * Proxy constructor.
      * @throws \ReflectionException
@@ -54,25 +36,11 @@ class Proxy
     private function __construct()
     {
         $entityReflection = new ReflectionClass(Entity::class);
-        $relationReflection = new ReflectionClass(Relation::class);
-        $dataMapperReflection = new ReflectionClass(DataMapper::class);
 
         $this->dataMapperArgs = $entityReflection->getProperty('dataMapperArgs');
         $this->ormMethod = $entityReflection->getMethod('orm');
-        $this->relationGetResult = $relationReflection->getMethod('getResult');
-        $this->relationGetLazyLoader = $relationReflection->getMethod('getLazyLoader');
-        $this->markAsSaved = $dataMapperReflection->getMethod('markAsSaved');
-        $this->markAsUpdated = $dataMapperReflection->getMethod('markAsUpdated');
-        $this->markAsDeleted = $dataMapperReflection->getMethod('markAsDeleted');
-        $this->executePendingLinkage = $dataMapperReflection->getMethod('executePendingLinkage');
         $this->dataMapperArgs->setAccessible(true);
         $this->ormMethod->setAccessible(true);
-        $this->relationGetResult->setAccessible(true);
-        $this->relationGetLazyLoader->setAccessible(true);
-        $this->markAsSaved->setAccessible(true);
-        $this->markAsUpdated->setAccessible(true);
-        $this->markAsDeleted->setAccessible(true);
-        $this->executePendingLinkage->setAccessible(true);
     }
 
     /**
