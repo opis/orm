@@ -75,6 +75,9 @@ class EntityMapper implements IEntityMapper
     /** @var string[] */
     protected $timestampColumns = ['created_at', 'updated_at'];
 
+    /** @var array */
+    protected $eventHandlers = [];
+
     /**
      * EntityMapper constructor.
      * @param string $entityClass
@@ -240,6 +243,15 @@ class EntityMapper implements IEntityMapper
     public function filter(string $name, callable $callback): IEntityMapper
     {
         $this->filters[$name] = $callback;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function on(string $event, callable $callback): IEntityMapper
+    {
+        $this->eventHandlers[$event] = $callback;
         return $this;
     }
 
@@ -415,6 +427,14 @@ class EntityMapper implements IEntityMapper
     public function getFilters(): array
     {
         return $this->filters;
+    }
+
+    /**
+     * @return callable[]
+     */
+    public function getEventHandlers(): array
+    {
+        return $this->eventHandlers;
     }
 
     /**

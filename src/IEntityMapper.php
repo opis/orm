@@ -110,4 +110,11 @@ interface IEntityMapper
      * @return IEntityMapper
      */
     public function filter(string $name, callable $callback): self;
+
+    /**
+     * @param string $event
+     * @param callable $callback
+     * @return IEntityMapper
+     */
+    public function on(string $event, callable $callback): self;
 }

@@ -111,16 +111,16 @@ class EntityManager
     public function save(Entity $entity): bool
     {
         $data = Proxy::instance()->getDataMapper($entity);
+        $mapper = $data->getEntityMapper();
+        $eventHandlers = $mapper->getEventHandlers();
 
         if ($data->isDeleted()) {
             throw new RuntimeException("The record is deleted");
         }
 
         if ($data->isNew()) {
-
-            $id = $this->connection->transaction(function (Connection $connection) use ($data) {
+            $id = $this->connection->transaction(function (Connection $connection) use ($data, $mapper) {
                 $columns = $data->getRawColumns();
-                $mapper = $data->getEntityMapper();
 
                 if (null !== $pk_generator = $mapper->getPrimaryKeyGenerator()) {
                     $pk_data = $pk_generator($data);
@@ -148,7 +148,17 @@ class EntityManager
                 return $connection->getPDO()->lastInsertId($mapper->getSequence());
             }, null, false);
 
-            return $id !== false ? $data->markAsSaved($id) : false;
+            if ($id === false) {
+                return false;
+            }
+
+            $data->markAsSaved($id);
+
+            if (isset($eventHandlers['saved'])) {
+                $eventHandlers['saved']($entity, $data, 'saved');
+            }
+
+            return true;
         }
 
         if (!$data->wasModified()) {
@@ -158,9 +168,8 @@ class EntityManager
         $modified = $data->getModifiedColumns();
 
         if (!empty($modified)) {
-            return $this->connection->transaction(function (Connection $connection) use ($data, $modified) {
+            $result = $this->connection->transaction(function (Connection $connection) use ($data, $mapper, $modified) {
                 $columns = array_intersect_key($data->getRawColumns(), array_flip($modified));
-                $mapper = $data->getEntityMapper();
 
                 $updatedAt = null;
 
@@ -178,6 +187,16 @@ class EntityManager
 
                 return (bool)$update->set($columns);
             }, null, false);
+
+            if ($result === false) {
+                return false;
+            }
+
+            if (isset($eventHandlers['updated'])) {
+                $eventHandlers['updated']($entity, $data, 'updated');
+            }
+
+            return true;
         }
 
         return $this->connection->transaction(function (
@@ -206,10 +225,11 @@ class EntityManager
      */
     public function delete(Entity $entity, bool $force = false): bool
     {
-        return $this->connection->transaction(function () use ($entity, $force) {
+        $data = Proxy::instance()->getDataMapper($entity);
+        $mapper = $data->getEntityMapper();
+        $eventHandlers = $mapper->getEventHandlers();
 
-            $data = Proxy::instance()->getDataMapper($entity);
-
+        $result = $this->connection->transaction(function () use ($data, $mapper, $force) {
             if ($data->isDeleted()) {
                 throw new RuntimeException("The record was already deleted");
             }
@@ -219,7 +239,6 @@ class EntityManager
             }
 
             $data->markAsDeleted();
-            $mapper = $data->getEntityMapper();
             $delete = new EntityQuery($this, $mapper);
 
             foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pk_col => $pk_val) {
@@ -228,6 +247,16 @@ class EntityManager
 
             return (bool)$delete->delete($force);
         }, null, false);
+
+        if ($result === false) {
+            return false;
+        }
+
+        if (isset($eventHandlers['deleted'])) {
+            $eventHandlers['deleted']($entity, $data, 'deleted');
+        }
+
+        return true;
     }
 
     /**
