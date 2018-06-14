@@ -18,6 +18,7 @@
 namespace Opis\ORM\Test\Entities;
 
 use Opis\ORM\Core\DataMapper;
+use Opis\ORM\IDataMapper;
 use Opis\ORM\IEntityMapper;
 use Opis\ORM\Core\Query;
 use Opis\ORM\Entity;
@@ -25,6 +26,9 @@ use Opis\ORM\IMappableEntity;
 
 class User extends Entity implements IMappableEntity
 {
+    /** @var string */
+    private $event = '';
+
     public function id(): int
     {
         return $this->orm()->getColumn('id');
@@ -89,6 +93,11 @@ class User extends Entity implements IMappableEntity
         return $this->orm()->getRelated('profile');
     }
 
+    public function getEventName(): string
+    {
+        return $this->event;
+    }
+
     /**
      * @inheritDoc
      */
@@ -96,6 +105,10 @@ class User extends Entity implements IMappableEntity
     {
         $mapper->primaryKeyGenerator(function(DataMapper $data){
             return $data->getColumn('id');
+        });
+
+        $mapper->on('updated', function(User $user, IDataMapper $data, string $event){
+            $user->event = $event;
         });
 
         $mapper->relation('articles')->hasMany(Article::class);

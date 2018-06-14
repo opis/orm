@@ -18,11 +18,12 @@
 namespace Opis\ORM\Test\Entities;
 
 use Opis\ORM\{
-    Core\DataMapper, Core\EntityMapper, Entity, IMappableEntity, IEntityMapper
+    Core\DataMapper, Core\EntityMapper, Entity, IDataMapper, IMappableEntity, IEntityMapper
 };
 
 class Tag extends Entity implements IMappableEntity
 {
+    private $event = '';
 
     public function name(): string
     {
@@ -44,6 +45,11 @@ class Tag extends Entity implements IMappableEntity
         return $this->orm()->getRelated('articles');
     }
 
+    public function getEventName(): string
+    {
+        return $this->event;
+    }
+
     /**
      * @inheritDoc
      */
@@ -54,6 +60,14 @@ class Tag extends Entity implements IMappableEntity
         });
 
         $mapper->relation('articles')->shareMany(Article::class);
+
+        $mapper->on('saved', function(Tag $tag, IDataMapper $dataMapper, string $event){
+            $tag->event = $event;
+        });
+
+        $mapper->on('deleted', function(Tag $tag, IDataMapper $dataMapper, string $event){
+            $tag->event = $event;
+        });
     }
 
 }
