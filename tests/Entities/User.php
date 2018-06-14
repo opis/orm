@@ -107,8 +107,8 @@ class User extends Entity implements IMappableEntity
             return $data->getColumn('id');
         });
 
-        $mapper->on('updated', function(User $user, IDataMapper $data, string $event){
-            $user->event = $event;
+        $mapper->on('update', function(User $user, IDataMapper $data){
+            $user->event = 'update';
         });
 
         $mapper->relation('articles')->hasMany(Article::class);

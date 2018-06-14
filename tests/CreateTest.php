@@ -45,7 +45,7 @@ class CreateTest extends TestCase
         $this->assertEquals('', $tag->getEventName());
         $this->assertTrue(em()->save($tag));
         $this->assertEquals('tag3', $tag->name());
-        $this->assertEquals('saved', $tag->getEventName());
+        $this->assertEquals('save', $tag->getEventName());
         $this->assertEquals($count + 1, entity(Tag::class)->count());
     }
 

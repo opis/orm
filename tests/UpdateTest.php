@@ -37,7 +37,7 @@ class UpdateTest extends TestCase
         $this->assertEquals('', $user->getEventName());
         $this->assertTrue(em()->save($user));
         $this->assertEquals(33, $user->age());
-        $this->assertEquals('updated', $user->getEventName());
+        $this->assertEquals('update', $user->getEventName());
         /** @var User $user */
         $user = entity(User::class)->find(1);
         $this->assertEquals(33, $user->age());

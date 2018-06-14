@@ -154,8 +154,8 @@ class EntityManager
 
             $data->markAsSaved($id);
 
-            if (isset($eventHandlers['saved'])) {
-                $eventHandlers['saved']($entity, $data, 'saved');
+            if (isset($eventHandlers['save'])) {
+                $eventHandlers['save']($entity, $data);
             }
 
             return true;
@@ -192,8 +192,8 @@ class EntityManager
                 return false;
             }
 
-            if (isset($eventHandlers['updated'])) {
-                $eventHandlers['updated']($entity, $data, 'updated');
+            if (isset($eventHandlers['update'])) {
+                $eventHandlers['update']($entity, $data);
             }
 
             return true;
@@ -252,8 +252,8 @@ class EntityManager
             return false;
         }
 
-        if (isset($eventHandlers['deleted'])) {
-            $eventHandlers['deleted']($entity, $data, 'deleted');
+        if (isset($eventHandlers['delete'])) {
+            $eventHandlers['delete']($entity, $data);
         }
 
         return true;

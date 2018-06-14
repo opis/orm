@@ -34,7 +34,7 @@ class DeleteTest extends TestCase
         $tag = entity(Tag::class)->find('foo');
         $this->assertEquals('', $tag->getEventName());
         $this->assertTrue(em()->delete($tag));
-        $this->assertEquals('deleted', $tag->getEventName());
+        $this->assertEquals('delete', $tag->getEventName());
         $this->assertNull(entity(Tag::class)->find('foo'));
         $this->expectException(\Exception::class);
         em()->delete($tag);

@@ -61,12 +61,12 @@ class Tag extends Entity implements IMappableEntity
 
         $mapper->relation('articles')->shareMany(Article::class);
 
-        $mapper->on('saved', function(Tag $tag, IDataMapper $dataMapper, string $event){
-            $tag->event = $event;
+        $mapper->on('save', function(Tag $tag, IDataMapper $dataMapper){
+            $tag->event = 'save';
         });
 
-        $mapper->on('deleted', function(Tag $tag, IDataMapper $dataMapper, string $event){
-            $tag->event = $event;
+        $mapper->on('delete', function(Tag $tag, IDataMapper $dataMapper){
+            $tag->event = 'delete';
         });
     }
 
