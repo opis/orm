@@ -1,11 +1,17 @@
 {
     "name": "opis/orm",
-    "description": "ORM library",
+    "description": "Powerful ORM library",
+    "keywords": ["orm", "data-mapper"],
+    "homepage": "https://opis.io/orm",
     "license": "Apache-2.0",
     "authors": [
         {
             "name": "Marius Sarca",
             "email": "marius.sarca@gmail.com"
+        },
+        {
+            "name": "Sorin Sarca",
+            "email": "sarca_sorin@hotmail.com"
         }
     ],
     "require": {

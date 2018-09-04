@@ -8,8 +8,9 @@ Opis ORM
 Simple, productive, and easy to learn
 -------------------------------------
 
-**Opis ORM** is a library, that provides an implementation for the Data Mapper pattern, 
-built with the following goals in mind: simplicity, productivity, and smooth learning curve.
+**Opis ORM** is a library that provides an implementation for the Data Mapper pattern, 
+built with the following goals in mind: simplicity, productivity, and a
+smooth learning curve for developers.
 
 ### Documentation
 
@@ -43,8 +44,8 @@ Or you could directly reference it into your `composer.json` file as a dependenc
 }
 ```
 
-[documentation]: https://www.opis.io/orm
+[documentation]: https://opis.io/orm
 [apache_license]: https://www.apache.org/licenses/LICENSE-2.0 "Apache License"
 [Packagist]: https://packagist.org/packages/opis/orm "Packagist"
 [Composer]: https://getcomposer.org "Composer"
-[Opis Database]: https://www.opis.io/database
+[Opis Database]: https://opis.io/database
