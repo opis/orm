@@ -510,7 +510,7 @@ class DataMapper implements IDataMapper
                 return (float)$value;
             case 'bool':
             case 'boolean':
-                return (int)$value;
+                return (bool)$value;
             case 'string':
                 return (string)$value;
             case 'date':

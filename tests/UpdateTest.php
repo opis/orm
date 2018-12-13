@@ -17,6 +17,7 @@
 
 namespace Opis\ORM\Test;
 
+use Opis\ORM\Test\Entities\Article;
 use Opis\ORM\Test\Entities\AutomatedEntity1;
 use Opis\ORM\Test\Entities\AutomatedEntity2;
 use Opis\ORM\Test\Entities\Tag;
@@ -42,6 +43,14 @@ class UpdateTest extends TestCase
         $user = entity(User::class)->find(1);
         $this->assertEquals(33, $user->age());
         $this->assertEquals('', $user->getEventName());
+    }
+
+    public function testUpdateBoolean()
+    {
+        /** @var Article $article */
+        $article = entity(Article::class)->find('00000000000000000000000000000001');
+        $article->setPublished(true);
+        $this->assertTrue(em()->save($article));
     }
 
     public function testFailUpdatePrimaryKeyIfNotNew()

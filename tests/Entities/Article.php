@@ -92,6 +92,12 @@ class Article extends Entity implements IMappableEntity
         return $this;
     }
 
+    public function setPublished(bool $value): self
+    {
+        $this->orm()->setColumn('published', $value);
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
@@ -100,6 +106,10 @@ class Article extends Entity implements IMappableEntity
         $mapper->primaryKeyGenerator(function(){
             return unique_id();
         });
+
+        $mapper->cast([
+            'published' => 'bool'
+        ]);
 
         $mapper->relation('author')->belongsTo(User::class);
         $mapper->relation('tags')->shareMany(Tag::class);

@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "opis/database": "^4.0"
+        "opis/database": "^4.0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5"
