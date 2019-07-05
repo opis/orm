@@ -2,7 +2,7 @@ Opis ORM
 =========
 [![Build Status](https://travis-ci.org/opis/orm.png)](https://travis-ci.org/opis/orm)
 [![Latest Stable Version](https://poser.pugx.org/opis/orm/version.png)](https://packagist.org/packages/opis/orm)
-[![Latest Unstable Version](https://poser.pugx.org/opis/orm/v/unstable.png)](//packagist.org/packages/opis/orm)
+[![Latest Unstable Version](https://poser.pugx.org/opis/orm/v/unstable.png)](https://packagist.org/packages/opis/orm)
 [![License](https://poser.pugx.org/opis/orm/license.png)](https://packagist.org/packages/opis/orm)
 
 Simple, productive, and easy to learn
