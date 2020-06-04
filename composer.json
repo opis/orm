@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "opis/database": "^4.0.1"
+        "opis/database": "2020.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5 || ^7.0"
