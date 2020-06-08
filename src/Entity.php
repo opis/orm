@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,10 @@ use Opis\ORM\Core\{
 
 abstract class Entity
 {
-    /** @var array */
-    private $dataMapperArgs;
 
-    /** @var  DataMapper|null */
-    private $dataMapper;
+    private ?array $dataMapperArgs;
+
+    private ?DataMapper $dataMapper = null;
 
     /**
      * Entity constructor.
@@ -56,7 +55,7 @@ abstract class Entity
     {
         if ($this->dataMapper === null) {
             $this->dataMapper = new DataMapper(...$this->dataMapperArgs);
-            unset($this->dataMapperArgs);
+            $this->dataMapperArgs = null;
         }
 
         return $this->dataMapper;

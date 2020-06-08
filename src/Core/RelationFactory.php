@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,24 @@
 
 namespace Opis\ORM\Core;
 
-use Closure;
 use Opis\ORM\Relations\{
     BelongsTo, HasOneOrMany, ShareOneOrMany
 };
 
 class RelationFactory
 {
-    /** @var  string */
-    protected $name;
 
-    /** @var  Closure */
+    protected string $name;
+
+    /** @var  callable */
     protected $callback;
 
     /**
      * RelationFactory constructor.
      * @param string $name
-     * @param Closure $callback
+     * @param callable $callback
      */
-    public function __construct(string $name, Closure $callback)
+    public function __construct(string $name, callable $callback)
     {
         $this->name = $name;
         $this->callback = $callback;
@@ -46,7 +45,7 @@ class RelationFactory
      * @param ForeignKey|null $foreignKey
      * @return Relation
      */
-    public function hasOne(string $entityClass, ForeignKey $foreignKey = null): Relation
+    public function hasOne(string $entityClass, ?ForeignKey $foreignKey = null): Relation
     {
         return ($this->callback)($this->name, new HasOneOrMany($entityClass, $foreignKey));
     }
@@ -56,7 +55,7 @@ class RelationFactory
      * @param ForeignKey|null $foreignKey
      * @return Relation
      */
-    public function hasMany(string $entityClass, ForeignKey $foreignKey = null): Relation
+    public function hasMany(string $entityClass, ?ForeignKey $foreignKey = null): Relation
     {
         return ($this->callback)($this->name, new HasOneOrMany($entityClass, $foreignKey, true));
     }
@@ -66,7 +65,7 @@ class RelationFactory
      * @param ForeignKey|null $foreignKey
      * @return Relation
      */
-    public function belongsTo(string $entityClass, ForeignKey $foreignKey = null): Relation
+    public function belongsTo(string $entityClass, ?ForeignKey $foreignKey = null): Relation
     {
         return ($this->callback)($this->name, new BelongsTo($entityClass, $foreignKey));
     }
@@ -77,7 +76,7 @@ class RelationFactory
      * @param Junction|null $junction
      * @return Relation
      */
-    public function shareOne(string $entityClass, ForeignKey $foreignKey = null, Junction $junction = null): Relation
+    public function shareOne(string $entityClass, ?ForeignKey $foreignKey = null, ?Junction $junction = null): Relation
     {
         return ($this->callback)($this->name, new ShareOneOrMany($entityClass, $foreignKey, $junction));
     }
@@ -88,7 +87,7 @@ class RelationFactory
      * @param Junction|null $junction
      * @return Relation
      */
-    public function shareMany(string $entityClass, ForeignKey $foreignKey = null, Junction $junction = null): Relation
+    public function shareMany(string $entityClass, ?ForeignKey $foreignKey = null, ?Junction $junction = null): Relation
     {
         return ($this->callback)($this->name, new ShareOneOrMany($entityClass, $foreignKey, $junction, true));
     }

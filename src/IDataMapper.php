@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,59 +58,67 @@ interface IDataMapper
     /**
      * @param string $name
      * @param $value
+     * @return $this
      */
-    public function setColumn(string $name, $value);
+    public function setColumn(string $name, $value): self;
 
     /**
      * @param string $name
+     * @return $this
      */
-    public function clearColumn(string $name);
+    public function clearColumn(string $name): self;
 
     /**
      * @param string $name
      * @param $value
+     * @return $this
      */
-    public function setRawColumn(string $name, $value);
+    public function setRawColumn(string $name, $value): self;
 
     /**
      * @param string $name
      * @param callable|null $callback
      * @return mixed
      */
-    public function getRelated(string $name, callable $callback = null);
+    public function getRelated(string $name, ?callable $callback = null);
 
     /**
      * @param string $relation
      * @param Entity|null $entity
-     * @return mixed
+     * @return $this
      */
-    public function setRelated(string $relation, Entity $entity = null);
+    public function setRelated(string $relation, ?Entity $entity = null): self;
 
     /**
      * @param string $name
      * @param bool $loaders
+     * @return $this
      */
-    public function clearRelated(string $name, bool $loaders = false);
+    public function clearRelated(string $name, bool $loaders = false): self;
 
     /**
      * @param string $relation
      * @param Entity $entity
+     * @return $this
      */
-    public function link(string $relation, Entity $entity);
+    public function link(string $relation, Entity $entity): self;
 
     /**
      * @param string $relation
      * @param Entity $entity
+     * @return $this
      */
-    public function unlink(string $relation, Entity $entity);
+    public function unlink(string $relation, Entity $entity): self;
 
     /**
      * @param array $columns
+     * @return $this
      */
-    public function assign(array $columns);
+    public function assign(array $columns): self;
 
     /**
      * Force hydration
+     * @return $this
      */
-    public function stale();
+    public function stale(): self;
 }

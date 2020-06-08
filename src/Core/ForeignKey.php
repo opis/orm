@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ namespace Opis\ORM\Core;
 
 class ForeignKey
 {
-    /** @var bool */
-    private $composite;
+    /** @var string[] */
+    private array $columns;
 
-    /** @var null|string[] */
-    private $columns;
+    private bool $composite;
 
     /**
      * ForeignKey constructor.

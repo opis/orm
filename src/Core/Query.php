@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,13 @@ class Query extends BaseStatement
     use SoftDeletesTrait;
     use LoaderTrait;
 
-    /** @var HavingStatement */
-    protected $have;
+    protected HavingStatement $have;
 
     /**
      * Query constructor.
      * @param SQLStatement|null $statement
      */
-    public function __construct(SQLStatement $statement = null)
+    public function __construct(?SQLStatement $statement = null)
     {
         parent::__construct($statement);
         $this->have = new HavingStatement($this->sql);

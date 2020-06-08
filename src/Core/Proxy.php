@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,21 @@
 namespace Opis\ORM\Core;
 
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
+use ReflectionMethod;
 use Opis\ORM\Entity;
 
 class Proxy
 {
-    /** @var ReflectionProperty */
-    private $dataMapperArgs;
+    private static ?Proxy $proxy = null;
 
-    /** @var \ReflectionMethod */
-    private $ormMethod;
+    private ReflectionProperty $dataMapperArgs;
+    private ReflectionMethod $ormMethod;
 
     /**
      * Proxy constructor.
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function __construct()
     {
@@ -39,6 +40,7 @@ class Proxy
 
         $this->dataMapperArgs = $entityReflection->getProperty('dataMapperArgs');
         $this->ormMethod = $entityReflection->getMethod('orm');
+
         $this->dataMapperArgs->setAccessible(true);
         $this->ormMethod->setAccessible(true);
     }
@@ -70,14 +72,9 @@ class Proxy
      */
     public static function instance(): Proxy
     {
-        static $proxy;
-        if ($proxy === null) {
-            try {
-                $proxy = new self();
-            } catch (\ReflectionException $exception) {
-
-            }
+        if (self::$proxy === null) {
+            self::$proxy = new self();
         }
-        return $proxy;
+        return self::$proxy;
     }
 }

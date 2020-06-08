@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ use Opis\ORM\IMappableEntity;
 
 class User extends Entity implements IMappableEntity
 {
-    /** @var string */
-    private $event = '';
+
+    private string $event = '';
 
     public function id(): int
     {
@@ -101,7 +101,7 @@ class User extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper)
+    public static function mapEntity(IEntityMapper $mapper): void
     {
         $mapper->primaryKeyGenerator(function(DataMapper $data){
             return $data->getColumn('id');

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,43 +30,31 @@ use Opis\ORM\Relations\{
 class DataMapper implements IDataMapper
 {
     /** @var array */
-    protected $rawColumns;
+    protected array $rawColumns;
 
     /** @var array */
-    protected $columns = [];
+    protected array $columns = [];
 
     /** @var  LazyLoader[] */
-    protected $loaders;
+    protected array $loaders;
 
-    /** @var EntityManager */
-    protected $manager;
+    protected EntityManager $manager;
 
-    /** @var EntityMapper */
-    protected $mapper;
+    protected EntityMapper $mapper;
 
-    /** @var bool */
-    protected $isReadOnly;
+    protected bool $isReadOnly;
 
-    /** @var bool */
-    protected $isNew;
+    protected bool $isNew;
 
-    /** @var  string|null */
-    protected $sequence;
+    protected array $modified = [];
 
-    /** @var array */
-    protected $modified = [];
+    protected array $relations = [];
 
-    /** @var array */
-    protected $relations = [];
+    protected bool $stale = false;
 
-    /** @var bool */
-    protected $stale = false;
+    protected bool $deleted = false;
 
-    /** @var bool */
-    protected $deleted = false;
-
-    /** @var array */
-    protected $pendingLinks = [];
+    protected array $pendingLinks = [];
 
     /**
      * DataMapper constructor.
@@ -115,7 +103,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isNew(): bool
     {
@@ -123,7 +111,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isReadOnly(): bool
     {
@@ -131,7 +119,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isDeleted(): bool
     {
@@ -139,7 +127,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function wasModified(): bool
     {
@@ -147,7 +135,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function getRawColumns(): array
     {
@@ -155,7 +143,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @return string[]
+     * @inheritDoc
      */
     public function getModifiedColumns(): array
     {
@@ -163,8 +151,7 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @param string $name
-     * @return mixed
+     * @inheritDoc
      */
     public function getColumn(string $name)
     {
@@ -205,10 +192,9 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @param string $name
-     * @param $value
+     * @inheritDoc
      */
-    public function setColumn(string $name, $value)
+    public function setColumn(string $name, $value): self
     {
         if ($this->isReadOnly) {
             throw new RuntimeException("The record is readonly");
@@ -236,33 +222,34 @@ class DataMapper implements IDataMapper
         $this->modified[$name] = 1;
         unset($this->columns[$name]);
         $this->rawColumns[$name] = $value;
+
+        return $this;
     }
 
     /**
-     * @param string $name
+     * @inheritDoc
      */
-    public function clearColumn(string $name)
+    public function clearColumn(string $name): self
     {
         unset($this->columns[$name]);
+        return $this;
     }
 
     /**
-     * @param string $name
-     * @param $value
+     * @inheritDoc
      */
-    public function setRawColumn(string $name, $value)
+    public function setRawColumn(string $name, $value): self
     {
         $this->modified[$name] = 1;
         unset($this->columns[$name]);
         $this->rawColumns[$name] = $value;
+        return $this;
     }
 
     /**
-     * @param string $name
-     * @param callable|null $callback
-     * @return mixed
+     * @inheritDoc
      */
-    public function getRelated(string $name, callable $callback = null)
+    public function getRelated(string $name, ?callable $callback = null)
     {
         if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
@@ -294,10 +281,9 @@ class DataMapper implements IDataMapper
     }
 
     /**
-     * @param string $relation
-     * @param Entity|null $entity
+     * @inheritDoc
      */
-    public function setRelated(string $relation, Entity $entity = null)
+    public function setRelated(string $relation, ?Entity $entity = null): self
     {
         $relations = $this->mapper->getRelations();
 
@@ -317,13 +303,14 @@ class DataMapper implements IDataMapper
         }
 
         $rel->addRelatedEntity($this, $entity);
+
+        return $this;
     }
 
     /**
-     * @param string $name
-     * @param bool $loaders
+     * @inheritDoc
      */
-    public function clearRelated(string $name, bool $loaders = false)
+    public function clearRelated(string $name, bool $loaders = false): self
     {
         $cache_key = $name;
 
@@ -336,30 +323,32 @@ class DataMapper implements IDataMapper
         if ($loaders) {
             unset($this->loaders[$name]);
         }
+
+        return $this;
     }
 
     /**
-     * @param string $relation
-     * @param Entity $entity
+     * @inheritDoc
      */
-    public function link(string $relation, Entity $entity)
+    public function link(string $relation, Entity $entity): self
     {
         $this->linkOrUnlink($relation, $entity, true);
+        return $this;
     }
 
     /**
-     * @param string $relation
-     * @param Entity $entity
+     * @inheritDoc
      */
-    public function unlink(string $relation, Entity $entity)
+    public function unlink(string $relation, Entity $entity): self
     {
         $this->linkOrUnlink($relation, $entity, false);
+        return $this;
     }
 
     /**
-     * @param array $columns
+     * @inheritDoc
      */
-    public function assign(array $columns)
+    public function assign(array $columns): self
     {
         if (null !== $assignableColumns = $this->mapper->getAssignableColumns()) {
             $columns = array_intersect_key($columns, array_flip($assignableColumns));
@@ -369,14 +358,16 @@ class DataMapper implements IDataMapper
         foreach ($columns as $name => $value) {
             $this->setColumn($name, $value);
         }
+        return $this;
     }
 
     /**
-     * Force hydration
+     * @inheritDoc
      */
-    public function stale()
+    public function stale(): self
     {
         $this->stale = true;
+        return $this;
     }
 
     /**
@@ -408,7 +399,7 @@ class DataMapper implements IDataMapper
      * @param string|null $updatedAt
      * @return bool
      */
-    public function markAsUpdated(string $updatedAt = null): bool
+    public function markAsUpdated(?string $updatedAt = null): bool
     {
         if ($updatedAt !== null) {
             $col = $this->mapper->getTimestampColumns()[1];
@@ -433,7 +424,7 @@ class DataMapper implements IDataMapper
     /**
      * Execute pending linkage
      */
-    public function executePendingLinkage()
+    public function executePendingLinkage(): void
     {
         foreach ($this->pendingLinks as $item) {
             /** @var ShareOneOrMany $rel */
@@ -527,7 +518,7 @@ class DataMapper implements IDataMapper
     /**
      * Hydrate
      */
-    protected function hydrate()
+    protected function hydrate(): void
     {
         if (!$this->stale) {
             return;
@@ -558,7 +549,7 @@ class DataMapper implements IDataMapper
      * @param Entity $entity
      * @param bool $link
      */
-    private function linkOrUnlink(string $relation, Entity $entity, bool $link)
+    private function linkOrUnlink(string $relation, Entity $entity, bool $link): void
     {
         $relations = $this->mapper->getRelations();
 

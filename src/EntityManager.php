@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 
 namespace Opis\ORM;
 
+use ReflectionClass;
+use ReflectionException;
 use RuntimeException;
 use Opis\Database\Connection;
 use Opis\Database\SQL\{
@@ -28,20 +30,14 @@ use Opis\ORM\Core\{
 
 class EntityManager
 {
-    /** @var Connection */
-    protected $connection;
 
-    /** @var  Compiler */
-    protected $compiler;
-
-    /** @var  string */
-    protected $dateFormat;
+    protected Connection $connection;
 
     /** @var EntityMapper[] */
-    protected $entityMappers = [];
+    protected array $entityMappers = [];
 
     /** @var callable[] */
-    protected $entityMappingCallbacks;
+    protected array $entityMappingCallbacks;
 
     /**
      * EntityManager constructor.
@@ -58,7 +54,7 @@ class EntityManager
      * @param string $entityClass
      * @return EntityQuery
      */
-    public function __invoke(string $entityClass)
+    public function __invoke(string $entityClass): EntityQuery
     {
         return $this->query($entityClass);
     }
@@ -76,11 +72,7 @@ class EntityManager
      */
     public function getCompiler(): Compiler
     {
-        if ($this->compiler === null) {
-            $this->compiler = $this->connection->getCompiler();
-        }
-
-        return $this->compiler;
+        return $this->connection->getCompiler();
     }
 
     /**
@@ -88,11 +80,7 @@ class EntityManager
      */
     public function getDateFormat(): string
     {
-        if ($this->dateFormat === null) {
-            $this->dateFormat = $this->getCompiler()->getDateFormat();
-        }
-
-        return $this->dateFormat;
+        return $this->getCompiler()->getDateFormat();
     }
 
     /**
@@ -270,8 +258,8 @@ class EntityManager
         }
 
         try {
-            $reflection = new \ReflectionClass($class);
-        } catch (\ReflectionException $e) {
+            $reflection = new ReflectionClass($class);
+        } catch (ReflectionException $e) {
             throw new RuntimeException("Reflection error for '$class'", 0, $e);
         }
 

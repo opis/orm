@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,25 @@
 
 namespace Opis\ORM\Core;
 
-use Opis\Database\Connection;
+use Exception;
+use Opis\Database\{Connection, ResultSet};
 use Opis\Database\SQL\{
     Delete, SQLStatement, Update
 };
 use Opis\ORM\{
-    EntityManager
+    EntityManager,
+    Traits\AggregateTrait
 };
-use Opis\ORM\Traits\AggregateTrait;
 
 class EntityQuery extends Query
 {
     use AggregateTrait;
 
-    /** @var EntityManager */
-    protected $manager;
+    protected EntityManager $manager;
 
-    /** @var EntityMapper */
-    protected $mapper;
+    protected EntityMapper $mapper;
 
-    /** @var bool */
-    protected $locked = false;
+    protected bool $locked = false;
 
     /**
      * EntityQuery constructor.
@@ -48,7 +46,7 @@ class EntityQuery extends Query
     public function __construct(
         EntityManager $entityManager,
         EntityMapper $entityMapper,
-        SQLStatement $statement = null
+        ?SQLStatement $statement = null
     ) {
         parent::__construct($statement);
         $this->mapper = $entityMapper;
@@ -83,9 +81,9 @@ class EntityQuery extends Query
 
     /**
      * @param array $columns
-     * @return null
+     * @return object|null
      */
-    public function get(array $columns = [])
+    public function get(array $columns = []): ?object
     {
         $result = $this->query($columns)
             ->fetchAssoc()
@@ -127,9 +125,9 @@ class EntityQuery extends Query
      * @param bool $force
      * @param array $tables
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
-    public function delete(bool $force = false, array $tables = [])
+    public function delete(bool $force = false, array $tables = []): int
     {
         return $this->transaction(function (Connection $connection) use ($tables, $force) {
             if (!$force && $this->mapper->supportsSoftDelete()) {
@@ -145,7 +143,7 @@ class EntityQuery extends Query
      * @param array $columns
      * @return int
      */
-    public function update(array $columns = [])
+    public function update(array $columns = []): int
     {
         return $this->transaction(function (Connection $connection) use ($columns) {
             if ($this->mapper->supportsTimestamp()) {
@@ -157,10 +155,10 @@ class EntityQuery extends Query
 
     /**
      * @param string[]|string $column
-     * @param int $value
+     * @param float|int $value
      * @return int
      */
-    public function increment($column, $value = 1)
+    public function increment($column, $value = 1): int
     {
         return $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->supportsTimestamp()) {
@@ -174,10 +172,10 @@ class EntityQuery extends Query
 
     /**
      * @param string[]|string $column
-     * @param int $value
+     * @param float|int $value
      * @return int
      */
-    public function decrement($column, $value = 1)
+    public function decrement($column, $value = 1): int
     {
         return $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->supportsTimestamp()) {
@@ -231,11 +229,11 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param \Closure $callback
+     * @param callable $callback
      * @param int $default
      * @return int
      */
-    protected function transaction(\Closure $callback, $default = 0)
+    protected function transaction(callable $callback, int $default = 0): int
     {
         return $this->manager->getConnection()->transaction($callback, null, $default);
     }
@@ -251,9 +249,9 @@ class EntityQuery extends Query
 
     /**
      * @param array $columns
-     * @return \Opis\Database\ResultSet;
+     * @return ResultSet;
      */
-    protected function query(array $columns = [])
+    protected function query(array $columns = []): ResultSet
     {
         if (!$this->buildQuery()->locked && !empty($columns)) {
             foreach ((array)$this->mapper->getPrimaryKey()->columns() as $pk_column) {

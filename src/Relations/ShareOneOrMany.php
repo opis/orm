@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,14 @@ use Opis\ORM\Core\{
 
 class ShareOneOrMany extends Relation
 {
-    /** @var null|Junction */
-    protected $junction;
+    protected ?Junction $junction;
 
-    /** @var  bool */
-    protected $hasMany;
+    protected bool $hasMany;
 
     public function __construct(
         string $entityClass,
-        ForeignKey $foreignKey = null,
-        Junction $junction = null,
+        ?ForeignKey $foreignKey = null,
+        ?Junction $junction = null,
         bool $hasMany = false
     ) {
         parent::__construct($entityClass, $foreignKey);
@@ -121,12 +119,9 @@ class ShareOneOrMany extends Relation
     }
 
     /**
-     * @param EntityManager $manager
-     * @param EntityMapper $owner
-     * @param array $options
-     * @return LazyLoader
+     * @inheritDoc
      */
-    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options): LazyLoader
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
@@ -150,29 +145,7 @@ class ShareOneOrMany extends Relation
 
         $statement = new SQLStatement();
 
-        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery
-        {
-
-            protected $junctionTable;
-
-            public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, $statement, $table)
-            {
-                parent::__construct($entityManager, $entityMapper, $statement);
-                $this->junctionTable = $table;
-            }
-
-            protected function buildQuery(): EntityQuery
-            {
-                $this->locked = true;
-                $this->sql->addTables([$this->junctionTable]);
-                return $this;
-            }
-
-            protected function isReadOnly(): bool
-            {
-                return count($this->sql->getJoins()) > 1;
-            }
-        };
+        $select = $this->createEntityQuery($manager, $related, $statement, $junctionTable);
 
         $linkKey = new ForeignKey(array_map(function ($value) use ($junctionTable) {
             return 'hidden_' . $junctionTable . '_' . $value;
@@ -204,7 +177,10 @@ class ShareOneOrMany extends Relation
         return new LazyLoader($select, $linkKey, false, $this->hasMany, $options['immediate']);
     }
 
-    public function getResult(DataMapper $data, callable $callback = null)
+    /**
+     * @inheritDoc
+     */
+    public function getResult(DataMapper $data, ?callable $callback = null)
     {
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();
@@ -223,29 +199,7 @@ class ShareOneOrMany extends Relation
 
         $statement = new SQLStatement();
 
-        $select = new class($manager, $related, $statement, $junctionTable) extends EntityQuery
-        {
-
-            protected $junctionTable;
-
-            public function __construct(EntityManager $entityManager, EntityMapper $entityMapper, $statement, $table)
-            {
-                parent::__construct($entityManager, $entityMapper, $statement);
-                $this->junctionTable = $table;
-            }
-
-            protected function buildQuery(): EntityQuery
-            {
-                $this->locked = true;
-                $this->sql->addTables([$this->junctionTable]);
-                return $this;
-            }
-
-            protected function isReadOnly(): bool
-            {
-                return count($this->sql->getJoins()) > 1;
-            }
-        };
+        $select = $this->createEntityQuery($manager, $related, $statement, $junctionTable);
 
         $select->join($joinTable, function (Join $join) use ($junctionTable, $joinTable) {
             foreach ($this->junction->columns() as $pk_column => $fk_column) {
@@ -270,6 +224,41 @@ class ShareOneOrMany extends Relation
         }
 
         return $this->hasMany ? $select->all() : $select->get();
+    }
+
+    /**
+     * @param EntityManager $manager
+     * @param EntityMapper $related
+     * @param SQLStatement $statement
+     * @param string $junctionTable
+     * @return EntityQuery
+     */
+    protected function createEntityQuery(EntityManager $manager, EntityMapper $related,
+                                         SQLStatement $statement, string $junctionTable): EntityQuery
+    {
+        return new class($manager, $related, $statement, $junctionTable) extends EntityQuery
+        {
+            protected string $junctionTable;
+
+            public function __construct(EntityManager $entityManager, EntityMapper $entityMapper,
+                                        SQLStatement $statement, string $table)
+            {
+                parent::__construct($entityManager, $entityMapper, $statement);
+                $this->junctionTable = $table;
+            }
+
+            protected function buildQuery(): EntityQuery
+            {
+                $this->locked = true;
+                $this->sql->addTables([$this->junctionTable]);
+                return $this;
+            }
+
+            protected function isReadOnly(): bool
+            {
+                return count($this->sql->getJoins()) > 1;
+            }
+        };
     }
 
     /**

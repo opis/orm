@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,10 @@ use Closure;
 
 trait LoaderTrait
 {
-    /** @var array */
-    protected $with = [];
 
-    /** @var bool */
-    protected $immediate = false;
+    protected array $with = [];
+
+    protected bool $immediate = false;
 
     /**
      * @param string|array $value

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,18 @@ use Opis\ORM\EntityManager;
 
 abstract class Relation
 {
-    protected $queryCallback;
-    protected $entityClass;
-    protected $foreignKey;
+    protected string $entityClass;
+    protected ?ForeignKey $foreignKey;
+
+    /** @var callable|null $queryCallback */
+    protected $queryCallback = null;
 
     /**
      * EntityRelation constructor.
      * @param string $entityClass
      * @param ForeignKey|null $foreignKey
      */
-    public function __construct(string $entityClass, ForeignKey $foreignKey = null)
+    public function __construct(string $entityClass, ?ForeignKey $foreignKey = null)
     {
         $this->entityClass = $entityClass;
         $this->foreignKey = $foreignKey;
@@ -50,15 +52,15 @@ abstract class Relation
      * @param EntityManager $manager
      * @param EntityMapper $owner
      * @param array $options
-     * @return mixed
+     * @return LazyLoader
      */
-    abstract public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options);
+    abstract public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options): LazyLoader;
 
     /**
      * @param DataMapper $data
      * @param callable|null $callback
      * @return mixed
      */
-    abstract public function getResult(DataMapper $data, callable $callback = null);
+    abstract public function getResult(DataMapper $data, ?callable $callback = null);
 
 }

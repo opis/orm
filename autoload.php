@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2013-2016 The Opis Project
+ * Copyright 2013-2020 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ spl_autoload_register(function ($class) {
         $path .= str_replace('_', '/', $class) . '.php';
         $dir .= '/' . $path;
 
-        if (file_exists($dir)) {
+        if (is_file($dir)) {
             include $dir;
             return true;
         }

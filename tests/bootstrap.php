@@ -35,7 +35,7 @@ function unique_id(): string
 
 $file = __DIR__ . '/db.sql';
 
-if (file_exists($file)) {
+if (is_file($file)) {
     unlink($file);
 }
 

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class CKRecord extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper)
+    public static function mapEntity(IEntityMapper $mapper): void
     {
         $mapper->entityName('ck_record');
         $mapper->table('ck_records');

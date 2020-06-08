@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,7 @@
 
 namespace Opis\ORM\Test;
 
-use Opis\ORM\Test\Entities\Article;
-use Opis\ORM\Test\Entities\AutomatedEntity1;
-use Opis\ORM\Test\Entities\AutomatedEntity2;
-use Opis\ORM\Test\Entities\Tag;
-use Opis\ORM\Test\Entities\User;
+use Opis\ORM\Test\Entities\{Article, AutomatedEntity1, AutomatedEntity2, Tag, User};
 use function Opis\ORM\Test\{
     entityManager as em,
     query as entity

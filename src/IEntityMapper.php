@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,45 +23,45 @@ interface IEntityMapper
 {
     /**
      * @param string $name
-     * @return IEntityMapper
+     * @return $this
      */
     public function entityName(string $name): self;
 
     /**
      * @param string $table
-     * @return IEntityMapper
+     * @return $this
      */
     public function table(string $table): self;
 
     /**
      * @param string ...$primaryKey
-     * @return IEntityMapper
+     * @return $this
      */
     public function primaryKey(string ...$primaryKey): self;
 
     /**
      * @param callable $callback
-     * @return IEntityMapper
+     * @return $this
      */
     public function primaryKeyGenerator(callable $callback): self;
 
     /**
      * @param string $sequence
-     * @return IEntityMapper
+     * @return $this
      */
     public function sequence(string $sequence): self;
 
     /**
      * @param string $column
      * @param callable $callback
-     * @return IEntityMapper
+     * @return $this
      */
     public function getter(string $column, callable $callback): self;
 
     /**
      * @param string $column
      * @param callable $callback
-     * @return IEntityMapper
+     * @return $this
      */
     public function setter(string $column, callable $callback): self;
 
@@ -73,48 +73,48 @@ interface IEntityMapper
 
     /**
      * @param array $casts
-     * @return IEntityMapper
+     * @return $this
      */
     public function cast(array $casts): self;
 
     /**
      * @param bool $value
      * @param string|null $column
-     * @return IEntityMapper
+     * @return $this
      */
-    public function useSoftDelete(bool $value = true, string $column = null): self;
+    public function useSoftDelete(bool $value = true, ?string $column = null): self;
 
     /**
      * @param bool $value
      * @param string|null $created_at
      * @param string|null $updated_at
-     * @return IEntityMapper
+     * @return $this
      */
-    public function useTimestamp(bool $value = true, string $created_at = null, string $updated_at = null): self;
+    public function useTimestamp(bool $value = true, ?string $created_at = null, ?string $updated_at = null): self;
 
     /**
      * @param string[] $columns
-     * @return IEntityMapper
+     * @return $this
      */
     public function assignable(array $columns): self;
 
     /**
      * @param string[] $columns
-     * @return IEntityMapper
+     * @return $this
      */
     public function guarded(array $columns): self;
 
     /**
      * @param string $name
      * @param callable $callback
-     * @return IEntityMapper
+     * @return $this
      */
     public function filter(string $name, callable $callback): self;
 
     /**
      * @param string $event
      * @param callable $callback
-     * @return IEntityMapper
+     * @return $this
      */
     public function on(string $event, callable $callback): self;
 }

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,62 +21,52 @@ use Opis\ORM\IEntityMapper;
 
 class EntityMapper implements IEntityMapper
 {
-    /** @var string */
-    protected $entityClass;
 
-    /** @var string|null */
-    protected $entityName;
+    protected string $entityClass;
 
-    /** @var string|null */
-    protected $table;
+    protected ?string $entityName = null;
 
-    /** @var null|PrimaryKey */
-    protected $primaryKey;
+    protected ?string $table = null;
 
-    /** @var null|ForeignKey */
-    protected $foreignKey;
+    protected ?PrimaryKey $primaryKey = null;
+
+    protected ?ForeignKey $foreignKey = null;
 
     /** @var  callable|null */
-    protected $primaryKeyGenerator;
+    protected $primaryKeyGenerator = null;
 
     /** @var callable[] */
-    protected $getters = [];
+    protected array $getters = [];
 
     /** @var callable[] */
-    protected $setters = [];
+    protected array $setters = [];
 
     /** @var array */
-    protected $casts = [];
+    protected array $casts = [];
 
     /** @var Relation[] */
-    protected $relations = [];
+    protected array $relations = [];
 
-    /** @var  string */
-    protected $sequence;
+    protected ?string $sequence = null;
 
-    /** @var bool */
-    protected $softDelete = true;
+    protected bool $softDelete = true;
 
-    /** @var bool */
-    protected $timestamp = true;
+    protected bool $timestamp = true;
 
-    /** @var  null|array */
-    protected $assignable;
+    protected ?array $assignable = null;
 
-    /** @var null|array */
-    protected $guarded;
+    protected ?array $guarded = null;
 
     /** @var callable[] */
-    protected $filters = [];
+    protected array $filters = [];
 
     /** @var string */
-    protected $softDeleteColumn = 'deleted_at';
+    protected string $softDeleteColumn = 'deleted_at';
 
     /** @var string[] */
-    protected $timestampColumns = ['created_at', 'updated_at'];
+    protected array $timestampColumns = ['created_at', 'updated_at'];
 
-    /** @var array */
-    protected $eventHandlers = [];
+    protected array $eventHandlers = [];
 
     /**
      * EntityMapper constructor.
@@ -88,80 +78,70 @@ class EntityMapper implements IEntityMapper
     }
 
     /**
-     * @param string $name
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function entityName(string $name): IEntityMapper
+    public function entityName(string $name): self
     {
         $this->entityName = $name;
         return $this;
     }
 
     /**
-     * @param string $table
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function table(string $table): IEntityMapper
+    public function table(string $table): self
     {
         $this->table = $table;
         return $this;
     }
 
     /**
-     * @param string ...$primaryKey
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function primaryKey(string ...$primaryKey): IEntityMapper
+    public function primaryKey(string ...$primaryKey): self
     {
         $this->primaryKey = new PrimaryKey(...$primaryKey);
         return $this;
     }
 
     /**
-     * @param callable $callback
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function primaryKeyGenerator(callable $callback): IEntityMapper
+    public function primaryKeyGenerator(callable $callback): self
     {
         $this->primaryKeyGenerator = $callback;
         return $this;
     }
 
     /**
-     * @param string $sequence
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function sequence(string $sequence): IEntityMapper
+    public function sequence(string $sequence): self
     {
         $this->sequence = $sequence;
         return $this;
     }
 
     /**
-     * @param string $column
-     * @param callable $callback
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function getter(string $column, callable $callback): IEntityMapper
+    public function getter(string $column, callable $callback): self
     {
         $this->getters[$column] = $callback;
         return $this;
     }
 
     /**
-     * @param string $column
-     * @param callable $callback
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function setter(string $column, callable $callback): IEntityMapper
+    public function setter(string $column, callable $callback): self
     {
         $this->setters[$column] = $callback;
         return $this;
     }
 
     /**
-     * @param string $name
-     * @return RelationFactory
+     * @inheritDoc
      */
     public function relation(string $name): RelationFactory
     {
@@ -171,21 +151,18 @@ class EntityMapper implements IEntityMapper
     }
 
     /**
-     * @param array $casts
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function cast(array $casts): IEntityMapper
+    public function cast(array $casts): self
     {
         $this->casts = $casts;
         return $this;
     }
 
     /**
-     * @param bool $value
-     * @param string|null $column
-     * @return IEntityMapper
+     * @inheritDoc
      */
-    public function useSoftDelete(bool $value = true, string $column = null): IEntityMapper
+    public function useSoftDelete(bool $value = true, ?string $column = null): self
     {
         $this->softDelete = $value;
         if ($column !== null) {
@@ -195,16 +172,13 @@ class EntityMapper implements IEntityMapper
     }
 
     /**
-     * @param bool $value
-     * @param string|null $created_at
-     * @param string|null $updated_at
-     * @return IEntityMapper
+     * @inheritDoc
      */
     public function useTimestamp(
         bool $value = true,
-        string $created_at = null,
-        string $updated_at = null
-    ): IEntityMapper {
+        ?string $created_at = null,
+        ?string $updated_at = null
+    ): self {
         $this->timestamp = $value;
         if ($created_at !== null) {
             $this->timestampColumns[0] = $created_at;
@@ -216,31 +190,27 @@ class EntityMapper implements IEntityMapper
     }
 
     /**
-     * @param string[] $columns
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function assignable(array $columns): IEntityMapper
+    public function assignable(array $columns): self
     {
         $this->assignable = $columns;
         return $this;
     }
 
     /**
-     * @param string[] $columns
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function guarded(array $columns): IEntityMapper
+    public function guarded(array $columns): self
     {
         $this->guarded = $columns;
         return $this;
     }
 
     /**
-     * @param string $name
-     * @param callable $callback
-     * @return EntityMapper
+     * @inheritDoc
      */
-    public function filter(string $name, callable $callback): IEntityMapper
+    public function filter(string $name, callable $callback): self
     {
         $this->filters[$name] = $callback;
         return $this;
@@ -249,7 +219,7 @@ class EntityMapper implements IEntityMapper
     /**
      * @inheritDoc
      */
-    public function on(string $event, callable $callback): IEntityMapper
+    public function on(string $event, callable $callback): self
     {
         $this->eventHandlers[$event] = $callback;
         return $this;
@@ -291,7 +261,7 @@ class EntityMapper implements IEntityMapper
     /**
      * @return callable|null
      */
-    public function getPrimaryKeyGenerator()
+    public function getPrimaryKeyGenerator(): ?callable
     {
         return $this->primaryKeyGenerator;
     }
@@ -408,7 +378,7 @@ class EntityMapper implements IEntityMapper
     /**
      * @return string[]|null
      */
-    public function getAssignableColumns()
+    public function getAssignableColumns(): ?array
     {
         return $this->assignable;
     }
@@ -416,7 +386,7 @@ class EntityMapper implements IEntityMapper
     /**
      * @return string[]|null
      */
-    public function getGuardedColumns()
+    public function getGuardedColumns(): ?array
     {
         return $this->guarded;
     }
@@ -442,7 +412,7 @@ class EntityMapper implements IEntityMapper
      *
      * @return  string
      */
-    protected function getEntityName()
+    protected function getEntityName(): string
     {
         if ($this->entityName === null) {
             $name = $this->entityClass;

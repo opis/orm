@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,23 +21,20 @@ use Opis\ORM\Entity;
 
 class LazyLoader
 {
-    /** @var EntityQuery */
-    protected $query;
 
-    /** @var bool */
-    protected $inverse;
+    protected EntityQuery $query;
 
-    /** @var ForeignKey */
-    protected $foreignKey;
+    protected ForeignKey $foreignKey;
 
-    /** @var bool */
-    protected $hasMany;
+    protected bool $inverse;
+
+    protected bool $hasMany;
 
     /** @var null|Entity[] */
-    protected $results;
+    protected ?array $results = null;
 
     /** @var null|array */
-    protected $keys;
+    protected ?array $keys = null;
 
     /**
      * LazyLoader constructor.
@@ -100,7 +97,7 @@ class LazyLoader
     /**
      * @return Entity[]
      */
-    protected function loadResults()
+    protected function loadResults(): array
     {
         if ($this->results === null) {
             $this->results = $this->query->all();

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,11 @@ trait SelectTrait
      */
     abstract protected function getHavingStatement(): HavingStatement;
 
-
     /**
      * @param   string|array|Closure $columns
-     *
+     * @return  self
      */
-    public function select($columns = [])
+    public function select($columns = []): self
     {
         $expr = new ColumnExpression($this->getSQLStatement());
 
@@ -51,6 +50,8 @@ trait SelectTrait
             }
             $expr->columns($columns);
         }
+
+        return $this;
     }
 
     /**
@@ -80,9 +81,9 @@ trait SelectTrait
      * @param   string $column
      * @param   Closure $value (optional)
      *
-     * @return  self|mixed
+     * @return  self
      */
-    public function having($column, Closure $value = null): self
+    public function having($column, ?Closure $value = null): self
     {
         $this->getHavingStatement()->having($column, $value);
         return $this;
@@ -92,9 +93,9 @@ trait SelectTrait
      * @param   string $column
      * @param   Closure $value
      *
-     * @return  self|mixed
+     * @return  self
      */
-    public function andHaving($column, Closure $value = null): self
+    public function andHaving($column, ?Closure $value = null): self
     {
         $this->getHavingStatement()->andHaving($column, $value);
         return $this;
@@ -104,9 +105,9 @@ trait SelectTrait
      * @param   string $column
      * @param   Closure $value
      *
-     * @return  self|mixed
+     * @return  self
      */
-    public function orHaving($column, Closure $value = null): self
+    public function orHaving($column, ?Closure $value = null): self
     {
         $this->getHavingStatement()->orHaving($column, $value);
         return $this;
@@ -117,9 +118,9 @@ trait SelectTrait
      * @param   string $order (optional)
      * @param   string $nulls (optional)
      *
-     * @return  self|mixed
+     * @return  self
      */
-    public function orderBy($columns, string $order = 'ASC', string $nulls = null): self
+    public function orderBy($columns, string $order = 'ASC', ?string $nulls = null): self
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -131,7 +132,7 @@ trait SelectTrait
     /**
      * @param   int $value
      *
-     * @return  self|mixed
+     * @return  self
      */
     public function limit(int $value): self
     {
@@ -142,7 +143,7 @@ trait SelectTrait
     /**
      * @param   int $value
      *
-     * @return  self|mixed
+     * @return  self
      */
     public function offset(int $value): self
     {

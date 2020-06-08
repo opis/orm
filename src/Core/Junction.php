@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ namespace Opis\ORM\Core;
 
 class Junction
 {
-    /** @var string */
-    private $table;
+
+    private string $table;
 
     /** @var string[] */
-    private $columns;
+    private array $columns;
 
     /**
      * Junction constructor.
@@ -45,7 +45,7 @@ class Junction
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function columns(): array
     {

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,9 @@ class BelongsTo extends Relation
     /**
      * @param DataMapper $owner
      * @param Entity|null $entity
+     * @return $this
      */
-    public function addRelatedEntity(DataMapper $owner, Entity $entity = null)
+    public function addRelatedEntity(DataMapper $owner, ?Entity $entity = null): self
     {
         if ($entity === null) {
             $columns = [];
@@ -49,15 +50,14 @@ class BelongsTo extends Relation
         foreach ($this->foreignKey->getValue($columns, true) as $fk_column => $fk_value) {
             $owner->setColumn($fk_column, $fk_value);
         }
+
+        return $this;
     }
 
     /**
-     * @param EntityManager $manager
-     * @param EntityMapper $owner
-     * @param array $options
-     * @return LazyLoader
+     * @inheritDoc
      */
-    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options)
+    public function getLazyLoader(EntityManager $manager, EntityMapper $owner, array $options): LazyLoader
     {
         $related = $manager->resolveEntityMapper($this->entityClass);
 
@@ -94,11 +94,9 @@ class BelongsTo extends Relation
     }
 
     /**
-     * @param DataMapper $data
-     * @param callable|null $callback
-     * @return mixed
+     * @inheritDoc
      */
-    public function getResult(DataMapper $data, callable $callback = null)
+    public function getResult(DataMapper $data, ?callable $callback = null)
     {
         $manager = $data->getEntityManager();
         $related = $manager->resolveEntityMapper($this->entityClass);
