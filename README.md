@@ -1,6 +1,6 @@
 Opis ORM
 =========
-[![Build Status](https://travis-ci.org/opis/orm.png)](https://travis-ci.org/opis/orm)
+![Tests](https://github.com/opis/orm/workflows/Tests/badge.svg?branch=2020)
 [![Latest Stable Version](https://poser.pugx.org/opis/orm/version.png)](https://packagist.org/packages/opis/orm)
 [![Latest Unstable Version](https://poser.pugx.org/opis/orm/v/unstable.png)](https://packagist.org/packages/opis/orm)
 [![License](https://poser.pugx.org/opis/orm/license.png)](https://packagist.org/packages/opis/orm)
