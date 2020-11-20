@@ -17,9 +17,9 @@
 
 namespace Opis\ORM\Core;
 
-use Opis\ORM\IEntityMapper;
+use Opis\ORM\EntityMapper as EntityMapperInterface;
 
-class EntityMapper implements IEntityMapper
+class EntityMapper implements EntityMapperInterface
 {
 
     protected string $entityClass;

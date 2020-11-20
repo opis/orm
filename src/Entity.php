@@ -49,9 +49,9 @@ abstract class Entity
     }
 
     /**
-     * @return IDataMapper
+     * @return DataMapper
      */
-    final protected function orm(): IDataMapper
+    final protected function orm(): DataMapper
     {
         if ($this->dataMapper === null) {
             $this->dataMapper = new DataMapper(...$this->dataMapperArgs);

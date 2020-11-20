@@ -18,10 +18,10 @@
 namespace Opis\ORM\Test\Entities;
 
 use Opis\ORM\{
-    Entity, IEntityMapper, IMappableEntity
+    Entity, EntityMapper, MappableEntity
 };
 
-class CKRelated extends Entity implements IMappableEntity
+class CKRelated extends Entity implements MappableEntity
 {
     public function getRecord(): CKRecord
     {
@@ -31,7 +31,7 @@ class CKRelated extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper): void
+    public static function mapEntity(EntityMapper $mapper): void
     {
         $mapper->table('ck_related');
         $mapper->relation('ck_record')->belongsTo(CKRecord::class);

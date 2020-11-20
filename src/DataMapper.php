@@ -17,7 +17,7 @@
 
 namespace Opis\ORM;
 
-interface IDataMapper
+interface DataMapper
 {
     /**
      * @return bool

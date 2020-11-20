@@ -19,7 +19,7 @@ namespace Opis\ORM;
 
 use Opis\ORM\Core\RelationFactory;
 
-interface IEntityMapper
+interface EntityMapper
 {
     /**
      * @param string $name

@@ -18,10 +18,10 @@
 namespace Opis\ORM\Test\Entities;
 
 use Opis\ORM\{
-    Core\DataMapper, Entity, IDataMapper, IMappableEntity, IEntityMapper
+    Entity, DataMapper, MappableEntity, EntityMapper
 };
 
-class Tag extends Entity implements IMappableEntity
+class Tag extends Entity implements MappableEntity
 {
     private $event = '';
 
@@ -53,7 +53,7 @@ class Tag extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper): void
+    public static function mapEntity(EntityMapper $mapper): void
     {
         $mapper->primaryKeyGenerator(function(DataMapper $data){
             return $data->getColumn('id');
@@ -61,11 +61,11 @@ class Tag extends Entity implements IMappableEntity
 
         $mapper->relation('articles')->shareMany(Article::class);
 
-        $mapper->on('save', function(Tag $tag, IDataMapper $dataMapper){
+        $mapper->on('save', function(Tag $tag, DataMapper $dataMapper){
             $tag->event = 'save';
         });
 
-        $mapper->on('delete', function(Tag $tag, IDataMapper $dataMapper){
+        $mapper->on('delete', function(Tag $tag, DataMapper $dataMapper){
             $tag->event = 'delete';
         });
     }

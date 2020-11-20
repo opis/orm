@@ -19,11 +19,11 @@ namespace Opis\ORM\Test\Entities;
 
 
 use Opis\ORM\Entity;
-use Opis\ORM\IDataMapper;
-use Opis\ORM\IEntityMapper;
-use Opis\ORM\IMappableEntity;
+use Opis\ORM\DataMapper;
+use Opis\ORM\EntityMapper;
+use Opis\ORM\MappableEntity;
 
-class AutomatedEntity1 extends Entity implements IMappableEntity
+class AutomatedEntity1 extends Entity implements MappableEntity
 {
     public function getCreatedAt(): \DateTime
     {
@@ -48,7 +48,7 @@ class AutomatedEntity1 extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper): void
+    public static function mapEntity(EntityMapper $mapper): void
     {
         $mapper->table('automated_entity_1');
         $mapper->cast([

@@ -18,10 +18,10 @@
 namespace Opis\ORM\Test\Entities;
 
 use Opis\ORM\{
-    Entity, IEntityMapper, IMappableEntity
+    Entity, EntityMapper, MappableEntity
 };
 
-class CKRecord extends Entity implements IMappableEntity
+class CKRecord extends Entity implements MappableEntity
 {
     public function getData(): string
     {
@@ -41,7 +41,7 @@ class CKRecord extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper): void
+    public static function mapEntity(EntityMapper $mapper): void
     {
         $mapper->entityName('ck_record');
         $mapper->table('ck_records');

@@ -17,11 +17,11 @@
 
 namespace Opis\ORM\Test\Entities;
 use Opis\ORM\{
-    Entity, IMappableEntity, IEntityMapper
+    Entity, MappableEntity, EntityMapper
 };
 use function Opis\ORM\Test\unique_id;
 
-class Profile extends Entity implements IMappableEntity
+class Profile extends Entity implements MappableEntity
 {
     public function id(): string
     {
@@ -42,7 +42,7 @@ class Profile extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper): void
+    public static function mapEntity(EntityMapper $mapper): void
     {
         $mapper->primaryKeyGenerator(function(){
             return unique_id();

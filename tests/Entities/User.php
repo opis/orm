@@ -17,14 +17,13 @@
 
 namespace Opis\ORM\Test\Entities;
 
-use Opis\ORM\Core\DataMapper;
-use Opis\ORM\IDataMapper;
-use Opis\ORM\IEntityMapper;
+use Opis\ORM\DataMapper;
+use Opis\ORM\EntityMapper;
 use Opis\ORM\Core\Query;
 use Opis\ORM\Entity;
-use Opis\ORM\IMappableEntity;
+use Opis\ORM\MappableEntity;
 
-class User extends Entity implements IMappableEntity
+class User extends Entity implements MappableEntity
 {
 
     private string $event = '';
@@ -101,13 +100,13 @@ class User extends Entity implements IMappableEntity
     /**
      * @inheritDoc
      */
-    public static function mapEntity(IEntityMapper $mapper): void
+    public static function mapEntity(EntityMapper $mapper): void
     {
         $mapper->primaryKeyGenerator(function(DataMapper $data){
             return $data->getColumn('id');
         });
 
-        $mapper->on('update', function(User $user, IDataMapper $data){
+        $mapper->on('update', function(User $user, DataMapper $data){
             $user->event = 'update';
         });
 
