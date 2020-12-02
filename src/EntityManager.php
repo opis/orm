@@ -92,15 +92,11 @@ class EntityManager
     }
 
     /**
-     * @param EntityInstance $entity
+     * @param Entity $entity
      * @return bool
      */
-    public function save(EntityInstance $entity): bool
+    public function save(Entity $entity): bool
     {
-        if (!$entity instanceof Entity) {
-            throw new RuntimeException("Invalid entity instance");
-        }
-
         $data = Proxy::instance()->getDataMapper($entity);
         $mapper = $data->getEntityMapper();
         $eventHandlers = $mapper->getEventHandlers();
@@ -202,24 +198,20 @@ class EntityManager
     /**
      * @param string $class
      * @param array $columns
-     * @return EntityInstance
+     * @return Entity
      */
-    public function create(string $class, array $columns = []): EntityInstance
+    public function create(string $class, array $columns = []): Entity
     {
         return new $class($this, $this->resolveEntityMapper($class), $columns, [], false, true);
     }
 
     /**
-     * @param EntityInstance $entity
+     * @param Entity $entity
      * @param bool $force
      * @return bool
      */
-    public function delete(EntityInstance $entity, bool $force = false): bool
+    public function delete(Entity $entity, bool $force = false): bool
     {
-        if (!$entity instanceof Entity) {
-            throw new RuntimeException("Invalid entity instance");
-        }
-
         $data = Proxy::instance()->getDataMapper($entity);
         $mapper = $data->getEntityMapper();
         $eventHandlers = $mapper->getEventHandlers();

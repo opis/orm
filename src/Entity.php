@@ -21,7 +21,7 @@ use Opis\ORM\Core\{
     DataMapper, EntityMapper
 };
 
-abstract class Entity implements EntityInstance
+abstract class Entity
 {
     private ?array $dataMapperArgs;
     private ?DataMapper $dataMapper = null;
