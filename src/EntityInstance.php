@@ -17,16 +17,7 @@
 
 namespace Opis\ORM;
 
-use Opis\ORM\Core\EntityMapper;
-
 interface EntityInstance
 {
-    public function __construct(
-        EntityManager $entityManager,
-        EntityMapper $entityMapper,
-        array $columns = [],
-        array $loaders = [],
-        bool $isReadOnly = false,
-        bool $isNew = false
-    );
+    
 }
