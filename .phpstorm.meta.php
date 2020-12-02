@@ -1,4 +1,7 @@
 <?php
+namespace PHPSTORM_META {
+    override(\Opis\ORM\EntityManager::create(), type(0));
+}
 namespace Opis\Database\SQL {
     use Opis\ORM\Core\{EntityQuery as E, Query as Q};
 

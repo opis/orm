@@ -30,7 +30,6 @@ use Opis\ORM\Core\{
 
 class EntityManager
 {
-
     protected Connection $connection;
 
     /** @var EntityMapper[] */
@@ -93,11 +92,15 @@ class EntityManager
     }
 
     /**
-     * @param Entity $entity
+     * @param EntityInstance $entity
      * @return bool
      */
-    public function save(Entity $entity): bool
+    public function save(EntityInstance $entity): bool
     {
+        if (!$entity instanceof Entity) {
+            throw new RuntimeException("Invalid entity instance");
+        }
+
         $data = Proxy::instance()->getDataMapper($entity);
         $mapper = $data->getEntityMapper();
         $eventHandlers = $mapper->getEventHandlers();
@@ -199,20 +202,24 @@ class EntityManager
     /**
      * @param string $class
      * @param array $columns
-     * @return Entity
+     * @return EntityInstance
      */
-    public function create(string $class, array $columns = []): Entity
+    public function create(string $class, array $columns = []): EntityInstance
     {
         return new $class($this, $this->resolveEntityMapper($class), $columns, [], false, true);
     }
 
     /**
-     * @param Entity $entity
+     * @param EntityInstance $entity
      * @param bool $force
      * @return bool
      */
-    public function delete(Entity $entity, bool $force = false): bool
+    public function delete(EntityInstance $entity, bool $force = false): bool
     {
+        if (!$entity instanceof Entity) {
+            throw new RuntimeException("Invalid entity instance");
+        }
+
         $data = Proxy::instance()->getDataMapper($entity);
         $mapper = $data->getEntityMapper();
         $eventHandlers = $mapper->getEventHandlers();

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,45 +17,16 @@
 
 namespace Opis\ORM;
 
-use Opis\ORM\Core\{
-    DataMapper, EntityMapper
-};
+use Opis\ORM\Core\EntityMapper;
 
-abstract class Entity implements EntityInstance
+interface EntityInstance
 {
-    private ?array $dataMapperArgs;
-    private ?DataMapper $dataMapper = null;
-
-    /**
-     * Entity constructor.
-     * @param EntityManager $entityManager
-     * @param EntityMapper $entityMapper
-     * @param array $columns
-     * @param array $loaders
-     * @param bool $isReadOnly
-     * @param bool $isNew
-     */
-    final public function __construct(
+    public function __construct(
         EntityManager $entityManager,
         EntityMapper $entityMapper,
         array $columns = [],
         array $loaders = [],
         bool $isReadOnly = false,
         bool $isNew = false
-    ) {
-        $this->dataMapperArgs = [$entityManager, $entityMapper, $columns, $loaders, $isReadOnly, $isNew];
-    }
-
-    /**
-     * @return DataMapper
-     */
-    final protected function orm(): DataMapper
-    {
-        if ($this->dataMapper === null) {
-            $this->dataMapper = new DataMapper(...$this->dataMapperArgs);
-            $this->dataMapperArgs = null;
-        }
-
-        return $this->dataMapper;
-    }
+    );
 }
