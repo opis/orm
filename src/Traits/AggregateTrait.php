@@ -23,76 +23,40 @@ use Opis\Database\SQL\{
 
 trait AggregateTrait
 {
-    /**
-     * @return SQLStatement
-     */
     abstract protected function getSQLStatement(): SQLStatement;
+    abstract protected function executeAggregate(): mixed;
 
-    /**
-     * @return mixed
-     */
-    abstract protected function executeAggregate();
-
-    /**
-     * @param   string $name
-     * @return mixed
-     */
-    public function column(string $name)
+    public function column(string $name): mixed
     {
         (new ColumnExpression($this->getSQLStatement()))->column($name);
         return $this->executeAggregate();
     }
 
-    /**
-     * @param   string $column (optional)
-     * @param   bool $distinct (optional)
-     * @return mixed
-     */
-    public function count($column = '*', bool $distinct = false)
+    public function count($column = '*', bool $distinct = false): int
     {
         (new ColumnExpression($this->getSQLStatement()))->count($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    /**
-     * @param   string $column
-     * @param   bool $distinct (optional)
-     * @return mixed
-     */
-    public function avg(string $column, bool $distinct = false)
+    public function avg(string $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->avg($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    /**
-     * @param   string $column
-     * @param   bool $distinct (optional)
-     * @return mixed
-     */
-    public function sum(string $column, bool $distinct = false)
+    public function sum(string $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->sum($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    /**
-     * @param   string $column
-     * @param   bool $distinct (optional)
-     * @return mixed
-     */
-    public function min(string $column, bool $distinct = false)
+    public function min(string $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->min($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    /**
-     * @param   string $column
-     * @param   bool $distinct (optional)
-     * @return mixed
-     */
-    public function max(string $column, bool $distinct = false)
+    public function max(string $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->max($column, null, $distinct);
         return $this->executeAggregate();

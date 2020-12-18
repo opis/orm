@@ -7,7 +7,7 @@ use Opis\ORM\Core\EntityQuery;
 use Opis\ORM\EntityManager;
 use Opis\Database\{
     Database, Connection,
-    Schema\CreateTable
+    Schema\Blueprint
 };
 
 /**
@@ -44,14 +44,14 @@ $connection->initCommand('PRAGMA foreign_keys = ON');
 $db = new Database($connection);
 $schema = $db->schema();
 
-$schema->create('users', function(CreateTable $table) {
+$schema->create('users', function(Blueprint $table) {
     $table->integer('id')->primary();
     $table->string('name')->notNull();
     $table->integer('age')->size('small')->notNull();
     $table->string('gender', 1)->notNull();
 });
 
-$schema->create('articles', function(CreateTable $table){
+$schema->create('articles', function(Blueprint $table){
     $table->string('id', 32)->primary();
     $table->integer('user_id')->notNull()->index();
     $table->boolean('published')->notNull();
@@ -64,7 +64,7 @@ $schema->create('articles', function(CreateTable $table){
         ->onUpdate('cascade');
 });
 
-$schema->create('profiles', function(CreateTable $table){
+$schema->create('profiles', function(Blueprint $table){
     $table->string('id', 32)->primary();
     $table->integer('user_id')->notNull()->index();
     $table->string('city')->notNull();
@@ -75,18 +75,18 @@ $schema->create('profiles', function(CreateTable $table){
         ->onUpdate('cascade');
 });
 
-$schema->create('tags', function(CreateTable $table){
+$schema->create('tags', function(Blueprint $table){
     $table->string('id', 32)->primary();
 });
 
-$schema->create('ck_records', function(CreateTable $table){
+$schema->create('ck_records', function(Blueprint $table){
     $table->integer('key1')->notNull();
     $table->integer('key2')->notNull();
     $table->string('data');
     $table->primary(['key1', 'key2']);
 });
 
-$schema->create('ck_related', function(CreateTable $table){
+$schema->create('ck_related', function(Blueprint $table){
     $table->integer('id')->primary();
     $table->integer('ck_record_key1')->notNull();
     $table->integer('ck_record_key2')->notNull();
@@ -98,7 +98,7 @@ $schema->create('ck_related', function(CreateTable $table){
         ->onDelete('cascade');
 });
 
-$schema->create('articles_tags', function(CreateTable $table){
+$schema->create('articles_tags', function(Blueprint $table){
     $table->string('article_id', 32);
     $table->string('tag_id', 32);
     $table->primary(['article_id', 'tag_id']);
@@ -112,7 +112,7 @@ $schema->create('articles_tags', function(CreateTable $table){
         ->onUpdate('cascade');
 });
 
-$schema->create('automated_entity_1', function(CreateTable $table){
+$schema->create('automated_entity_1', function(Blueprint $table){
     $table->integer('id')->autoincrement();
     $table->string('data')->notNull();
     $table->softDelete();
@@ -120,7 +120,7 @@ $schema->create('automated_entity_1', function(CreateTable $table){
 });
 
 
-$schema->create('automated_entity_2', function(CreateTable $table){
+$schema->create('automated_entity_2', function(Blueprint $table){
     $table->integer('id')->autoincrement();
     $table->string('data')->notNull();
     $table->softDelete('d_at');

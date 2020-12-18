@@ -32,9 +32,7 @@ class EntityQuery extends Query
     use AggregateTrait;
 
     protected EntityManager $manager;
-
     protected EntityMapper $mapper;
-
     protected bool $locked = false;
 
     /**
@@ -57,7 +55,7 @@ class EntityQuery extends Query
      * @param string|string[]|mixed[] $names
      * @return EntityQuery
      */
-    public function filter($names): self
+    public function filter(string|array $names): static
     {
         if (!is_array($names)) {
             $names = [$names];
@@ -155,10 +153,10 @@ class EntityQuery extends Query
 
     /**
      * @param string[]|string $column
-     * @param float|int $value
+     * @param mixed $value
      * @return int
      */
-    public function increment($column, $value = 1): int
+    public function increment(string|array $column, mixed $value = 1): int
     {
         return $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->supportsTimestamp()) {
@@ -172,10 +170,10 @@ class EntityQuery extends Query
 
     /**
      * @param string[]|string $column
-     * @param float|int $value
+     * @param mixed $value
      * @return int
      */
-    public function decrement($column, $value = 1): int
+    public function decrement(string|array $column, mixed $value = 1): int
     {
         return $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->supportsTimestamp()) {
@@ -187,11 +185,7 @@ class EntityQuery extends Query
         });
     }
 
-    /**
-     * @param $id
-     * @return mixed|null
-     */
-    public function find($id)
+    public function find(mixed $id): mixed
     {
         if (is_array($id)) {
             foreach ($id as $pk_column => $pk_value) {
@@ -208,7 +202,7 @@ class EntityQuery extends Query
      * @param array|string ...$ids
      * @return array
      */
-    public function findAll(...$ids): array
+    public function findAll(string|array ...$ids): array
     {
         if (is_array($ids[0])) {
             $keys = array_keys($ids[0]);
@@ -278,7 +272,7 @@ class EntityQuery extends Query
     /**
      * @return mixed
      */
-    protected function executeAggregate()
+    protected function executeAggregate(): mixed
     {
         $this->sql->addTables([$this->mapper->getTable()]);
 
