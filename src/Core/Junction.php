@@ -19,7 +19,6 @@ namespace Opis\ORM\Core;
 
 class Junction
 {
-
     private string $table;
 
     /** @var string[] */

@@ -53,72 +53,72 @@ interface DataMapper
      * @param string $name
      * @return mixed
      */
-    public function getColumn(string $name);
+    public function getColumn(string $name): mixed;
 
     /**
      * @param string $name
-     * @param $value
+     * @param mixed $value
      * @return $this
      */
-    public function setColumn(string $name, $value): self;
+    public function setColumn(string $name, mixed $value): static;
 
     /**
      * @param string $name
      * @return $this
      */
-    public function clearColumn(string $name): self;
+    public function clearColumn(string $name): static;
 
     /**
      * @param string $name
-     * @param $value
+     * @param mixed $value
      * @return $this
      */
-    public function setRawColumn(string $name, $value): self;
+    public function setRawColumn(string $name, mixed $value): static;
 
     /**
      * @param string $name
      * @param callable|null $callback
      * @return mixed
      */
-    public function getRelated(string $name, ?callable $callback = null);
+    public function getRelated(string $name, ?callable $callback = null): mixed;
 
     /**
      * @param string $relation
      * @param Entity|null $entity
      * @return $this
      */
-    public function setRelated(string $relation, ?Entity $entity = null): self;
+    public function setRelated(string $relation, ?Entity $entity = null): static;
 
     /**
      * @param string $name
      * @param bool $loaders
      * @return $this
      */
-    public function clearRelated(string $name, bool $loaders = false): self;
+    public function clearRelated(string $name, bool $loaders = false): static;
 
     /**
      * @param string $relation
      * @param Entity $entity
      * @return $this
      */
-    public function link(string $relation, Entity $entity): self;
+    public function link(string $relation, Entity $entity): static;
 
     /**
      * @param string $relation
      * @param Entity $entity
      * @return $this
      */
-    public function unlink(string $relation, Entity $entity): self;
+    public function unlink(string $relation, Entity $entity): static;
 
     /**
      * @param array $columns
      * @return $this
      */
-    public function assign(array $columns): self;
+    public function assign(array $columns): static;
 
     /**
      * Force hydration
      * @return $this
      */
-    public function stale(): self;
+    public function stale(): static;
 }

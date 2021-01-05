@@ -19,16 +19,14 @@ namespace Opis\ORM\Traits;
 
 trait SoftDeletesTrait
 {
-
     protected bool $withSoftDeleted = false;
-
     protected bool $onlySoftDeleted = false;
 
     /**
      * @param bool $value
-     * @return mixed|SoftDeletesTrait
+     * @return $this
      */
-    public function withSoftDeleted(bool $value = true): self
+    public function withSoftDeleted(bool $value = true): static
     {
         $this->withSoftDeleted = $value;
         return $this;
@@ -36,9 +34,9 @@ trait SoftDeletesTrait
 
     /**
      * @param bool $value
-     * @return mixed|SoftDeletesTrait
+     * @return $this
      */
-    public function onlySoftDeleted(bool $value = true): self
+    public function onlySoftDeleted(bool $value = true): static
     {
         $this->onlySoftDeleted = $this->withSoftDeleted = $value;
         return $this;

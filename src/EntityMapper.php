@@ -25,45 +25,45 @@ interface EntityMapper
      * @param string $name
      * @return $this
      */
-    public function entityName(string $name): self;
+    public function entityName(string $name): static;
 
     /**
      * @param string $table
      * @return $this
      */
-    public function table(string $table): self;
+    public function table(string $table): static;
 
     /**
      * @param string ...$primaryKey
      * @return $this
      */
-    public function primaryKey(string ...$primaryKey): self;
+    public function primaryKey(string ...$primaryKey): static;
 
     /**
      * @param callable $callback
      * @return $this
      */
-    public function primaryKeyGenerator(callable $callback): self;
+    public function primaryKeyGenerator(callable $callback): static;
 
     /**
      * @param string $sequence
      * @return $this
      */
-    public function sequence(string $sequence): self;
+    public function sequence(string $sequence): static;
 
     /**
      * @param string $column
      * @param callable $callback
      * @return $this
      */
-    public function getter(string $column, callable $callback): self;
+    public function getter(string $column, callable $callback): static;
 
     /**
      * @param string $column
      * @param callable $callback
      * @return $this
      */
-    public function setter(string $column, callable $callback): self;
+    public function setter(string $column, callable $callback): static;
 
     /**
      * @param string $name
@@ -75,14 +75,14 @@ interface EntityMapper
      * @param array $casts
      * @return $this
      */
-    public function cast(array $casts): self;
+    public function cast(array $casts): static;
 
     /**
      * @param bool $value
      * @param string|null $column
      * @return $this
      */
-    public function useSoftDelete(bool $value = true, ?string $column = null): self;
+    public function useSoftDelete(bool $value = true, ?string $column = null): static;
 
     /**
      * @param bool $value
@@ -90,31 +90,31 @@ interface EntityMapper
      * @param string|null $updated_at
      * @return $this
      */
-    public function useTimestamp(bool $value = true, ?string $created_at = null, ?string $updated_at = null): self;
+    public function useTimestamp(bool $value = true, ?string $created_at = null, ?string $updated_at = null): static;
 
     /**
      * @param string[] $columns
      * @return $this
      */
-    public function assignable(array $columns): self;
+    public function assignable(array $columns): static;
 
     /**
      * @param string[] $columns
      * @return $this
      */
-    public function guarded(array $columns): self;
+    public function guarded(array $columns): static;
 
     /**
      * @param string $name
      * @param callable $callback
      * @return $this
      */
-    public function filter(string $name, callable $callback): self;
+    public function filter(string $name, callable $callback): static;
 
     /**
      * @param string $event
      * @param callable $callback
      * @return $this
      */
-    public function on(string $event, callable $callback): self;
+    public function on(string $event, callable $callback): static;
 }

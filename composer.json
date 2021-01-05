@@ -16,10 +16,10 @@
     ],
     "require": {
         "php": "^8.0",
+        "ext-json": "*",
         "opis/database": "2020.x-dev"
     },
     "require-dev": {
-        "ext-json": "*",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {

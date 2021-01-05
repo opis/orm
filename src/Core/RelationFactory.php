@@ -23,11 +23,9 @@ use Opis\ORM\Relations\{
 
 class RelationFactory
 {
-
-    protected string $name;
-
     /** @var  callable */
     protected $callback;
+    protected string $name;
 
     /**
      * RelationFactory constructor.

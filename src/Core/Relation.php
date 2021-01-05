@@ -40,9 +40,9 @@ abstract class Relation
 
     /**
      * @param callable $callback
-     * @return Relation
+     * @return $this
      */
-    public function query(callable $callback): self
+    public function query(callable $callback): static
     {
         $this->queryCallback = $callback;
         return $this;
@@ -61,6 +61,5 @@ abstract class Relation
      * @param callable|null $callback
      * @return mixed
      */
-    abstract public function getResult(DataMapper $data, ?callable $callback = null);
-
+    abstract public function getResult(DataMapper $data, ?callable $callback = null): mixed;
 }

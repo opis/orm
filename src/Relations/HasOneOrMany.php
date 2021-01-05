@@ -46,7 +46,7 @@ class HasOneOrMany extends Relation
      * @param Entity $entity
      * @return $this
      */
-    public function addRelatedEntity(DataMapper $owner, Entity $entity): self
+    public function addRelatedEntity(DataMapper $owner, Entity $entity): static
     {
         $mapper = $owner->getEntityMapper();
 
@@ -103,7 +103,7 @@ class HasOneOrMany extends Relation
     /**
      * @inheritDoc
      */
-    public function getResult(DataMapper $data, ?callable $callback = null)
+    public function getResult(DataMapper $data, ?callable $callback = null): mixed
     {
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();

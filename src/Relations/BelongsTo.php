@@ -32,7 +32,7 @@ class BelongsTo extends Relation
      * @param Entity|null $entity
      * @return $this
      */
-    public function addRelatedEntity(DataMapper $owner, ?Entity $entity = null): self
+    public function addRelatedEntity(DataMapper $owner, ?Entity $entity = null): static
     {
         if ($entity === null) {
             $columns = [];
@@ -96,7 +96,7 @@ class BelongsTo extends Relation
     /**
      * @inheritDoc
      */
-    public function getResult(DataMapper $data, ?callable $callback = null)
+    public function getResult(DataMapper $data, ?callable $callback = null): mixed
     {
         $manager = $data->getEntityManager();
         $related = $manager->resolveEntityMapper($this->entityClass);

@@ -35,10 +35,10 @@ trait SelectTrait
     abstract protected function getHavingStatement(): HavingStatement;
 
     /**
-     * @param   string|array|Closure $columns
-     * @return  self
+     * @param mixed|array $columns
+     * @return $this
      */
-    public function select($columns = []): self
+    public function select(mixed $columns = []): static
     {
         $expr = new ColumnExpression($this->getSQLStatement());
 
@@ -56,19 +56,19 @@ trait SelectTrait
 
     /**
      * @param bool $value
-     * @return self|mixed
+     * @return $this
      */
-    public function distinct(bool $value = true): self
+    public function distinct(bool $value = true): static
     {
         $this->getSQLStatement()->setDistinct($value);
         return $this;
     }
 
     /**
-     * @param string|array $columns
-     * @return self|mixed
+     * @param mixed $columns
+     * @return $this
      */
-    public function groupBy($columns): self
+    public function groupBy(mixed $columns): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -78,49 +78,45 @@ trait SelectTrait
     }
 
     /**
-     * @param   string $column
-     * @param   Closure $value (optional)
-     *
-     * @return  self
+     * @param mixed $column
+     * @param Closure|null $value
+     * @return $this
      */
-    public function having($column, ?Closure $value = null): self
+    public function having(mixed $column, ?Closure $value = null): static
     {
         $this->getHavingStatement()->having($column, $value);
         return $this;
     }
 
     /**
-     * @param   string $column
-     * @param   Closure $value
-     *
-     * @return  self
+     * @param mixed $column
+     * @param Closure|null $value
+     * @return $this
      */
-    public function andHaving($column, ?Closure $value = null): self
+    public function andHaving(mixed $column, ?Closure $value = null): static
     {
         $this->getHavingStatement()->andHaving($column, $value);
         return $this;
     }
 
     /**
-     * @param   string $column
-     * @param   Closure $value
-     *
-     * @return  self
+     * @param mixed $column
+     * @param Closure|null $value
+     * @return $this
      */
-    public function orHaving($column, ?Closure $value = null): self
+    public function orHaving(mixed $column, ?Closure $value = null): static
     {
         $this->getHavingStatement()->orHaving($column, $value);
         return $this;
     }
 
     /**
-     * @param   string|array $columns
-     * @param   string $order (optional)
-     * @param   string $nulls (optional)
-     *
-     * @return  self
+     * @param mixed $columns
+     * @param string $order
+     * @param string|null $nulls
+     * @return $this
      */
-    public function orderBy($columns, string $order = 'ASC', ?string $nulls = null): self
+    public function orderBy(mixed $columns, string $order = 'ASC', ?string $nulls = null): static
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -130,22 +126,20 @@ trait SelectTrait
     }
 
     /**
-     * @param   int $value
-     *
-     * @return  self
+     * @param int $value
+     * @return $this
      */
-    public function limit(int $value): self
+    public function limit(int $value): static
     {
         $this->getSQLStatement()->setLimit($value);
         return $this;
     }
 
     /**
-     * @param   int $value
-     *
-     * @return  self
+     * @param int $value
+     * @return $this
      */
-    public function offset(int $value): self
+    public function offset(int $value): static
     {
         $this->getSQLStatement()->setOffset($value);
         return $this;

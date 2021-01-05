@@ -21,15 +21,10 @@ use Opis\ORM\EntityMapper as EntityMapperInterface;
 
 class EntityMapper implements EntityMapperInterface
 {
-
     protected string $entityClass;
-
     protected ?string $entityName = null;
-
     protected ?string $table = null;
-
     protected ?PrimaryKey $primaryKey = null;
-
     protected ?ForeignKey $foreignKey = null;
 
     /** @var  callable|null */
@@ -48,13 +43,9 @@ class EntityMapper implements EntityMapperInterface
     protected array $relations = [];
 
     protected ?string $sequence = null;
-
     protected bool $softDelete = true;
-
     protected bool $timestamp = true;
-
     protected ?array $assignable = null;
-
     protected ?array $guarded = null;
 
     /** @var callable[] */
@@ -80,7 +71,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function entityName(string $name): self
+    public function entityName(string $name): static
     {
         $this->entityName = $name;
         return $this;
@@ -89,7 +80,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function table(string $table): self
+    public function table(string $table): static
     {
         $this->table = $table;
         return $this;
@@ -98,7 +89,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function primaryKey(string ...$primaryKey): self
+    public function primaryKey(string ...$primaryKey): static
     {
         $this->primaryKey = new PrimaryKey(...$primaryKey);
         return $this;
@@ -107,7 +98,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function primaryKeyGenerator(callable $callback): self
+    public function primaryKeyGenerator(callable $callback): static
     {
         $this->primaryKeyGenerator = $callback;
         return $this;
@@ -116,7 +107,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function sequence(string $sequence): self
+    public function sequence(string $sequence): static
     {
         $this->sequence = $sequence;
         return $this;
@@ -125,7 +116,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function getter(string $column, callable $callback): self
+    public function getter(string $column, callable $callback): static
     {
         $this->getters[$column] = $callback;
         return $this;
@@ -134,7 +125,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function setter(string $column, callable $callback): self
+    public function setter(string $column, callable $callback): static
     {
         $this->setters[$column] = $callback;
         return $this;
@@ -153,7 +144,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function cast(array $casts): self
+    public function cast(array $casts): static
     {
         $this->casts = $casts;
         return $this;
@@ -162,7 +153,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function useSoftDelete(bool $value = true, ?string $column = null): self
+    public function useSoftDelete(bool $value = true, ?string $column = null): static
     {
         $this->softDelete = $value;
         if ($column !== null) {
@@ -178,7 +169,7 @@ class EntityMapper implements EntityMapperInterface
         bool $value = true,
         ?string $created_at = null,
         ?string $updated_at = null
-    ): self {
+    ): static {
         $this->timestamp = $value;
         if ($created_at !== null) {
             $this->timestampColumns[0] = $created_at;
@@ -192,7 +183,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function assignable(array $columns): self
+    public function assignable(array $columns): static
     {
         $this->assignable = $columns;
         return $this;
@@ -201,7 +192,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function guarded(array $columns): self
+    public function guarded(array $columns): static
     {
         $this->guarded = $columns;
         return $this;
@@ -210,7 +201,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function filter(string $name, callable $callback): self
+    public function filter(string $name, callable $callback): static
     {
         $this->filters[$name] = $callback;
         return $this;
@@ -219,7 +210,7 @@ class EntityMapper implements EntityMapperInterface
     /**
      * @inheritDoc
      */
-    public function on(string $event, callable $callback): self
+    public function on(string $event, callable $callback): static
     {
         $this->eventHandlers[$event] = $callback;
         return $this;

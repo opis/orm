@@ -29,7 +29,6 @@ use Opis\ORM\Core\{
 class ShareOneOrMany extends Relation
 {
     protected ?Junction $junction;
-
     protected bool $hasMany;
 
     public function __construct(
@@ -180,7 +179,7 @@ class ShareOneOrMany extends Relation
     /**
      * @inheritDoc
      */
-    public function getResult(DataMapper $data, ?callable $callback = null)
+    public function getResult(DataMapper $data, ?callable $callback = null): mixed
     {
         $manager = $data->getEntityManager();
         $owner = $data->getEntityMapper();

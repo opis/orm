@@ -32,7 +32,6 @@ class Proxy
 
     /**
      * Proxy constructor.
-     * @throws ReflectionException
      */
     private function __construct()
     {

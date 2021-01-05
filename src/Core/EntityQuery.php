@@ -52,8 +52,8 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param string|string[]|mixed[] $names
-     * @return EntityQuery
+     * @param string|array $names
+     * @return $this
      */
     public function filter(string|array $names): static
     {
@@ -123,7 +123,6 @@ class EntityQuery extends Query
      * @param bool $force
      * @param array $tables
      * @return int
-     * @throws Exception
      */
     public function delete(bool $force = false, array $tables = []): int
     {
@@ -152,8 +151,8 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param string[]|string $column
-     * @param mixed $value
+     * @param string|string[] $column
+     * @param mixed|int $value
      * @return int
      */
     public function increment(string|array $column, mixed $value = 1): int
@@ -169,8 +168,8 @@ class EntityQuery extends Query
     }
 
     /**
-     * @param string[]|string $column
-     * @param mixed $value
+     * @param string|string[] $column
+     * @param mixed|int $value
      * @return int
      */
     public function decrement(string|array $column, mixed $value = 1): int

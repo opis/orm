@@ -17,13 +17,13 @@
 
 namespace Opis\ORM\Core;
 
+use Stringable;
 use Opis\ORM\Entity;
 
-class PrimaryKey
+class PrimaryKey implements Stringable
 {
     /** @var string[] */
     private array $columns;
-
     private bool $composite;
 
     /**
@@ -55,9 +55,9 @@ class PrimaryKey
     /**
      * @param array $columns
      * @param bool $map
-     * @return array|mixed|null
+     * @return mixed
      */
-    public function getValue(array $columns, bool $map = false)
+    public function getValue(array $columns, bool $map = false): mixed
     {
         if (!$this->composite && !$map) {
             return $columns[$this->columns[0]] ?? null;
@@ -69,12 +69,12 @@ class PrimaryKey
         return $value;
     }
 
-    /**
+    /***
      * @param DataMapper $data
      * @param bool $map
-     * @return array|mixed|null
+     * @return mixed
      */
-    public function valueFromDataMapper(DataMapper $data, bool $map = false)
+    public function valueFromDataMapper(DataMapper $data, bool $map = false): mixed
     {
         return $this->getValue($data->getRawColumns(), $map);
     }
@@ -82,9 +82,9 @@ class PrimaryKey
     /**
      * @param Entity $entity
      * @param bool $map
-     * @return array|mixed|null
+     * @return mixed
      */
-    public function valueFromEntity(Entity $entity, bool $map = false)
+    public function valueFromEntity(Entity $entity, bool $map = false): mixed
     {
         return $this->getValue(Proxy::instance()->getEntityColumns($entity), $map);
     }
@@ -92,7 +92,7 @@ class PrimaryKey
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return implode(', ', $this->columns);
     }

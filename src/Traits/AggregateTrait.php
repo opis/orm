@@ -32,31 +32,31 @@ trait AggregateTrait
         return $this->executeAggregate();
     }
 
-    public function count($column = '*', bool $distinct = false): int
+    public function count(mixed $column = '*', bool $distinct = false): int
     {
         (new ColumnExpression($this->getSQLStatement()))->count($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    public function avg(string $column, bool $distinct = false): int|float
+    public function avg(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->avg($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    public function sum(string $column, bool $distinct = false): int|float
+    public function sum(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->sum($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    public function min(string $column, bool $distinct = false): int|float
+    public function min(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->min($column, null, $distinct);
         return $this->executeAggregate();
     }
 
-    public function max(string $column, bool $distinct = false): int|float
+    public function max(mixed $column, bool $distinct = false): int|float
     {
         (new ColumnExpression($this->getSQLStatement()))->max($column, null, $distinct);
         return $this->executeAggregate();

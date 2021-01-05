@@ -21,17 +21,15 @@ use Closure;
 
 trait LoaderTrait
 {
-
     protected array $with = [];
-
     protected bool $immediate = false;
 
     /**
-     * @param string|array $value
+     * @param $value
      * @param bool $immediate
-     * @return mixed|LoaderTrait
+     * @return $this
      */
-    public function with($value, bool $immediate = false): self
+    public function with($value, bool $immediate = false): static
     {
         if (!is_array($value)) {
             $value = [$value];

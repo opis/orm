@@ -153,7 +153,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function getColumn(string $name)
+    public function getColumn(string $name): mixed
     {
         if ($this->stale) {
             $this->hydrate();
@@ -194,7 +194,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function setColumn(string $name, $value): self
+    public function setColumn(string $name, mixed $value): static
     {
         if ($this->isReadOnly) {
             throw new RuntimeException("The record is readonly");
@@ -229,7 +229,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function clearColumn(string $name): self
+    public function clearColumn(string $name): static
     {
         unset($this->columns[$name]);
         return $this;
@@ -238,7 +238,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function setRawColumn(string $name, $value): self
+    public function setRawColumn(string $name, mixed $value): static
     {
         $this->modified[$name] = 1;
         unset($this->columns[$name]);
@@ -249,7 +249,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function getRelated(string $name, ?callable $callback = null)
+    public function getRelated(string $name, ?callable $callback = null): mixed
     {
         if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
@@ -283,7 +283,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function setRelated(string $relation, ?Entity $entity = null): self
+    public function setRelated(string $relation, ?Entity $entity = null): static
     {
         $relations = $this->mapper->getRelations();
 
@@ -310,7 +310,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function clearRelated(string $name, bool $loaders = false): self
+    public function clearRelated(string $name, bool $loaders = false): static
     {
         $cache_key = $name;
 
@@ -330,7 +330,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function link(string $relation, Entity $entity): self
+    public function link(string $relation, Entity $entity): static
     {
         $this->linkOrUnlink($relation, $entity, true);
         return $this;
@@ -339,7 +339,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function unlink(string $relation, Entity $entity): self
+    public function unlink(string $relation, Entity $entity): static
     {
         $this->linkOrUnlink($relation, $entity, false);
         return $this;
@@ -348,7 +348,7 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function assign(array $columns): self
+    public function assign(array $columns): static
     {
         if (null !== $assignableColumns = $this->mapper->getAssignableColumns()) {
             $columns = array_intersect_key($columns, array_flip($assignableColumns));
@@ -364,17 +364,17 @@ class DataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function stale(): self
+    public function stale(): static
     {
         $this->stale = true;
         return $this;
     }
 
     /**
-     * @param $id
+     * @param mixed $id
      * @return bool
      */
-    public function markAsSaved($id): bool
+    public function markAsSaved(mixed $id): bool
     {
         $pk = $this->mapper->getPrimaryKey();
 
@@ -440,11 +440,11 @@ class DataMapper implements DataMapperInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @param string $cast
      * @return mixed
      */
-    protected function castGet($value, string $cast)
+    protected function castGet(mixed $value, string $cast): mixed
     {
         $originalCast = $cast;
 
@@ -478,11 +478,11 @@ class DataMapper implements DataMapperInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @param string $cast
-     * @return float|int|string
+     * @return float|null|bool|int|string
      */
-    protected function castSet($value, string $cast)
+    protected function castSet(mixed $value, string $cast): float|null|bool|int|string
     {
         $originalCast = $cast;
 

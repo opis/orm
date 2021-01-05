@@ -17,11 +17,12 @@
 
 namespace Opis\ORM\Core;
 
-class ForeignKey
+use Stringable;
+
+class ForeignKey implements Stringable
 {
     /** @var string[] */
     private array $columns;
-
     private bool $composite;
 
     /**
@@ -53,9 +54,9 @@ class ForeignKey
     /**
      * @param array $columns
      * @param bool $map
-     * @return array|mixed|null
+     * @return mixed
      */
-    public function getValue(array $columns, bool $map = false)
+    public function getValue(array $columns, bool $map = false): mixed
     {
         if (!$map && !$this->composite) {
             return $columns[array_keys($this->columns)[0]] ?? null;
@@ -73,9 +74,9 @@ class ForeignKey
     /**
      * @param array $columns
      * @param bool $map
-     * @return array|mixed|null
+     * @return mixed
      */
-    public function getInverseValue(array $columns, bool $map = false)
+    public function getInverseValue(array $columns, bool $map = false): mixed
     {
         if (!$map && !$this->composite) {
             return $columns[array_values($this->columns)[0]] ?? null;
@@ -93,9 +94,9 @@ class ForeignKey
     /**
      * @param array $columns
      * @param bool $map
-     * @return array|mixed|null
+     * @return mixed
      */
-    public function extractValue(array $columns, bool $map = false)
+    public function extractValue(array $columns, bool $map = false): mixed
     {
         if (!$map && !$this->composite) {
             return $columns[array_values($this->columns)[0]] ?? null;
@@ -113,7 +114,7 @@ class ForeignKey
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return implode(', ', $this->columns);
     }

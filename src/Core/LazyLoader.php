@@ -21,20 +21,14 @@ use Opis\ORM\Entity;
 
 class LazyLoader
 {
-
     protected EntityQuery $query;
-
     protected ForeignKey $foreignKey;
-
     protected bool $inverse;
-
     protected bool $hasMany;
+    protected ?array $keys = null;
 
     /** @var null|Entity[] */
     protected ?array $results = null;
-
-    /** @var null|array */
-    protected ?array $keys = null;
 
     /**
      * LazyLoader constructor.
@@ -65,7 +59,7 @@ class LazyLoader
      * @param DataMapper $data
      * @return null|Entity|Entity[]
      */
-    public function getResult(DataMapper $data)
+    public function getResult(DataMapper $data): null|array|Entity
     {
         $results = $this->loadResults();
 
